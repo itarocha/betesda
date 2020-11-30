@@ -3,7 +3,7 @@ package br.com.itarocha.betesda.controller;
 import br.com.itarocha.betesda.exception.AppException;
 import br.com.itarocha.betesda.model.Role;
 import br.com.itarocha.betesda.model.RoleName;
-import br.com.itarocha.betesda.model.User;
+import br.com.itarocha.betesda.domain.User;
 import br.com.itarocha.betesda.payload.ApiResponse;
 import br.com.itarocha.betesda.payload.JwtAuthenticationResponse;
 import br.com.itarocha.betesda.payload.LoginRequest;
@@ -21,10 +21,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
@@ -53,7 +50,7 @@ public class AuthController {
     @Autowired
     EmailService emailService;
 
-    @RequestMapping(value="/login", method = RequestMethod.POST)
+    @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(

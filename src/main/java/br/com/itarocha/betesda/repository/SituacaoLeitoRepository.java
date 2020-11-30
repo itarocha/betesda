@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.repository;
 
-import br.com.itarocha.betesda.model.SituacaoLeito;
+import br.com.itarocha.betesda.domain.SituacaoLeito;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

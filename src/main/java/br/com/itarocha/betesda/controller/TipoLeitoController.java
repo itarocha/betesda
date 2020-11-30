@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.controller;
 
-import br.com.itarocha.betesda.model.TipoLeito;
+import br.com.itarocha.betesda.domain.TipoLeito;
 import br.com.itarocha.betesda.service.TipoLeitoService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +18,14 @@ public class TipoLeitoController {
 	@Autowired
 	private TipoLeitoService service;
 	
-	@RequestMapping
+	@GetMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
 		List<TipoLeito> lista = service.findAll();
 	    return new ResponseEntity<List<TipoLeito>>(lista, HttpStatus.OK);
 	}
 
-	@RequestMapping(value="{id}")
+	@GetMapping("{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		try {
@@ -40,7 +40,7 @@ public class TipoLeitoController {
 		}
 	}
 	
-	@RequestMapping(method = RequestMethod.POST)
+	@PostMapping
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> gravar(@RequestBody TipoLeito model) {
 		ItaValidator<TipoLeito> v = new ItaValidator<TipoLeito>(model);
@@ -58,7 +58,7 @@ public class TipoLeitoController {
 		}
 	}
 	
-	@RequestMapping(value="{id}", method = RequestMethod.DELETE)
+	@DeleteMapping("{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
 		try {

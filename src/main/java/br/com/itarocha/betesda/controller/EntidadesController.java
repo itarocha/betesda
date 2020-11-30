@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.controller;
 
 import br.com.itarocha.betesda.exception.ValidationException;
-import br.com.itarocha.betesda.model.Entidade;
+import br.com.itarocha.betesda.domain.Entidade;
 import br.com.itarocha.betesda.service.EntidadeService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
 import br.com.itarocha.betesda.utils.Validadores;
@@ -21,7 +21,7 @@ public class EntidadesController {
 	@Autowired
 	private EntidadeService service;
 	
-	@RequestMapping(value="{id}")
+	@GetMapping("{id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		try {
@@ -36,21 +36,21 @@ public class EntidadesController {
 		}
 	}
 
-	@RequestMapping
+	@GetMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
 		List<Entidade> lista = service.findAll();
 		return new ResponseEntity<List<Entidade>>(lista, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/consultar/{texto}")
+	@GetMapping(value = "/consultar/{texto}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> consultar(@PathVariable("texto") String texto) {
 		List<Entidade> lista = service.consultar(texto);
 		return new ResponseEntity<List<Entidade>>(lista, HttpStatus.OK);
 	}
 
-	@RequestMapping(method = RequestMethod.POST)
+	@PostMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> gravar(@RequestBody Entidade model) {
 		
@@ -86,7 +86,7 @@ public class EntidadesController {
 		}
 	}
 	
-	@RequestMapping(value = "{id}", method=RequestMethod.DELETE)
+	@DeleteMapping("{id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
 		try {

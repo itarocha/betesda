@@ -1,5 +1,8 @@
 package br.com.itarocha.betesda.model;
 
+import br.com.itarocha.betesda.domain.Quarto;
+import br.com.itarocha.betesda.domain.SituacaoLeito;
+import br.com.itarocha.betesda.domain.TipoLeito;
 import br.com.itarocha.betesda.model.audit.UserDateAudit;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

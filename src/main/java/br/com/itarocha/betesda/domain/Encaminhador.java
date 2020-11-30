@@ -1,13 +1,18 @@
-package br.com.itarocha.betesda.model;
+package br.com.itarocha.betesda.domain;
 
+import br.com.itarocha.betesda.model.Logico;
 import br.com.itarocha.betesda.model.audit.UserDateAudit;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Builder;
+import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
+@Data
+@Builder
 @Entity
 @Table(name="encaminhador")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -43,66 +48,6 @@ public class Encaminhador extends UserDateAudit implements Serializable{
 	@Enumerated(EnumType.STRING)
 	@Column(length=1)
 	@NotNull(message="Ativo é obrigatório")
-	private Logico ativo;
-
-	public Encaminhador() {
-		this.ativo = Logico.S;
-	}
-	
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Entidade getEntidade() {
-		return entidade;
-	}
-
-	public void setEntidade(Entidade entidade) {
-		this.entidade = entidade;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public String getCargo() {
-		return cargo;
-	}
-
-	public void setCargo(String cargo) {
-		this.cargo = cargo;
-	}
-
-	public String getTelefone() {
-		return telefone;
-	}
-
-	public void setTelefone(String telefone) {
-		this.telefone = telefone;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	
-	public Logico getAtivo() {
-		return ativo;
-	}
-
-	public void setAtivo(Logico ativo) {
-		this.ativo = ativo;
-	}
-	
+	@Builder.Default
+	private Logico ativo = Logico.S;
 }

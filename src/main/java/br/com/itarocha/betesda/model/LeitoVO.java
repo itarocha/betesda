@@ -1,5 +1,7 @@
 package br.com.itarocha.betesda.model;
 
+import br.com.itarocha.betesda.domain.TipoLeito;
+
 public class LeitoVO {
 	
 	private Long id;

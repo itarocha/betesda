@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.controller;
 
 import br.com.itarocha.betesda.exception.ValidationException;
-import br.com.itarocha.betesda.model.Pessoa;
+import br.com.itarocha.betesda.domain.Pessoa;
 import br.com.itarocha.betesda.model.SearchRequest;
 import br.com.itarocha.betesda.service.PessoaService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
@@ -23,7 +23,7 @@ public class PessoasController {
 	@Autowired
 	private PessoaService service;
 	
-	@RequestMapping(value="{id}")
+	@GetMapping("{id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		try {
@@ -38,7 +38,7 @@ public class PessoasController {
 		}
 	}
 
-	@RequestMapping(value = "/filtrar", method = RequestMethod.POST)
+	@PostMapping("/filtrar")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listarComCriterio(@RequestBody SearchRequest search) {
 		
@@ -62,16 +62,17 @@ public class PessoasController {
 		return new ResponseEntity<List<Pessoa>>(lista, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/consultar/{texto}")
+	@GetMapping("/consultar/{texto}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> consultar(@PathVariable("texto") String texto) {
 		List<Pessoa> lista = service.consultar(texto);
 		return new ResponseEntity<List<Pessoa>>(lista, HttpStatus.OK);
 	}
 
-	@RequestMapping(method = RequestMethod.POST)
+	@PostMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> gravar(@RequestBody Pessoa model) {
+		// TODO Criar classe de conversores de cep, sus, cpf, etc para remover máscara
 		if (model.getCartaoSus() != null) {
 			model.setCartaoSus(model.getCartaoSus().replaceAll("\\.", ""));
 		}
@@ -107,7 +108,7 @@ public class PessoasController {
 		}
 	}
 	
-	@RequestMapping(value = "{id}", method=RequestMethod.DELETE)
+	@DeleteMapping("{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
 		try {

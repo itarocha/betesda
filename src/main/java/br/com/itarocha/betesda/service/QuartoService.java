@@ -1,5 +1,9 @@
 package br.com.itarocha.betesda.service;
 
+import br.com.itarocha.betesda.domain.DestinacaoHospedagem;
+import br.com.itarocha.betesda.domain.Quarto;
+import br.com.itarocha.betesda.domain.SituacaoLeito;
+import br.com.itarocha.betesda.domain.TipoLeito;
 import br.com.itarocha.betesda.model.*;
 import br.com.itarocha.betesda.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;

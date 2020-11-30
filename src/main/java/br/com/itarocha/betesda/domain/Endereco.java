@@ -1,13 +1,22 @@
-package br.com.itarocha.betesda.model;
+package br.com.itarocha.betesda.domain;
 
+import br.com.itarocha.betesda.model.UnidadeFederacao;
 import br.com.itarocha.betesda.model.audit.UserDateAudit;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name="endereco")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -37,20 +46,24 @@ public class Endereco  extends UserDateAudit implements Serializable{
 	
 	@Size(max = 64, message="A cidade não pode conter mais que 64 caracteres")
 	@NotNull(message="Cidade deve ser preenchida")
-	private String cidade;
+	private String cidade = "Uberlândia";
 
 	@Enumerated(EnumType.STRING)
 	@Column(length = 2)
 	@NotNull(message="UF deve ser preenchido")
-	private UnidadeFederacao uf;
-	
-	private double latitude;
-	
-	private double longitude;
+	@Builder.Default
+	private UnidadeFederacao uf = UnidadeFederacao.MG;
+
+	@Builder.Default
+	private double latitude = 0;
+
+	@Builder.Default
+	private double longitude = 0;
 	
 	@Transient
 	private String descricao;
-	
+
+	/*
 	public Endereco(){
 		this.cidade = "Uberlândia";
 		this.uf = UnidadeFederacao.MG;
@@ -147,7 +160,8 @@ public class Endereco  extends UserDateAudit implements Serializable{
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
-	
+	*/
+
 	@Override
 	public String toString(){
 		StringBuilder sb = new StringBuilder();

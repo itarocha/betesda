@@ -35,7 +35,7 @@ public class HospedagemController {
 	@Autowired
 	private RelatorioGeralService relatorioService;
 	
-	@RequestMapping(method = RequestMethod.POST)
+	@PostMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> gravar(@RequestBody HospedagemVO model) {
 		ItaValidator<HospedagemVO> v = new ItaValidator<HospedagemVO>(model);
@@ -84,7 +84,7 @@ public class HospedagemController {
 		}
 	}
 	
-	@RequestMapping(value="/mapa", method = RequestMethod.POST)
+	@PostMapping("/mapa")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public MapaRetorno mapa(@RequestBody MapaHospedagemRequest model)
 	{
@@ -92,7 +92,7 @@ public class HospedagemController {
 		return retorno;
 	}
 
-	@RequestMapping(value="/mapa/linhas", method = RequestMethod.POST)
+	@PostMapping("/mapa/linhas")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public MapaLinhas mapaLinhas(@RequestBody MapaHospedagemRequest model)
 	{
@@ -100,7 +100,7 @@ public class HospedagemController {
 		return retorno;
 	}
 
-	@RequestMapping(value="/mapa/hospedes", method = RequestMethod.POST)
+	@PostMapping("/mapa/hospedes")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public MapaHospedes mapaHospedes(@RequestBody MapaHospedagemRequest model)
 	{
@@ -108,7 +108,7 @@ public class HospedagemController {
 		return retorno;
 	}
 
-	@RequestMapping(value="/mapa/cidades", method = RequestMethod.POST)
+	@PostMapping("/mapa/cidades")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public MapaCidades mapaCidades(@RequestBody MapaHospedagemRequest model)
 	{
@@ -116,7 +116,7 @@ public class HospedagemController {
 		return retorno;
 	}
 
-	@RequestMapping(value="/mapa/quadro", method = RequestMethod.POST)
+	@PostMapping("/mapa/quadro")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public MapaQuadro mapaQuadro(@RequestBody MapaHospedagemRequest model)
 	{
@@ -124,7 +124,7 @@ public class HospedagemController {
 		return retorno;
 	}
 
-	@RequestMapping(value="/planilha_geral", method = RequestMethod.POST)
+	@PostMapping("/planilha_geral")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> planilhaGeral(@RequestBody PeriodoRequest model)
 	{
@@ -157,7 +157,7 @@ public class HospedagemController {
 	//https://grokonez.com/spring-framework/spring-boot/excel-file-download-from-springboot-restapi-apache-poi-mysql
 	//@GetMapping(value = "/planilha_geral_arquivo")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	@RequestMapping(path = "/planilha_geral_arquivo", method = RequestMethod.POST)
+	@PostMapping("/planilha_geral_arquivo")
 	public ResponseEntity<?>planilhaGeralExcel(@RequestBody PeriodoRequest model) throws IOException {
 		ItaValidator<PeriodoRequest> v = new ItaValidator<PeriodoRequest>(model);
 		v.validate();
@@ -202,7 +202,7 @@ public class HospedagemController {
 				.body(new InputStreamResource(in));
 	}
 	
-	@RequestMapping(value="/leitos_ocupados", method = RequestMethod.POST)
+	@PostMapping("/leitos_ocupados")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> leitosOcupados(@RequestBody HospedagemPeriodoRequest model)
 	{
@@ -216,7 +216,7 @@ public class HospedagemController {
 		}
 	}
 
-	@RequestMapping(value="/mapa/alterar_hospede", method = RequestMethod.POST)
+	@PostMapping("/mapa/alterar_hospede")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> alterarHospede(@RequestBody AlteracaoHospedeRequest model)
 	{
@@ -228,7 +228,7 @@ public class HospedagemController {
 		}
 	}
 	
-	@RequestMapping(value="/mapa/encerramento", method = RequestMethod.POST)
+	@PostMapping("/mapa/encerramento")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> encerramento(@RequestBody OperacoesRequest model)
 	{
@@ -240,7 +240,7 @@ public class HospedagemController {
 		}
 	}
 	
-	@RequestMapping(value="/mapa/renovacao", method = RequestMethod.POST)
+	@PostMapping("/mapa/renovacao")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> renovacao(@RequestBody OperacoesRequest model)
 	{
@@ -252,7 +252,7 @@ public class HospedagemController {
 		}
 	}
 	
-	@RequestMapping(value="/remover_hospede", method = RequestMethod.POST)
+	@PostMapping("/remover_hospede")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> removerHospede(@RequestBody RemoverHospedeRequest model)
 	{
@@ -264,7 +264,7 @@ public class HospedagemController {
 		}
 	}
 	
-	@RequestMapping(value="/mapa/baixar", method = RequestMethod.POST)
+	@PostMapping(value="/mapa/baixar")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> baixar(@RequestBody BaixaRequest model)
 	{
@@ -276,7 +276,7 @@ public class HospedagemController {
 		}
 	}
 	
-	@RequestMapping(value="/mapa/transferir", method = RequestMethod.POST)
+	@PostMapping("/mapa/transferir")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> transferir(@RequestBody TransferenciaRequest model)
 	{
@@ -288,7 +288,7 @@ public class HospedagemController {
 		}
 	}
 	
-	@RequestMapping(value="/mapa/adicionar", method = RequestMethod.POST)
+	@PostMapping("/mapa/adicionar")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> adicionarHospede(@RequestBody AdicionarHospedeRequest model)
 	{
@@ -300,7 +300,7 @@ public class HospedagemController {
 		}
 	}
 	
-	@RequestMapping(value="/mapa/hospedagem_info", method = RequestMethod.POST)
+	@PostMapping("/mapa/hospedagem_info")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public HospedagemFullVO getHospedagemInfo(@RequestBody HospdeagemInfoRequest model)
 	{
@@ -308,7 +308,7 @@ public class HospedagemController {
 		return h;
 	}
 
-	@RequestMapping(value="{id}", method = RequestMethod.DELETE)
+	@DeleteMapping("{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
 		try {

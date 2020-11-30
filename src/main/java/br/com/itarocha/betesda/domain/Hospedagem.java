@@ -1,7 +1,10 @@
-package br.com.itarocha.betesda.model;
+package br.com.itarocha.betesda.domain;
 
+import br.com.itarocha.betesda.model.TipoUtilizacaoHospedagem;
 import br.com.itarocha.betesda.model.audit.UserDateAudit;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Builder;
+import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -10,6 +13,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
+@Builder
 @Entity
 @Table(name="hospedagem")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "hospedes"})
@@ -47,21 +52,25 @@ public class Hospedagem  extends UserDateAudit implements Serializable {
 	@Column(name = "data_efetiva_saida")
 	private LocalDate dataEfetivaSaida;
 
+	@Builder.Default
 	@Enumerated(EnumType.STRING)
 	@Column(name="tipo_utilizacao", length=1)
 	@NotNull(message="Tipo de Utilização precisa ser informada")
-	private TipoUtilizacaoHospedagem tipoUtilizacao;
+	private TipoUtilizacaoHospedagem tipoUtilizacao = TipoUtilizacaoHospedagem.T;
 	
 	@Lob 
 	@Basic(fetch=FetchType.LAZY)
 	private String observacoes;
-	
+
+	@Builder.Default
 	@OneToMany(mappedBy = "hospedagem",fetch=FetchType.LAZY)
 	private List<Hospede> hospedes = new ArrayList<Hospede>();
-	
+
+	@Builder.Default
 	@OneToMany(mappedBy = "hospedagem",fetch=FetchType.LAZY)
 	private List<HospedagemTipoServico> servicos = new ArrayList<HospedagemTipoServico>();
-	
+
+	/*
 	public Hospedagem() {
 		this.tipoUtilizacao = TipoUtilizacaoHospedagem.T;
 	}
@@ -153,4 +162,5 @@ public class Hospedagem  extends UserDateAudit implements Serializable {
 	public void setServicos(List<HospedagemTipoServico> servicos) {
 		this.servicos = servicos;
 	}
+	*/
 }

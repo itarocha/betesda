@@ -1,7 +1,9 @@
-package br.com.itarocha.betesda.model;
+package br.com.itarocha.betesda.domain;
 
 import br.com.itarocha.betesda.model.audit.UserDateAudit;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Builder;
+import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -10,6 +12,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
+@Data
+@Builder
 @Entity
 @Table(name="tipo_leito")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -29,29 +33,4 @@ public class TipoLeito extends UserDateAudit implements Serializable{
 	@Min(value=1, message="Quantidade de Leitos deve ser no mínimo 1" )
 	@Max(value=2, message="Quantidade de Leitos deve ser no máximo 2" )
 	private Integer quantidadeCamas;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getDescricao() {
-		return descricao;
-	}
-
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
-	}
-
-	public Integer getQuantidadeCamas() {
-		return quantidadeCamas;
-	}
-
-	public void setQuantidadeCamas(Integer quantidadeCamas) {
-		this.quantidadeCamas = quantidadeCamas;
-	}
-	
 }

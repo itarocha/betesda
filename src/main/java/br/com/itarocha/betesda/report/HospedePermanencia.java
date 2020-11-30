@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.report;
 
-import br.com.itarocha.betesda.model.Hospedagem;
-import br.com.itarocha.betesda.model.Hospede;
-import br.com.itarocha.betesda.model.Pessoa;
+import br.com.itarocha.betesda.domain.Hospedagem;
+import br.com.itarocha.betesda.domain.Hospede;
+import br.com.itarocha.betesda.domain.Pessoa;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDate;

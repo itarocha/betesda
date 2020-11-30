@@ -1,5 +1,6 @@
 package br.com.itarocha.betesda.service;
 
+import br.com.itarocha.betesda.domain.*;
 import br.com.itarocha.betesda.exception.ValidationException;
 import br.com.itarocha.betesda.model.*;
 import br.com.itarocha.betesda.model.hospedagem.*;
@@ -92,7 +93,7 @@ public class HospedagemService {
 			}
 		}
 		
-		hospedagem = new Hospedagem();
+		hospedagem = Hospedagem.builder().build();
 		
 		Optional<Entidade> entidade = entidadeRepo.findById(model.getEntidadeId());
 		hospedagem.setEntidade(entidade.get());
@@ -118,7 +119,7 @@ public class HospedagemService {
 		model.setId(hospedagem.getId()); 
 		
 		for (HospedeVO hvo: model.getHospedes()) {
-			Hospede h = new Hospede();
+			Hospede h = Hospede.builder().build();
 			h.setHospedagem(hospedagem);
 			
 			Optional<Pessoa> p = pessoaRepo.findById(hvo.getPessoaId());
@@ -142,7 +143,7 @@ public class HospedagemService {
 		    	Optional<Leito> leito = leitoRepo.findById(hvo.getAcomodacao().getLeitoId());
 
 		    	if (quarto.isPresent() && leito.isPresent()) {
-		    		HospedeLeito hl = new HospedeLeito();
+		    		HospedeLeito hl = HospedeLeito.builder().build();
 		    		hl.setHospede(h);
 		    		hl.setDataEntrada(hospedagem.getDataEntrada());
 		    		hl.setDataSaida(hospedagem.getDataPrevistaSaida());
@@ -164,7 +165,7 @@ public class HospedagemService {
 			for (Long tipoServicoId : model.getServicos()) {
 				Optional<TipoServico> ts = tipoServicoRepo.findById(tipoServicoId);
 				if (ts.isPresent()) {
-					HospedagemTipoServico servico = new HospedagemTipoServico();
+					HospedagemTipoServico servico = HospedagemTipoServico.builder().build();
 					servico.setTipoServico(ts.get());
 					servico.setHospedagem(hospedagem);
 					hospedagemTipoServicoRepo.save(servico);
@@ -1097,7 +1098,7 @@ public class HospedagemService {
 		    	if (leito.isPresent()) {
 		    		Quarto q = leito.get().getQuarto();
 		    		
-		    		HospedeLeito hl = new HospedeLeito();
+		    		HospedeLeito hl = HospedeLeito.builder().build();
 		    		hl.setHospede(hospede);
 		    		hl.setDataEntrada(dataTransferencia);
 		    		hl.setDataSaida(h.getDataPrevistaSaida());
@@ -1162,13 +1163,13 @@ public class HospedagemService {
 		
 		Quarto q = leitoOpt.get().getQuarto();
 
-		Hospede hospede = new Hospede();
+		Hospede hospede = Hospede.builder().build();
 		hospede.setHospedagem(hospedagem);
 		hospede.setPessoa(pessoaOpt.get());
 		hospede.setTipoHospede(tipoHospedeOpt.get());
 		hospede = hospedeRepo.save(hospede);
 		
-		HospedeLeito hl = new HospedeLeito();
+		HospedeLeito hl = HospedeLeito.builder().build();
 		hl.setHospede(hospede);
 		hl.setDataEntrada(dataEntrada);
 		hl.setDataSaida(hospedagem.getDataPrevistaSaida());

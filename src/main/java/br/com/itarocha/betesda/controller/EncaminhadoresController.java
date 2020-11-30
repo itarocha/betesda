@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.controller;
 
-import br.com.itarocha.betesda.model.Encaminhador;
+import br.com.itarocha.betesda.domain.Encaminhador;
 import br.com.itarocha.betesda.model.SelectValueVO;
 import br.com.itarocha.betesda.service.EncaminhadorService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
@@ -20,7 +20,7 @@ public class EncaminhadoresController {
 	@Autowired
 	private EncaminhadorService service;
 	
-	@RequestMapping(value="{id}")
+	@GetMapping("{id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		try {
@@ -35,14 +35,14 @@ public class EncaminhadoresController {
 		}
 	}
 
-	@RequestMapping(value="/por_encaminhador/{id}")
+	@GetMapping("/por_encaminhador/{id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar(@PathVariable("id") Long entidadeId) {
 		List<Encaminhador> lista = service.findAll(entidadeId);
 		return new ResponseEntity<List<Encaminhador>>(lista, HttpStatus.OK);
 	}
 	
-	@RequestMapping(method = RequestMethod.POST)
+	@PostMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> gravar(@RequestBody Encaminhador model) {
 		ItaValidator<Encaminhador> v = new ItaValidator<Encaminhador>(model);
@@ -60,7 +60,7 @@ public class EncaminhadoresController {
 		}
 	}
 	
-	@RequestMapping(value = "{id}", method=RequestMethod.DELETE)
+	@DeleteMapping("{id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
 		try {
@@ -71,11 +71,10 @@ public class EncaminhadoresController {
 		}
 	 }
 	
-	@RequestMapping("/lista/{id}")
+	@GetMapping("/lista/{id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> getListaEncaminhadores(@PathVariable("id") Long entidadeId) {
 		List<SelectValueVO> lista = service.listSelect(entidadeId);
 		return new ResponseEntity<List<SelectValueVO>>(lista, HttpStatus.OK);
 	}
-	
 }

@@ -1,5 +1,8 @@
 package br.com.itarocha.betesda.model;
 
+import br.com.itarocha.betesda.domain.Encaminhador;
+import br.com.itarocha.betesda.domain.Entidade;
+
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;

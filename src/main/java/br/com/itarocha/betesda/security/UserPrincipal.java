@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.security;
 
-import br.com.itarocha.betesda.model.User;
+import br.com.itarocha.betesda.domain.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -1,13 +1,18 @@
-package br.com.itarocha.betesda.model;
+package br.com.itarocha.betesda.domain;
 
+import br.com.itarocha.betesda.model.Leito;
 import br.com.itarocha.betesda.model.audit.UserDateAudit;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Builder;
+import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+@Data
+@Builder
 @Entity
 @Table(name="hospede_leito")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "quarto", "leito", "hospede"})
@@ -23,8 +28,7 @@ public class HospedeLeito extends UserDateAudit implements Serializable{
 	@JoinColumn(name="hospede_id")
 	@NotNull(message="Hóspede precisa ser informado")
 	private Hospede hospede;
-	
-	
+
 	@NotNull(message="Data de Entrada precisa ser informado")
 	@Column(name="data_entrada")
 	private LocalDate dataEntrada;
@@ -48,68 +52,4 @@ public class HospedeLeito extends UserDateAudit implements Serializable{
 	
 	@Transient
 	private Integer leitoNumero;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Hospede getHospede() {
-		return hospede;
-	}
-
-	public void setHospede(Hospede hospede) {
-		this.hospede = hospede;
-	}
-
-	public LocalDate getDataEntrada() {
-		return dataEntrada;
-	}
-
-	public void setDataEntrada(LocalDate dataEntrada) {
-		this.dataEntrada = dataEntrada;
-	}
-
-	public LocalDate getDataSaida() {
-		return dataSaida;
-	}
-
-	public void setDataSaida(LocalDate dataSaida) {
-		this.dataSaida = dataSaida;
-	}
-
-	public Quarto getQuarto() {
-		return quarto;
-	}
-
-	public void setQuarto(Quarto quarto) {
-		this.quarto = quarto;
-	}
-
-	public Leito getLeito() {
-		return leito;
-	}
-
-	public void setLeito(Leito leito) {
-		this.leito = leito;
-	}
-
-	public Integer getQuartoNumero() {
-		return quartoNumero;
-	}
-
-	public void setQuartoNumero(Integer quartoNumero) {
-		this.quartoNumero = quartoNumero;
-	}
-
-	public Integer getLeitoNumero() {
-		return leitoNumero;
-	}
-
-	public void setLeitoNumero(Integer leitoNumero) {
-		this.leitoNumero = leitoNumero;
-	}
 }

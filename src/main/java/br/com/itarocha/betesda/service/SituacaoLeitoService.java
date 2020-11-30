@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.service;
 
 import br.com.itarocha.betesda.model.SelectValueVO;
-import br.com.itarocha.betesda.model.SituacaoLeito;
+import br.com.itarocha.betesda.domain.SituacaoLeito;
 import br.com.itarocha.betesda.repository.SituacaoLeitoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

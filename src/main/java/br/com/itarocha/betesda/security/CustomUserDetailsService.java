@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.security;
 
 import br.com.itarocha.betesda.exception.ResourceNotFoundException;
-import br.com.itarocha.betesda.model.User;
+import br.com.itarocha.betesda.domain.User;
 import br.com.itarocha.betesda.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.service;
 
-import br.com.itarocha.betesda.model.Encaminhador;
+import br.com.itarocha.betesda.domain.Encaminhador;
 import br.com.itarocha.betesda.model.SelectValueVO;
 import br.com.itarocha.betesda.repository.EncaminhadorRepository;
 import org.springframework.beans.factory.annotation.Autowired;

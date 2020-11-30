@@ -1,6 +1,9 @@
-package br.com.itarocha.betesda.model;
+package br.com.itarocha.betesda.domain;
 
+import br.com.itarocha.betesda.model.Leito;
+import br.com.itarocha.betesda.model.Logico;
 import br.com.itarocha.betesda.model.audit.UserDateAudit;
+import lombok.Builder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -44,9 +47,10 @@ public class Quarto  extends UserDateAudit implements Serializable{
 	@OrderBy("numero ASC")
 	private List<Leito> leitos;
 
+	@Builder.Default
 	@Enumerated(EnumType.STRING)
 	@Column(length = 1)
-	private Logico ativo;
+	private Logico ativo =Logico.S;;
 
 	@Transient
 	private String displayText; 

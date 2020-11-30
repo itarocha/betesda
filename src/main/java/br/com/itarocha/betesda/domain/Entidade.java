@@ -1,7 +1,9 @@
-package br.com.itarocha.betesda.model;
+package br.com.itarocha.betesda.domain;
 
 import br.com.itarocha.betesda.model.audit.UserDateAudit;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Builder;
+import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -11,6 +13,8 @@ import javax.validation.constraints.Email;
 import java.io.Serializable;
 import java.util.List;
 
+@Data
+@Builder
 @Entity
 @Table(name="entidade")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "encaminhadores"})
@@ -29,11 +33,12 @@ public class Entidade  extends UserDateAudit implements Serializable{
 	@NotNull(message="CNPJ é obrigatório")
 	@Size(min = 14, max = 14, message="CNPJ deve ter 14 caracteres")
 	private String cnpj;
-	
+
+	@Builder.Default
 	@Valid
 	@ManyToOne()
 	@NotNull(message="Endereço é obrigatório")
-	private Endereco endereco;
+	private Endereco endereco = new Endereco();;
 	
 	@Size(max = 16, message="Telefone não pode ter mais que 16 caracteres")
 	private String telefone;
@@ -51,7 +56,8 @@ public class Entidade  extends UserDateAudit implements Serializable{
 
 	@OneToMany(mappedBy = "entidade",fetch=FetchType.LAZY)
 	private List<Encaminhador> encaminhadores;
-	
+
+	/*
 	public Entidade(){
 		this.endereco = new Endereco();
 	}
@@ -127,6 +133,7 @@ public class Entidade  extends UserDateAudit implements Serializable{
 	public void setEncaminhadores(List<Encaminhador> encaminhadores) {
 		this.encaminhadores = encaminhadores;
 	}
+	*/
 
 	@Override
     public String toString() {

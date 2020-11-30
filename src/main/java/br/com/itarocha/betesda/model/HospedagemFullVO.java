@@ -1,5 +1,6 @@
 package br.com.itarocha.betesda.model;
 
+import br.com.itarocha.betesda.domain.*;
 import br.com.itarocha.betesda.model.hospedagem.CellStatusHospedagem;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

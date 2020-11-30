@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.service;
 
 import br.com.itarocha.betesda.exception.ValidationException;
-import br.com.itarocha.betesda.model.Endereco;
-import br.com.itarocha.betesda.model.Pessoa;
+import br.com.itarocha.betesda.domain.Endereco;
+import br.com.itarocha.betesda.domain.Pessoa;
 import br.com.itarocha.betesda.repository.EnderecoRepository;
 import br.com.itarocha.betesda.repository.PessoaRepository;
 import br.com.itarocha.betesda.util.validation.ResultError;

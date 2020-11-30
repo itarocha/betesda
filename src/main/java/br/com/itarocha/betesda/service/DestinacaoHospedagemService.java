@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.service;
 
-import br.com.itarocha.betesda.model.DestinacaoHospedagem;
+import br.com.itarocha.betesda.domain.DestinacaoHospedagem;
 import br.com.itarocha.betesda.model.SelectValueVO;
 import br.com.itarocha.betesda.repository.DestinacaoHospedagemRepository;
 import org.springframework.beans.factory.annotation.Autowired;

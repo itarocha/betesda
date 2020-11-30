@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.repository;
 
-import br.com.itarocha.betesda.model.HospedeLeito;
+import br.com.itarocha.betesda.domain.HospedeLeito;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

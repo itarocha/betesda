@@ -1,5 +1,6 @@
 package br.com.itarocha.betesda.controller;
 
+import br.com.itarocha.betesda.domain.Quarto;
 import br.com.itarocha.betesda.model.*;
 import br.com.itarocha.betesda.service.*;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
@@ -37,14 +38,14 @@ public class QuartoController {
 	@Autowired
 	private EntidadeService etds;
 	
-	@RequestMapping
+	@GetMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
 		List<Quarto> lista = service.findAll();
 		return new ResponseEntity<List<Quarto>>(lista, HttpStatus.OK);
 	}
 
-	@RequestMapping(value="{id}")
+	@GetMapping("{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		try {
@@ -59,7 +60,7 @@ public class QuartoController {
 		}
 	}
 	
-	@RequestMapping(value="/leito/{id}")
+	@GetMapping("/leito/{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> getLeitoById(@PathVariable("id") Long id) {
 		try {
@@ -82,28 +83,28 @@ public class QuartoController {
 		}
 	}
 	
-	@RequestMapping("/por_destinacao_hospedagem/{id}")
+	@GetMapping("/por_destinacao_hospedagem/{id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listarByDestinacaoHospedagem(@PathVariable("id") Long id) {
 		List<Quarto> lista = service.findAllByDestinacaoHospedagem(id);
 		return new ResponseEntity<List<Quarto>>(lista, HttpStatus.OK);
 	}
 
-	@RequestMapping("/{id}/leitos")
+	@GetMapping("/{id}/leitos")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listarLeitosByQuarto(@PathVariable("id") Long id) {
 		List<Leito> lista = service.findLeitosByQuarto(id);
 		return new ResponseEntity<List<Leito>>(lista, HttpStatus.OK);
 	}
 
-	@RequestMapping("/leitos_disponiveis")
+	@GetMapping("/leitos_disponiveis")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listarLeitosDisponiveis() {
 		List<Leito> lista = service.findLeitosDisponiveis();
 		return new ResponseEntity<List<Leito>>(lista, HttpStatus.OK);
 	}
 
-	@RequestMapping(method = RequestMethod.POST)
+	@PostMapping
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> gravar(@RequestBody NovoQuartoVO model) throws Exception {
 		ItaValidator<NovoQuartoVO> v = new ItaValidator<NovoQuartoVO>(model);
@@ -123,7 +124,7 @@ public class QuartoController {
 	    return new ResponseEntity<Quarto>(saved, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/alterar", method = RequestMethod.POST)
+	@PostMapping("/alterar")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> gravarAlteracao(@RequestBody EditQuartoVO model) {
 		ItaValidator<EditQuartoVO> v = new ItaValidator<EditQuartoVO>(model);
@@ -147,7 +148,7 @@ public class QuartoController {
 		}
 	}
 
-	@RequestMapping(value="/leito", method = RequestMethod.POST)
+	@PostMapping("/leito")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> gravarLeito(@RequestBody EditLeitoVO model) {
 		ItaValidator<EditLeitoVO> v = new ItaValidator<EditLeitoVO>(model);
@@ -176,7 +177,7 @@ public class QuartoController {
 		}
 	}
 	
-	@RequestMapping(value="/{id}", method = RequestMethod.DELETE)
+	@DeleteMapping(value="/{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
 		try {
@@ -187,7 +188,7 @@ public class QuartoController {
 		}
 	 }
 
-	@RequestMapping(value="/leito/{id}", method = RequestMethod.DELETE)
+	@DeleteMapping("/leito/{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> excluirLeito(@PathVariable("id") Long id) {
 		try {
@@ -198,7 +199,7 @@ public class QuartoController {
 		}
 	 }
 	
-	@RequestMapping("/listas")
+	@GetMapping("/listas")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listas() {
 		AutoWired retorno = new AutoWired();
@@ -216,7 +217,7 @@ public class QuartoController {
 		
 		return new ResponseEntity<AutoWired>(retorno, HttpStatus.OK);
 	}
-	
+
 	static class AutoWired {
 		public List<SelectValueVO> listaTipoLeito = new ArrayList<SelectValueVO>();
 		public List<SelectValueVO> listaDestinacaoHospedagem = new ArrayList<SelectValueVO>();

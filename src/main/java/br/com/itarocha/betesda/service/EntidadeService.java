@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.service;
 
 import br.com.itarocha.betesda.exception.ValidationException;
-import br.com.itarocha.betesda.model.Entidade;
+import br.com.itarocha.betesda.domain.Entidade;
 import br.com.itarocha.betesda.model.SelectValueVO;
 import br.com.itarocha.betesda.repository.EnderecoRepository;
 import br.com.itarocha.betesda.repository.EntidadeRepository;
