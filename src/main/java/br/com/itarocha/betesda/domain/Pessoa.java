@@ -5,8 +5,10 @@ import br.com.itarocha.betesda.model.Sexo;
 import br.com.itarocha.betesda.model.UnidadeFederacao;
 import br.com.itarocha.betesda.model.audit.UserDateAudit;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -16,6 +18,8 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
 @Table(name="pessoa")
@@ -25,7 +29,7 @@ public class Pessoa extends UserDateAudit implements Serializable {
 	private static final long serialVersionUID = 615363304475476825L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@NotNull(message="Nome é obrigatório")

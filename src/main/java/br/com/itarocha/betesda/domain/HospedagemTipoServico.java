@@ -2,14 +2,18 @@ package br.com.itarocha.betesda.domain;
 
 import br.com.itarocha.betesda.model.audit.UserDateAudit;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
 @Table(name="hospedagem_tipo_servico")

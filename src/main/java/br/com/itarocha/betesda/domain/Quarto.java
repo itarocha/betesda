@@ -3,7 +3,10 @@ package br.com.itarocha.betesda.domain;
 import br.com.itarocha.betesda.model.Leito;
 import br.com.itarocha.betesda.model.Logico;
 import br.com.itarocha.betesda.model.audit.UserDateAudit;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -13,6 +16,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Entity
 @Table(name="quarto")
 public class Quarto  extends UserDateAudit implements Serializable{
@@ -53,8 +60,11 @@ public class Quarto  extends UserDateAudit implements Serializable{
 	private Logico ativo =Logico.S;;
 
 	@Transient
-	private String displayText; 
-	
+	private String displayText;
+
+	//TODO VER setNumero
+
+	/*
 	public Quarto() {
 		this.ativo = Logico.S;
 	}

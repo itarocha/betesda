@@ -2,8 +2,10 @@ package br.com.itarocha.betesda.domain;
 
 import br.com.itarocha.betesda.model.audit.UserDateAudit;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -14,6 +16,8 @@ import java.io.Serializable;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
 @Table(name="entidade")
@@ -23,7 +27,7 @@ public class Entidade  extends UserDateAudit implements Serializable{
 	private static final long serialVersionUID = 9099025388150371771L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@NotNull(message="Nome é obrigatório")

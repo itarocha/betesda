@@ -25,7 +25,7 @@ public class Endereco  extends UserDateAudit implements Serializable{
 	private static final long serialVersionUID = -2125966634044382751L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@Size(max = 64, message="O endereço não pode conter mais que 64 caracteres")
