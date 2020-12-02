@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.application;
 
-import br.com.itarocha.betesda.domain.model.Email;
+import br.com.itarocha.betesda.domain.Email;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;

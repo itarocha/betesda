@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.application;
 
-import br.com.itarocha.betesda.domain.model.Email;
+import br.com.itarocha.betesda.domain.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;

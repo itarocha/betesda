@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.application;
 
-import br.com.itarocha.betesda.domain.model.SelectValueVO;
+import br.com.itarocha.betesda.domain.SelectValueVO;
 import br.com.itarocha.betesda.adapter.out.persistence.entity.SituacaoLeitoEntity;
 import br.com.itarocha.betesda.adapter.out.persistence.repository.SituacaoLeitoRepository;
 import org.springframework.beans.factory.annotation.Autowired;

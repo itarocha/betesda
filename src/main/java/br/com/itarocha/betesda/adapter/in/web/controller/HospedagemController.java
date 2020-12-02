@@ -1,10 +1,10 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
-import br.com.itarocha.betesda.domain.model.hospedagem.*;
+import br.com.itarocha.betesda.domain.hospedagem.*;
 import br.com.itarocha.betesda.exception.ValidationException;
-import br.com.itarocha.betesda.domain.model.HospedagemFullVO;
-import br.com.itarocha.betesda.domain.model.HospedagemVO;
-import br.com.itarocha.betesda.domain.model.HospedeVO;
+import br.com.itarocha.betesda.domain.HospedagemFullVO;
+import br.com.itarocha.betesda.domain.HospedagemVO;
+import br.com.itarocha.betesda.domain.HospedeVO;
 import br.com.itarocha.betesda.report.RelatorioAtendimentos;
 import br.com.itarocha.betesda.application.HospedagemService;
 import br.com.itarocha.betesda.application.PlanilhaGeralService;

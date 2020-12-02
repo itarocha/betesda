@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.adapter.out.persistence.entity;
 
-import br.com.itarocha.betesda.domain.model.TipoUtilizacaoHospedagem;
+import br.com.itarocha.betesda.domain.enums.TipoUtilizacaoHospedagemEnum;
 import br.com.itarocha.betesda.adapter.out.persistence.audit.UserDateAudit;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
@@ -60,7 +60,7 @@ public class HospedagemEntity extends UserDateAudit implements Serializable {
 	@Enumerated(EnumType.STRING)
 	@Column(name="tipo_utilizacao", length=1)
 	@NotNull(message="Tipo de Utilização precisa ser informada")
-	private TipoUtilizacaoHospedagem tipoUtilizacao = TipoUtilizacaoHospedagem.T;
+	private TipoUtilizacaoHospedagemEnum tipoUtilizacao = TipoUtilizacaoHospedagemEnum.T;
 	
 	@Lob 
 	@Basic(fetch=FetchType.LAZY)

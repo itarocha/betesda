@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.application;
 
 import br.com.itarocha.betesda.adapter.out.persistence.entity.EncaminhadorEntity;
-import br.com.itarocha.betesda.domain.model.SelectValueVO;
+import br.com.itarocha.betesda.domain.SelectValueVO;
 import br.com.itarocha.betesda.adapter.out.persistence.repository.EncaminhadorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

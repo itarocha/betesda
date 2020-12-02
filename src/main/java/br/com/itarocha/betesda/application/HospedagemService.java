@@ -2,9 +2,10 @@ package br.com.itarocha.betesda.application;
 
 import br.com.itarocha.betesda.adapter.out.persistence.entity.*;
 import br.com.itarocha.betesda.adapter.out.persistence.repository.*;
+import br.com.itarocha.betesda.domain.*;
 import br.com.itarocha.betesda.domain.enums.LogicoEnum;
-import br.com.itarocha.betesda.domain.model.*;
-import br.com.itarocha.betesda.domain.model.hospedagem.*;
+import br.com.itarocha.betesda.domain.enums.TipoUtilizacaoHospedagemEnum;
+import br.com.itarocha.betesda.domain.hospedagem.*;
 import br.com.itarocha.betesda.exception.ValidationException;
 import br.com.itarocha.betesda.util.validation.ResultError;
 import br.com.itarocha.betesda.utils.LocalDateUtils;
@@ -111,7 +112,7 @@ public class HospedagemService {
 		hospedagemEntity.setDestinacaoHospedagem(dest.get());
 		model.setDestinacaoHospedagemDescricao(dest.get().getDescricao());
 		
-		TipoUtilizacaoHospedagem tu = TipoUtilizacaoHospedagem.valueOf(model.getTipoUtilizacao());
+		TipoUtilizacaoHospedagemEnum tu = TipoUtilizacaoHospedagemEnum.valueOf(model.getTipoUtilizacao());
 		hospedagemEntity.setTipoUtilizacao(tu);
 		hospedagemEntity.setObservacoes(model.getObservacoes());
 		
@@ -138,7 +139,7 @@ public class HospedagemService {
 			
 			hospedagemEntity.getHospedes().add(h);
 			
-		    if ((hvo.getAcomodacao() != null) && (TipoUtilizacaoHospedagem.T.equals(hospedagemEntity.getTipoUtilizacao())) ) {
+		    if ((hvo.getAcomodacao() != null) && (TipoUtilizacaoHospedagemEnum.T.equals(hospedagemEntity.getTipoUtilizacao())) ) {
 		    	//TODO: Tem um código igual no transferir. Refatorar criar método
 		    	Optional<QuartoEntity> quarto = quartoRepo.findById(hvo.getAcomodacao().getQuartoId());
 		    	Optional<LeitoEntity> leito = leitoRepo.findById(hvo.getAcomodacao().getLeitoId());
@@ -162,7 +163,7 @@ public class HospedagemService {
 		    	}
 		    }
 		}
-		if ((model.getServicos().length > 0) && (TipoUtilizacaoHospedagem.P.equals(hospedagemEntity.getTipoUtilizacao())) ) {
+		if ((model.getServicos().length > 0) && (TipoUtilizacaoHospedagemEnum.P.equals(hospedagemEntity.getTipoUtilizacao())) ) {
 			for (Long tipoServicoId : model.getServicos()) {
 				Optional<TipoServicoEntity> ts = tipoServicoRepo.findById(tipoServicoId);
 				if (ts.isPresent()) {
@@ -906,7 +907,7 @@ public class HospedagemService {
 						String.format("Data de Encerramento não pode ser superior a data atual (%s)",fmt.format(hoje))));
 			}
 
-			if (TipoUtilizacaoHospedagem.P.equals(h.getTipoUtilizacao())) {
+			if (TipoUtilizacaoHospedagemEnum.P.equals(h.getTipoUtilizacao())) {
 				if (h.getDataEntrada().isAfter(dataEncerramento)) {
 					throw new ValidationException(new ResultError().addError("*", 
 							String.format("Data de Encerramento deve ser igual ou superior a Data de Entrada (%s)", fmt.format(h.getDataEntrada())) ));
@@ -926,7 +927,7 @@ public class HospedagemService {
 			
 			List<HospedeLeitoEntity> hlToSave = new ArrayList<HospedeLeitoEntity>();
 			
-			if (TipoUtilizacaoHospedagem.T.equals(h.getTipoUtilizacao())) {
+			if (TipoUtilizacaoHospedagemEnum.T.equals(h.getTipoUtilizacao())) {
 				List<HospedeEntity> hospedeEntities = h.getHospedes();
 				for (HospedeEntity hpd : hospedeEntities) {
 
@@ -1050,7 +1051,7 @@ public class HospedagemService {
 				
 				HospedagemEntity h = opt.get();
 				
-				if (!TipoUtilizacaoHospedagem.T.equals(h.getTipoUtilizacao())) {
+				if (!TipoUtilizacaoHospedagemEnum.T.equals(h.getTipoUtilizacao())) {
 					throw new ValidationException(new ResultError().addError("*", "Tipo de Utilização da Hospedagem deve ser Total"));
 				} 
 				
@@ -1136,7 +1137,7 @@ public class HospedagemService {
 		}
 		
 		HospedagemEntity hospedagemEntity = hospedagemOpt.get();
-		if (!TipoUtilizacaoHospedagem.T.equals(hospedagemEntity.getTipoUtilizacao())) {
+		if (!TipoUtilizacaoHospedagemEnum.T.equals(hospedagemEntity.getTipoUtilizacao())) {
 			throw new ValidationException(new ResultError().addError("*", "Tipo de Utilização da Hospedagem deve ser Total"));
 		} 
 		
@@ -1213,7 +1214,7 @@ public class HospedagemService {
 			List<HospedeLeitoEntity> hlToSave = new ArrayList<HospedeLeitoEntity>();
 
 			// Para cada pessoa, verificar se ele está em outra hospedagem no período entre h.getDataPrevistaSaida() e dataRenovacao 
-			if (TipoUtilizacaoHospedagem.T.equals(h.getTipoUtilizacao())) {
+			if (TipoUtilizacaoHospedagemEnum.T.equals(h.getTipoUtilizacao())) {
 				List<HospedeEntity> hospedeEntities = h.getHospedes();
 				for (HospedeEntity hpd : hospedeEntities) {
 					

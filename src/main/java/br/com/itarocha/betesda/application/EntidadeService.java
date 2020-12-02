@@ -2,7 +2,7 @@ package br.com.itarocha.betesda.application;
 
 import br.com.itarocha.betesda.exception.ValidationException;
 import br.com.itarocha.betesda.adapter.out.persistence.entity.EntidadeEntity;
-import br.com.itarocha.betesda.domain.model.SelectValueVO;
+import br.com.itarocha.betesda.domain.SelectValueVO;
 import br.com.itarocha.betesda.adapter.out.persistence.repository.EnderecoRepository;
 import br.com.itarocha.betesda.adapter.out.persistence.repository.EntidadeRepository;
 import br.com.itarocha.betesda.util.validation.ResultError;

@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
 import br.com.itarocha.betesda.adapter.out.persistence.entity.EncaminhadorEntity;
-import br.com.itarocha.betesda.domain.model.SelectValueVO;
+import br.com.itarocha.betesda.domain.SelectValueVO;
 import br.com.itarocha.betesda.application.EncaminhadorService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
 import org.springframework.beans.factory.annotation.Autowired;

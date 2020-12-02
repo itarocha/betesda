@@ -3,10 +3,10 @@ package br.com.itarocha.betesda.application;
 import br.com.itarocha.betesda.adapter.out.persistence.entity.*;
 import br.com.itarocha.betesda.adapter.out.persistence.repository.*;
 import br.com.itarocha.betesda.domain.enums.LogicoEnum;
-import br.com.itarocha.betesda.domain.model.EditLeitoVO;
-import br.com.itarocha.betesda.domain.model.EditQuartoVO;
-import br.com.itarocha.betesda.domain.model.NovoQuartoVO;
-import br.com.itarocha.betesda.domain.model.SelectValueVO;
+import br.com.itarocha.betesda.domain.EditLeitoVO;
+import br.com.itarocha.betesda.domain.EditQuartoVO;
+import br.com.itarocha.betesda.domain.NovoQuartoVO;
+import br.com.itarocha.betesda.domain.SelectValueVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
