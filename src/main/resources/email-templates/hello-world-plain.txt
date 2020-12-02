@@ -1,7 +1,7 @@
-Hi {{user}},
+Hi {{userEntity}},
 You are receiving this mail as part of testing on {{today}}.
 
-{{user}}, we request you not to reply to this mail.
+{{userEntity}}, we request you not to reply to this mail.
 
 
 Thanks,

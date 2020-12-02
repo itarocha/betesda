@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.report;
 
-import br.com.itarocha.betesda.domain.Hospedagem;
-import br.com.itarocha.betesda.domain.Hospede;
-import br.com.itarocha.betesda.domain.Pessoa;
+import br.com.itarocha.betesda.adapter.out.persistence.entity.HospedagemEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.entity.HospedeEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.entity.PessoaEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDate;
@@ -17,9 +17,9 @@ public class HospedePermanencia {
 	private LocalDate dataSaida;
 	private String tipoUtilizacao;
 	private Integer diasPermanencia;
-	private Pessoa pessoa;
-	private Hospedagem hospedagem;
-	private Hospede hospede;
+	private PessoaEntity pessoaEntity;
+	private HospedagemEntity hospedagemEntity;
+	private HospedeEntity hospedeEntity;
 	
 	public HospedePermanencia(
 			Long pessoaId, 
@@ -28,9 +28,9 @@ public class HospedePermanencia {
 			LocalDate dataEntrada, 
 			LocalDate dataSaida, 
 			String tipoUtilizacao, 
-			Hospedagem hospedagem,
-			Hospede hospede,
-			Pessoa pessoa) {
+			HospedagemEntity hospedagemEntity,
+			HospedeEntity hospedeEntity,
+			PessoaEntity pessoaEntity) {
 		
 		this.pessoaId = pessoaId;
 		this.hospedagemId = hospedagemId;
@@ -38,9 +38,9 @@ public class HospedePermanencia {
 		this.dataEntrada = dataEntrada;
 		this.dataSaida = dataSaida;
 		this.tipoUtilizacao = tipoUtilizacao;
-		this.hospedagem = hospedagem;
-		this.hospede = hospede;
-		this.pessoa = pessoa;
+		this.hospedagemEntity = hospedagemEntity;
+		this.hospedeEntity = hospedeEntity;
+		this.pessoaEntity = pessoaEntity;
 	}
 
 	public Long getPessoaId() {
@@ -99,28 +99,28 @@ public class HospedePermanencia {
 		this.diasPermanencia = diasPermanencia;
 	}
 
-	public Pessoa getPessoa() {
-		return pessoa;
+	public PessoaEntity getPessoa() {
+		return pessoaEntity;
 	}
 
-	public void setPessoa(Pessoa pessoa) {
-		this.pessoa = pessoa;
+	public void setPessoa(PessoaEntity pessoaEntity) {
+		this.pessoaEntity = pessoaEntity;
 	}
 
-	public Hospedagem getHospedagem() {
-		return hospedagem;
+	public HospedagemEntity getHospedagem() {
+		return hospedagemEntity;
 	}
 
-	public void setHospedagem(Hospedagem hospedagem) {
-		this.hospedagem = hospedagem;
+	public void setHospedagem(HospedagemEntity hospedagemEntity) {
+		this.hospedagemEntity = hospedagemEntity;
 	}
 
-	public Hospede getHospede() {
-		return hospede;
+	public HospedeEntity getHospede() {
+		return hospedeEntity;
 	}
 
-	public void setHospede(Hospede hospede) {
-		this.hospede = hospede;
+	public void setHospede(HospedeEntity hospedeEntity) {
+		this.hospedeEntity = hospedeEntity;
 	}
 
 }
