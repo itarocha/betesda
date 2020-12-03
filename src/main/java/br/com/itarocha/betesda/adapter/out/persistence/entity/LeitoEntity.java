@@ -14,13 +14,13 @@ import java.io.Serializable;
 
 //import org.codehaus.jackson.annotate.JsonIgnore;
 
+@Entity
+@Table(name="leito")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name="leito")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "quarto"}) // "leitos", 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "quarto"}) // "leitos",
 public class LeitoEntity extends UserDateAudit implements Serializable {
 	
 	private static final long serialVersionUID = 5765750404479537331L;

@@ -14,13 +14,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name="hospede")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity
-@Table(name="hospede")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "hospedagem"}) // "leitos", 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "hospedagem"}) // "leitos",
 public class HospedeEntity extends UserDateAudit implements Serializable{
 	
 	private static final long serialVersionUID = 7525841265591324037L;

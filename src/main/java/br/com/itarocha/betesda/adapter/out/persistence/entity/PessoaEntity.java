@@ -17,12 +17,12 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+@Entity
+@Table(name="pessoa")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity
-@Table(name="pessoa")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class PessoaEntity extends UserDateAudit implements Serializable {
 	

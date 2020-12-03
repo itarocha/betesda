@@ -12,12 +12,12 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+@Entity
+@Table(name="hospede_leito")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity
-@Table(name="hospede_leito")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "quarto", "leito", "hospede"})
 public class HospedeLeitoEntity extends UserDateAudit implements Serializable{
 	

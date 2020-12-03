@@ -15,12 +15,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Entity
+@Table(name="quarto")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity
-@Table(name="quarto")
 public class QuartoEntity extends UserDateAudit implements Serializable{
 
 	private static final long serialVersionUID = -6172158858365759661L;

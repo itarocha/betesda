@@ -11,13 +11,13 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
+@Entity
+@Table(name="hospedagem_tipo_servico")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name="hospedagem_tipo_servico")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // "leitos", "hospedagem" 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // "leitos", "hospedagem"
 public class HospedagemTipoServicoEntity extends UserDateAudit implements Serializable{
 	
 	private static final long serialVersionUID = 4121535384605572478L;

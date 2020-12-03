@@ -15,12 +15,12 @@ import javax.validation.constraints.Email;
 import java.io.Serializable;
 import java.util.List;
 
+@Entity
+@Table(name="entidade")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity
-@Table(name="entidade")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "encaminhadores"})
 public class EntidadeEntity extends UserDateAudit implements Serializable{
 	

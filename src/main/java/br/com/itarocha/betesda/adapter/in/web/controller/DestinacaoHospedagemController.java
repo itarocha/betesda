@@ -2,6 +2,7 @@ package br.com.itarocha.betesda.adapter.in.web.controller;
 
 import br.com.itarocha.betesda.adapter.out.persistence.entity.DestinacaoHospedagemEntity;
 import br.com.itarocha.betesda.application.DestinacaoHospedagemService;
+import br.com.itarocha.betesda.domain.DestinacaoHospedagem;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,15 +22,15 @@ public class DestinacaoHospedagemController {
 	@GetMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
-		List<DestinacaoHospedagemEntity> lista = service.findAll();
-	    return new ResponseEntity<List<DestinacaoHospedagemEntity>>(lista, HttpStatus.OK);
+		List<DestinacaoHospedagem> lista = service.findAll();
+	    return new ResponseEntity<List<DestinacaoHospedagem>>(lista, HttpStatus.OK);
 	}
 
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	@GetMapping("{id}")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		try {
-			DestinacaoHospedagemEntity model = service.find(id);
+			DestinacaoHospedagem model = service.find(id);
 			if (model != null) {
 				return new ResponseEntity<>(model, HttpStatus.OK);
 			} else {

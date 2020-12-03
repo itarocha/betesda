@@ -8,7 +8,6 @@ import java.util.List;
 
 public interface TipoLeitoRepository extends JpaRepository<TipoLeitoEntity, Long> {
 
-	
 	@Query("SELECT o FROM TipoLeitoEntity o ORDER BY o.descricao")
 	List<TipoLeitoEntity> findAllOrderByDescricao();
 

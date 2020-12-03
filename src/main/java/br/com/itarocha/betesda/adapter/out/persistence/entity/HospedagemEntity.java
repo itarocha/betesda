@@ -15,12 +15,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name="hospedagem")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity
-@Table(name="hospedagem")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "hospedes"})
 public class HospedagemEntity extends UserDateAudit implements Serializable {
 

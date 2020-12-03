@@ -13,13 +13,13 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
+@Entity
+@Table(name="estado_leito")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity
-@Table(name="estado_leito")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class SituacaoLeitoEntity extends UserDateAudit implements Serializable{
 
 /*

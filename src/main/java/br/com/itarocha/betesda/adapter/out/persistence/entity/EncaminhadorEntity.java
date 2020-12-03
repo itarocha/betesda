@@ -13,12 +13,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
+@Entity
+@Table(name="encaminhador")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity
-@Table(name="encaminhador")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class EncaminhadorEntity extends UserDateAudit implements Serializable{
 	

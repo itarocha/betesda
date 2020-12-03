@@ -1,25 +1,29 @@
 package br.com.itarocha.betesda.application;
 
 import br.com.itarocha.betesda.adapter.out.persistence.entity.DestinacaoHospedagemEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.mapper.DestinacaoHospedagemMapper;
+import br.com.itarocha.betesda.domain.DestinacaoHospedagem;
 import br.com.itarocha.betesda.domain.SelectValueVO;
 import br.com.itarocha.betesda.adapter.out.persistence.repository.DestinacaoHospedagemRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class DestinacaoHospedagemService {
 
-	@Autowired
-	private EntityManager em;
-	
-	@Autowired
-	private DestinacaoHospedagemRepository repositorio;
+	private final DestinacaoHospedagemMapper mapper;
+
+	private final DestinacaoHospedagemRepository repositorio;
 
 	public DestinacaoHospedagemEntity create(DestinacaoHospedagemEntity model) {
 		try{
@@ -30,32 +34,28 @@ public class DestinacaoHospedagemService {
 	}
 
 	public void remove(Long id) {
-		DestinacaoHospedagemEntity model = find(id);
-		if (model != null) {
-			repositorio.delete(model);
-		}
+		repositorio.findById(id).ifPresent(model -> repositorio.delete(model));
 	}
 	
-	public DestinacaoHospedagemEntity find(Long id) {
+	public DestinacaoHospedagem find(Long id) {
+		DestinacaoHospedagemEntity entity = null;
 		Optional<DestinacaoHospedagemEntity> retorno = repositorio.findById(id);
-		if (retorno.isPresent()) {
-			return retorno.get(); 
-		} else {
-			return null;
-		}
+		return retorno.isPresent() ? mapper.toModel(retorno.get()) : null;
 	}
 
-	public List<DestinacaoHospedagemEntity> findAll() {
-		TypedQuery query = em.createQuery("SELECT model FROM DestinacaoHospedagem model ORDER BY model.descricao", DestinacaoHospedagemEntity.class);
-		return query.getResultList();
+	public List<DestinacaoHospedagem> findAll() {
+		return repositorio.findAllOrderByDescricao()
+				.stream()
+				.map(mapper::toModel)
+				.collect(Collectors.toList());
 	}
 
 	public List<SelectValueVO> listSelect() {
-		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
-		em.createQuery("SELECT model FROM DestinacaoHospedagem model ORDER BY model.descricao", DestinacaoHospedagemEntity.class)
-		.getResultList()
-		.forEach(x -> retorno.add(new SelectValueVO(x.getId(), x.getDescricao())));
-		return retorno;
+		return repositorio.findAllOrderByDescricao()
+				.stream()
+				.map(mapper::toModel)
+				.map(mapper::toSelectValueVO)
+				.collect(Collectors.toList());
 	}
-	
+
 }
