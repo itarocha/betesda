@@ -57,7 +57,7 @@ public class TipoHospedeService {
 	}
 	
 	public List<SelectValueVO> listSelect() {
-		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
+		List<SelectValueVO> retorno = new ArrayList<>();
 		em.createQuery("SELECT o FROM TipoHospede o ORDER BY o.descricao", TipoHospedeEntity.class)
 			.getResultList()
 			.forEach(x -> retorno.add(new SelectValueVO(x.getId(), x.getDescricao())));

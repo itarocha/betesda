@@ -6,10 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DestinacaoHospedagem {
-    private Long id;
-    private String descricao;
+@Builder
+public class TipoLeito {
+	private Long id;
+	private String descricao;
+	private Integer quantidadeCamas;
 }

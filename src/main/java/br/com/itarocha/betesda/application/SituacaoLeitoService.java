@@ -1,54 +1,55 @@
 package br.com.itarocha.betesda.application;
 
+import br.com.itarocha.betesda.adapter.out.persistence.mapper.SituacaoLeitoMapper;
 import br.com.itarocha.betesda.domain.SelectValueVO;
 import br.com.itarocha.betesda.adapter.out.persistence.entity.SituacaoLeitoEntity;
 import br.com.itarocha.betesda.adapter.out.persistence.repository.SituacaoLeitoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import br.com.itarocha.betesda.domain.SituacaoLeito;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class SituacaoLeitoService {
 
-	@Autowired
-	private SituacaoLeitoRepository repositorio;
+	private final SituacaoLeitoMapper mapper;
 
-	public SituacaoLeitoEntity create(SituacaoLeitoEntity model) {
+	private final SituacaoLeitoRepository repository;
+
+	public SituacaoLeito create(SituacaoLeitoEntity model) {
 		try{
-			return repositorio.save(model);
+			return mapper.toModel(repository.save(model));
 		}catch(Exception e){
 			throw new IllegalArgumentException(e.getMessage());
 		}		
 	}
 
 	public void remove(Long id) {
-		SituacaoLeitoEntity model = find(id);
-		if (model != null) {
-			repositorio.delete(model);
-		}		
+		repository.findById(id).ifPresent(model -> repository.delete(model));
 	}
 
-	public SituacaoLeitoEntity find(Long id) {
-		Optional<SituacaoLeitoEntity> retorno = repositorio.findById(id);
-		if (retorno.isPresent()) {
-			return retorno.get(); 
-		} else {
-			return null;
-		}
+	public SituacaoLeito find(Long id) {
+		Optional<SituacaoLeitoEntity> result = repository.findById(id);
+		return result.isPresent() ? mapper.toModel(result.get()) : null;
 	}
 
-	public List<SituacaoLeitoEntity> findAll() {
-		return repositorio.findAllOrderByDescricao();
+	public List<SituacaoLeito> findAll() {
+		return repository.findAllOrderByDescricao()
+				.stream()
+				.map(mapper::toModel)
+				.collect(Collectors.toList());
 	}
 	
 	public List<SelectValueVO> listSelect() {
-		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
-		List<SituacaoLeitoEntity> lst = repositorio.findAllOrderByDescricao();
-		lst.forEach(x -> retorno.add(new SelectValueVO(x.getId(), x.getDescricao())));
-		return retorno;
+		return repository.findAllOrderByDescricao()
+				.stream()
+				.map(mapper::toModel)
+				.map(mapper::toSelectValueVO)
+				.collect(Collectors.toList());
 	}
 
 }

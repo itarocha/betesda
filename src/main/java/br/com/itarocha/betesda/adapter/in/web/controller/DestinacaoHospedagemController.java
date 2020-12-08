@@ -10,8 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/app/destinacao_hospedagem")
 public class DestinacaoHospedagemController {
@@ -22,8 +20,7 @@ public class DestinacaoHospedagemController {
 	@GetMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
-		List<DestinacaoHospedagem> lista = service.findAll();
-	    return new ResponseEntity<List<DestinacaoHospedagem>>(lista, HttpStatus.OK);
+	    return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
 	}
 
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
@@ -43,19 +40,17 @@ public class DestinacaoHospedagemController {
 	
 	@PostMapping
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody DestinacaoHospedagemEntity model) {
-		ItaValidator<DestinacaoHospedagemEntity> v = new ItaValidator<DestinacaoHospedagemEntity>(model);
+	public ResponseEntity<? extends DestinacaoHospedagem> gravar(@RequestBody DestinacaoHospedagemEntity model) {
+		ItaValidator<DestinacaoHospedagemEntity> v = new ItaValidator(model);
 		v.validate();
 		if (!v.hasErrors() ) {
-			return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(v.getErrors(), HttpStatus.BAD_REQUEST);
 		}
 		
 		try {
-			DestinacaoHospedagemEntity saved = null;
-			saved = service.create(model);
-		    return new ResponseEntity<DestinacaoHospedagemEntity>(saved, HttpStatus.OK);
+		    return new ResponseEntity(service.create(model), HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
@@ -64,9 +59,9 @@ public class DestinacaoHospedagemController {
 	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
 		try {
 			service.remove(id);
-		    return new ResponseEntity<String>("sucesso", HttpStatus.OK);
+		    return new ResponseEntity("sucesso", HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	 }
 }

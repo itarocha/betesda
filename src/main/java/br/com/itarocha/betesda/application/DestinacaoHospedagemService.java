@@ -6,52 +6,46 @@ import br.com.itarocha.betesda.domain.DestinacaoHospedagem;
 import br.com.itarocha.betesda.domain.SelectValueVO;
 import br.com.itarocha.betesda.adapter.out.persistence.repository.DestinacaoHospedagemRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import javax.swing.text.html.Option;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class DestinacaoHospedagemService {
 
 	private final DestinacaoHospedagemMapper mapper;
 
-	private final DestinacaoHospedagemRepository repositorio;
+	private final DestinacaoHospedagemRepository repository;
 
-	public DestinacaoHospedagemEntity create(DestinacaoHospedagemEntity model) {
+	public DestinacaoHospedagem create(DestinacaoHospedagemEntity model) {
 		try{
-			return repositorio.save(model);
+			return mapper.toModel(repository.save(model));
 		}catch(Exception e){
 			throw new IllegalArgumentException(e.getMessage());
 		}
 	}
 
 	public void remove(Long id) {
-		repositorio.findById(id).ifPresent(model -> repositorio.delete(model));
+		repository.findById(id).ifPresent(model -> repository.delete(model));
 	}
 	
 	public DestinacaoHospedagem find(Long id) {
-		DestinacaoHospedagemEntity entity = null;
-		Optional<DestinacaoHospedagemEntity> retorno = repositorio.findById(id);
-		return retorno.isPresent() ? mapper.toModel(retorno.get()) : null;
+		Optional<DestinacaoHospedagemEntity> result = repository.findById(id);
+		return result.isPresent() ? mapper.toModel(result.get()) : null;
 	}
 
 	public List<DestinacaoHospedagem> findAll() {
-		return repositorio.findAllOrderByDescricao()
+		return repository.findAllOrderByDescricao()
 				.stream()
 				.map(mapper::toModel)
 				.collect(Collectors.toList());
 	}
 
 	public List<SelectValueVO> listSelect() {
-		return repositorio.findAllOrderByDescricao()
+		return repository.findAllOrderByDescricao()
 				.stream()
 				.map(mapper::toModel)
 				.map(mapper::toSelectValueVO)
