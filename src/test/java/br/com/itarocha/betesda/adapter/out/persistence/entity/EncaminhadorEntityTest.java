@@ -1,5 +1,6 @@
 package br.com.itarocha.betesda.adapter.out.persistence.entity;
 
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.EncaminhadorEntity;
 import br.com.itarocha.betesda.domain.enums.LogicoEnum;
 import org.junit.jupiter.api.Test;
 

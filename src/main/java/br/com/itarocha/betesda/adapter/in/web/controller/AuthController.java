@@ -1,15 +1,15 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
 import br.com.itarocha.betesda.exception.AppException;
-import br.com.itarocha.betesda.adapter.out.persistence.entity.RoleEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.RoleEntity;
 import br.com.itarocha.betesda.domain.enums.RoleNameEnum;
-import br.com.itarocha.betesda.adapter.out.persistence.entity.UserEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.UserEntity;
 import br.com.itarocha.betesda.adapter.ApiResponse;
 import br.com.itarocha.betesda.payload.JwtAuthenticationResponse;
 import br.com.itarocha.betesda.adapter.LoginRequest;
 import br.com.itarocha.betesda.adapter.SignUpRequest;
-import br.com.itarocha.betesda.adapter.out.persistence.repository.RoleRepository;
-import br.com.itarocha.betesda.adapter.out.persistence.repository.UserRepository;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.RoleJpaRepository;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.UserJpaRepository;
 import br.com.itarocha.betesda.security.JwtTokenProvider;
 import br.com.itarocha.betesda.application.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,10 +36,10 @@ public class AuthController {
     AuthenticationManager authenticationManager;
 
     @Autowired
-    UserRepository userRepository;
+    UserJpaRepository userRepository;
 
     @Autowired
-    RoleRepository roleRepository;
+    RoleJpaRepository roleRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;

@@ -1,67 +1,58 @@
 package br.com.itarocha.betesda.application;
 
+import br.com.itarocha.betesda.adapter.out.persistence.mapper.TipoHospedeMapper;
 import br.com.itarocha.betesda.domain.SelectValueVO;
-import br.com.itarocha.betesda.adapter.out.persistence.entity.TipoHospedeEntity;
-import br.com.itarocha.betesda.adapter.out.persistence.repository.TipoHospedeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.TipoHospedeEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.TipoHospedeJpaRepository;
+import br.com.itarocha.betesda.domain.TipoHospede;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TipoHospedeService {
 
-	@Autowired
-	private EntityManager em;
-	
-	@Autowired
-	private TipoHospedeRepository repositorio;
+	private final TipoHospedeMapper mapper;
+	private final TipoHospedeJpaRepository repository;
 
-	public TipoHospedeEntity create(TipoHospedeEntity model) {
+	public TipoHospede create(TipoHospedeEntity model) {
 		try{
-			return repositorio.save(model);
+			return mapper.toModel(repository.save(model));
 		}catch(Exception e){
 			throw new IllegalArgumentException(e.getMessage());
 		}
 	}
 
 	public void remove(Long id) {
-		TipoHospedeEntity model = find(id);
-		if (model != null) {
-			repositorio.delete(model);
-		}
+		repository.findById(id).ifPresent(model -> repository.delete(model));
 	}
 
-	public TipoHospedeEntity update(TipoHospedeEntity model) {
-		TipoHospedeEntity obj = find(model.getId());
-		if (obj != null) {
-			obj = repositorio.save(model);
-		}
-		return obj;
+	public TipoHospede update(TipoHospedeEntity model) {
+		Optional<TipoHospedeEntity> result = repository.findById(model.getId());
+		return result.isPresent() ? mapper.toModel(repository.save(result.get())) : null;
 	}
 
-	public TipoHospedeEntity find(Long id) {
-		Optional<TipoHospedeEntity> retorno = repositorio.findById(id);
-		if (retorno.isPresent()) {
-			return retorno.get(); 
-		} else {
-			return null;
-		}
+	public TipoHospede find(Long id) {
+		Optional<TipoHospedeEntity> result = repository.findById(id);
+		return result.isPresent() ? mapper.toModel(result.get()) : null;
 	}
 
-	public List<TipoHospedeEntity> findAll() {
-		return em.createQuery("SELECT e FROM TipoHospede e ORDER BY e.descricao", TipoHospedeEntity.class).getResultList();
+	public List<TipoHospede> findAll() {
+		return repository.findAllOrderByDescricao()
+				.stream()
+				.map(mapper::toModel)
+				.collect(Collectors.toList());
 	}
-	
+
 	public List<SelectValueVO> listSelect() {
-		List<SelectValueVO> retorno = new ArrayList<>();
-		em.createQuery("SELECT o FROM TipoHospede o ORDER BY o.descricao", TipoHospedeEntity.class)
-			.getResultList()
-			.forEach(x -> retorno.add(new SelectValueVO(x.getId(), x.getDescricao())));
-		return retorno;
+		return repository.findAllOrderByDescricao()
+				.stream()
+				.map(mapper::toModel)
+				.map(mapper::toSelectValueVO)
+				.collect(Collectors.toList());
 	}
-	
 }

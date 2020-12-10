@@ -1,10 +1,10 @@
 package br.com.itarocha.betesda.application;
 
 import br.com.itarocha.betesda.exception.ValidationException;
-import br.com.itarocha.betesda.adapter.out.persistence.entity.EntidadeEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.EntidadeEntity;
 import br.com.itarocha.betesda.domain.SelectValueVO;
-import br.com.itarocha.betesda.adapter.out.persistence.repository.EnderecoRepository;
-import br.com.itarocha.betesda.adapter.out.persistence.repository.EntidadeRepository;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.EnderecoJpaRepository;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.EntidadeJpaRepository;
 import br.com.itarocha.betesda.util.validation.ResultError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,10 +22,10 @@ public class EntidadeService {
 	private EntityManager em;
 
 	@Autowired
-	private EntidadeRepository repositorio;
+	private EntidadeJpaRepository repositorio;
 
 	@Autowired
-	private EnderecoRepository enderecoRepo;
+	private EnderecoJpaRepository enderecoRepo;
 
 	public EntidadeService() {
 	}

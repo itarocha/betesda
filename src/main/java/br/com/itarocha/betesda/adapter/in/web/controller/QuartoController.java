@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
-import br.com.itarocha.betesda.adapter.out.persistence.entity.LeitoEntity;
-import br.com.itarocha.betesda.adapter.out.persistence.entity.QuartoEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.LeitoEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.QuartoEntity;
 import br.com.itarocha.betesda.application.*;
 import br.com.itarocha.betesda.domain.EditLeitoVO;
 import br.com.itarocha.betesda.domain.EditQuartoVO;

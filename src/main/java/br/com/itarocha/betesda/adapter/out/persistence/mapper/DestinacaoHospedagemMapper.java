@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.adapter.out.persistence.mapper;
 
-import br.com.itarocha.betesda.adapter.out.persistence.entity.DestinacaoHospedagemEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.DestinacaoHospedagemEntity;
 import br.com.itarocha.betesda.domain.DestinacaoHospedagem;
 import br.com.itarocha.betesda.domain.SelectValueVO;
 import org.springframework.stereotype.Component;

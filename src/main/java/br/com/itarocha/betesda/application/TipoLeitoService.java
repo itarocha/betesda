@@ -1,108 +1,59 @@
 package br.com.itarocha.betesda.application;
 
+import br.com.itarocha.betesda.adapter.out.persistence.mapper.TipoLeitoMapper;
 import br.com.itarocha.betesda.domain.SelectValueVO;
-import br.com.itarocha.betesda.adapter.out.persistence.entity.TipoLeitoEntity;
-import br.com.itarocha.betesda.adapter.out.persistence.repository.TipoLeitoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.TipoLeitoEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.TipoLeitoJpaRepository;
+import br.com.itarocha.betesda.domain.TipoLeito;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TipoLeitoService {
 
-	@Autowired
-	private EntityManager em;
-	
-	@Autowired
-	private TipoLeitoRepository repositorio;
+	private TipoLeitoJpaRepository repository;
+	private final TipoLeitoMapper mapper;
 
-	public TipoLeitoEntity create(TipoLeitoEntity model) {
+	public TipoLeito create(TipoLeitoEntity model) {
 		try{
-			return repositorio.save(model);
+			return mapper.toModel(repository.save(model));
 		}catch(Exception e){
 			throw new IllegalArgumentException(e.getMessage());
 		}
 	}
 
 	public void remove(Long id) {
-		TipoLeitoEntity model = find(id);
-		if (model != null) {
-			repositorio.delete(model);
-		}
+		repository.findById(id).ifPresent(model -> repository.delete(model));
 	}
 
-	public TipoLeitoEntity update(TipoLeitoEntity model) {
-		TipoLeitoEntity obj = find(model.getId());
-		if (obj != null) {
-			obj = repositorio.save(model);
-		}
-		return obj;
+	public TipoLeito update(TipoLeitoEntity model) {
+		Optional<TipoLeitoEntity> result = repository.findById(model.getId());
+		return result.isPresent() ? mapper.toModel(repository.save(result.get())) : null;
 	}
 	  
-  	public TipoLeitoEntity find(Long id) {
-		Optional<TipoLeitoEntity> retorno = repositorio.findById(id);
-		if (retorno.isPresent()) {
-			return retorno.get(); 
-		} else {
-			return null;
-		}
+  	public TipoLeito find(Long id) {
+		Optional<TipoLeitoEntity> result = repository.findById(id);
+		return result.isPresent() ? mapper.toModel(result.get()) : null;
 	}
 
-	public List<TipoLeitoEntity> findAll() {
-		return em.createQuery("SELECT e FROM TipoLeito e ORDER BY e.descricao", TipoLeitoEntity.class).getResultList();
+	public List<TipoLeito> findAll() {
+		return repository.findAllOrderByDescricao()
+				.stream()
+				.map(mapper::toModel)
+				.collect(Collectors.toList());
 	}
 	
 	public List<SelectValueVO> listSelect() {
-		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
-		em.createQuery("SELECT o FROM TipoLeito o ORDER BY o.descricao", TipoLeitoEntity.class)
-			.getResultList()
-			.forEach(x -> retorno.add(new SelectValueVO(x.getId(), x.getDescricao())));
-		return retorno;
-	}
-	
-	/*	
-	@Autowired
-	private EntityManager em;
-	
-	@Autowired
-	private TipoHospedeRepository repositorio;
-	
-	public DestinacaoHospedagem create(DestinacaoHospedagem model) {
-		try{
-			return repositorio.save(model);
-		}catch(Exception e){
-			throw new IllegalArgumentException(e.getMessage());
-		}
+		return repository.findAllOrderByDescricao()
+				.stream()
+				.map(mapper::toModel)
+				.map(mapper::toSelectValueVO)
+				.collect(Collectors.toList());
 	}
 
-	public void remove(Long id) {
-		DestinacaoHospedagem model = find(id);
-		if (model != null) {
-			repositorio.delete(model);
-		}
-	}
-	
-	public DestinacaoHospedagem find(Long id) {
-		return em.find(DestinacaoHospedagem.class, id);
-	}
-
-	public List<DestinacaoHospedagem> findAll() {
-		TypedQuery query = em.createQuery("SELECT model FROM DestinacaoHospedagem model ORDER BY model.descricao", DestinacaoHospedagem.class);
-		return query.getResultList();
-	}
-
-	public List<SelectValueVO> listSelect() {
-		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
-		em.createQuery("SELECT model FROM DestinacaoHospedagem model ORDER BY model.descricao", DestinacaoHospedagem.class)
-		.getResultList()
-		.forEach(x -> retorno.add(new SelectValueVO(x.getId(), x.getDescricao())));
-		return retorno;
-	}
-
-*/	
-	
 }

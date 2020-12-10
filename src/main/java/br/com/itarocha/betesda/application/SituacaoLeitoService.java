@@ -2,8 +2,8 @@ package br.com.itarocha.betesda.application;
 
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.SituacaoLeitoMapper;
 import br.com.itarocha.betesda.domain.SelectValueVO;
-import br.com.itarocha.betesda.adapter.out.persistence.entity.SituacaoLeitoEntity;
-import br.com.itarocha.betesda.adapter.out.persistence.repository.SituacaoLeitoRepository;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.SituacaoLeitoEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.SituacaoLeitoJpaRepository;
 import br.com.itarocha.betesda.domain.SituacaoLeito;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class SituacaoLeitoService {
 
 	private final SituacaoLeitoMapper mapper;
 
-	private final SituacaoLeitoRepository repository;
+	private final SituacaoLeitoJpaRepository repository;
 
 	public SituacaoLeito create(SituacaoLeitoEntity model) {
 		try{

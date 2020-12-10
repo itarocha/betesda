@@ -2,14 +2,12 @@ package br.com.itarocha.betesda.application;
 
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.TipoServicoMapper;
 import br.com.itarocha.betesda.domain.SelectValueVO;
-import br.com.itarocha.betesda.adapter.out.persistence.entity.TipoServicoEntity;
-import br.com.itarocha.betesda.adapter.out.persistence.repository.TipoServicoRepository;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.TipoServicoEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.TipoServicoJpaRepository;
 import br.com.itarocha.betesda.domain.TipoServico;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,11 +17,7 @@ import java.util.stream.Collectors;
 public class TipoServicoService {
 
 	private final TipoServicoMapper mapper;
-
-	private final EntityManager em;
-	
-	@Autowired
-	private TipoServicoRepository repository;
+	private final TipoServicoJpaRepository repository;
 
 	public TipoServico create(TipoServicoEntity model) {
 		try{

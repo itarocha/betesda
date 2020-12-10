@@ -1,10 +1,10 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
-import br.com.itarocha.betesda.adapter.out.persistence.entity.DestinacaoHospedagemEntity;
-import br.com.itarocha.betesda.application.DestinacaoHospedagemService;
+import br.com.itarocha.betesda.application.port.in.DestinacaoHospedagemUseCase;
 import br.com.itarocha.betesda.domain.DestinacaoHospedagem;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
-import org.springframework.beans.factory.annotation.Autowired;
+import br.com.itarocha.betesda.util.validation.ResultError;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/app/destinacao_hospedagem")
+@RequiredArgsConstructor
 public class DestinacaoHospedagemController {
 
-	@Autowired
-	private DestinacaoHospedagemService service;
+	private final DestinacaoHospedagemUseCase service;
 	
 	@GetMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
@@ -36,15 +36,15 @@ public class DestinacaoHospedagemController {
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-	 }
+	}
 	
 	@PostMapping
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<? extends DestinacaoHospedagem> gravar(@RequestBody DestinacaoHospedagemEntity model) {
-		ItaValidator<DestinacaoHospedagemEntity> v = new ItaValidator(model);
+	public ResponseEntity<?> gravar(@RequestBody DestinacaoHospedagem model) {
+		ItaValidator<DestinacaoHospedagem> v = new ItaValidator(model);
 		v.validate();
 		if (!v.hasErrors() ) {
-			return new ResponseEntity(v.getErrors(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<ResultError>(v.getErrors(), HttpStatus.BAD_REQUEST);
 		}
 		
 		try {

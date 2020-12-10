@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.report;
 
-import br.com.itarocha.betesda.adapter.out.persistence.entity.HospedagemEntity;
-import br.com.itarocha.betesda.adapter.out.persistence.entity.HospedeEntity;
-import br.com.itarocha.betesda.adapter.out.persistence.entity.PessoaEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.HospedagemEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.HospedeEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.PessoaEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDate;

@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.adapter.out.persistence.repository;
 
-import br.com.itarocha.betesda.adapter.out.persistence.entity.TipoServicoEntity;
-import br.com.itarocha.betesda.adapter.out.persistence.repository.TipoServicoRepository;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.TipoServicoEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.TipoServicoJpaRepository;
 import br.com.itarocha.betesda.domain.enums.LogicoEnum;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TipoServicoEntityRepositoryTest {
 
     @Autowired
-    private TipoServicoRepository repository;
+    private TipoServicoJpaRepository repository;
 
     @Test
     @DisplayName("Save persists TipoServico when Successful")

@@ -1,10 +1,13 @@
 package br.com.itarocha.betesda.application;
 
-import br.com.itarocha.betesda.adapter.out.persistence.entity.DestinacaoHospedagemEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.DestinacaoHospedagemEntity;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.DestinacaoHospedagemMapper;
+import br.com.itarocha.betesda.application.out.DestinacaoHospedagemRepository;
+import br.com.itarocha.betesda.application.port.in.DestinacaoHospedagemUseCase;
 import br.com.itarocha.betesda.domain.DestinacaoHospedagem;
 import br.com.itarocha.betesda.domain.SelectValueVO;
-import br.com.itarocha.betesda.adapter.out.persistence.repository.DestinacaoHospedagemRepository;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.DestinacaoHospedagemJpaRepository;
+import br.com.itarocha.betesda.domain.dto.DestinacaoHospedagemDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,15 +17,13 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class DestinacaoHospedagemService {
-
-	private final DestinacaoHospedagemMapper mapper;
+public class DestinacaoHospedagemService implements DestinacaoHospedagemUseCase {
 
 	private final DestinacaoHospedagemRepository repository;
 
-	public DestinacaoHospedagem create(DestinacaoHospedagemEntity model) {
+	public DestinacaoHospedagem create(DestinacaoHospedagem model) {
 		try{
-			return mapper.toModel(repository.save(model));
+			return repository.save(model);
 		}catch(Exception e){
 			throw new IllegalArgumentException(e.getMessage());
 		}
@@ -33,23 +34,18 @@ public class DestinacaoHospedagemService {
 	}
 	
 	public DestinacaoHospedagem find(Long id) {
-		Optional<DestinacaoHospedagemEntity> result = repository.findById(id);
-		return result.isPresent() ? mapper.toModel(result.get()) : null;
+		Optional<DestinacaoHospedagem> result = repository.findById(id);
+		return result.isPresent() ? result.get() : null;
 	}
 
 	public List<DestinacaoHospedagem> findAll() {
 		return repository.findAllOrderByDescricao()
 				.stream()
-				.map(mapper::toModel)
 				.collect(Collectors.toList());
 	}
 
 	public List<SelectValueVO> listSelect() {
-		return repository.findAllOrderByDescricao()
-				.stream()
-				.map(mapper::toModel)
-				.map(mapper::toSelectValueVO)
-				.collect(Collectors.toList());
+		return repository.findAllToSelectVO();
 	}
 
 }

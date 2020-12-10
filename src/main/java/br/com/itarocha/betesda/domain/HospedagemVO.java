@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.domain;
 
-import br.com.itarocha.betesda.adapter.out.persistence.entity.EncaminhadorEntity;
-import br.com.itarocha.betesda.adapter.out.persistence.entity.EntidadeEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.EncaminhadorEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.EntidadeEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

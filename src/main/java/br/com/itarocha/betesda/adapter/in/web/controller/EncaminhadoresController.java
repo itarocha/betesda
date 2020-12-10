@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
-import br.com.itarocha.betesda.adapter.out.persistence.entity.EncaminhadorEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.EncaminhadorEntity;
 import br.com.itarocha.betesda.domain.SelectValueVO;
 import br.com.itarocha.betesda.application.EncaminhadorService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
@@ -26,7 +26,7 @@ public class EncaminhadoresController {
 		try {
 			Optional<EncaminhadorEntity> model = service.find(id);
 			if (model.isPresent()) {
-				return new ResponseEntity<EncaminhadorEntity>(model.get(), HttpStatus.OK);
+				return new ResponseEntity<>(model.get(), HttpStatus.OK);
 			} else {
 				return new ResponseEntity<String>("não encontrado", HttpStatus.NOT_FOUND);
 			}
@@ -37,9 +37,9 @@ public class EncaminhadoresController {
 
 	@GetMapping("/por_encaminhador/{id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<?> listar(@PathVariable("id") Long entidadeId) {
+	public ResponseEntity<List<EncaminhadorEntity>> listar(@PathVariable("id") Long entidadeId) {
 		List<EncaminhadorEntity> lista = service.findAll(entidadeId);
-		return new ResponseEntity<List<EncaminhadorEntity>>(lista, HttpStatus.OK);
+		return new ResponseEntity<>(lista, HttpStatus.OK);
 	}
 	
 	@PostMapping

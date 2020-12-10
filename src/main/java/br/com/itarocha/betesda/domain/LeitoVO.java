@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.domain;
 
-import br.com.itarocha.betesda.adapter.out.persistence.entity.TipoLeitoEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.TipoLeitoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,10 +1,10 @@
 package br.com.itarocha.betesda.application;
 
 import br.com.itarocha.betesda.exception.ValidationException;
-import br.com.itarocha.betesda.adapter.out.persistence.entity.EnderecoEntity;
-import br.com.itarocha.betesda.adapter.out.persistence.entity.PessoaEntity;
-import br.com.itarocha.betesda.adapter.out.persistence.repository.EnderecoRepository;
-import br.com.itarocha.betesda.adapter.out.persistence.repository.PessoaRepository;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.EnderecoEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.PessoaEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.EnderecoJpaRepository;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.PessoaJpaRepository;
 import br.com.itarocha.betesda.util.validation.ResultError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -25,10 +25,10 @@ public class PessoaService {
 	private EntityManager em;
 
 	@Autowired
-	private PessoaRepository repositorio;
+	private PessoaJpaRepository repositorio;
 
 	@Autowired
-	private EnderecoRepository enderecoRepo;
+	private EnderecoJpaRepository enderecoRepo;
 
 	public PessoaService() {
 	}

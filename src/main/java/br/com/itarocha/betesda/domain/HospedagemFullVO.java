@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.domain;
 
-import br.com.itarocha.betesda.adapter.out.persistence.entity.*;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.*;
 import br.com.itarocha.betesda.domain.enums.TipoUtilizacaoHospedagemEnum;
 import br.com.itarocha.betesda.domain.hospedagem.CellStatusHospedagem;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

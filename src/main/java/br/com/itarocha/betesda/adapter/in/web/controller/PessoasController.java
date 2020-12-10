@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
 import br.com.itarocha.betesda.exception.ValidationException;
-import br.com.itarocha.betesda.adapter.out.persistence.entity.PessoaEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.PessoaEntity;
 import br.com.itarocha.betesda.domain.SearchRequest;
 import br.com.itarocha.betesda.application.PessoaService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;

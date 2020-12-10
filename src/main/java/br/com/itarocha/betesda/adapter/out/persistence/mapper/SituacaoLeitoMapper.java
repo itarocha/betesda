@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.adapter.out.persistence.mapper;
 
-import br.com.itarocha.betesda.adapter.out.persistence.entity.SituacaoLeitoEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.SituacaoLeitoEntity;
 import br.com.itarocha.betesda.domain.SituacaoLeito;
 import br.com.itarocha.betesda.domain.SelectValueVO;
 import org.springframework.stereotype.Component;

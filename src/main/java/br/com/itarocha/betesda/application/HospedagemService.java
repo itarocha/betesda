@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.application;
 
-import br.com.itarocha.betesda.adapter.out.persistence.entity.*;
-import br.com.itarocha.betesda.adapter.out.persistence.repository.*;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.*;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.*;
 import br.com.itarocha.betesda.domain.*;
 import br.com.itarocha.betesda.domain.enums.LogicoEnum;
 import br.com.itarocha.betesda.domain.enums.TipoUtilizacaoHospedagemEnum;
@@ -33,40 +33,40 @@ public class HospedagemService {
 	private EntityManager em;
 	
 	@Autowired
-	private DestinacaoHospedagemRepository destinacaoHospedagemRepo;
+	private DestinacaoHospedagemJpaRepository destinacaoHospedagemRepo;
 	
 	@Autowired
-	private HospedagemRepository hospedagemRepo;
+	private HospedagemJpaRepository hospedagemRepo;
 	
 	@Autowired
-	private PessoaRepository pessoaRepo;
+	private PessoaJpaRepository pessoaRepo;
 	
 	@Autowired
-	private TipoHospedeRepository tipoHospedeRepo;
+	private TipoHospedeJpaRepository tipoHospedeRepo;
 	
 	@Autowired
-	private QuartoRepository quartoRepo;
+	private QuartoJpaRepository quartoRepo;
 	
 	@Autowired
-	private LeitoRepository leitoRepo;
+	private LeitoJpaRepository leitoRepo;
 	
 	@Autowired
-	private HospedeLeitoRepository hospedeLeitoRepo;
+	private HospedeLeitoJpaRepository hospedeLeitoRepo;
 	
 	@Autowired
-	private HospedeRepository hospedeRepo;
+	private HospedeJpaRepository hospedeRepo;
 	
 	@Autowired
-	private TipoServicoRepository tipoServicoRepo;
+	private TipoServicoJpaRepository tipoServicoRepo;
 	
 	@Autowired
-	private EntidadeRepository entidadeRepo;
+	private EntidadeJpaRepository entidadeRepo;
 	
 	@Autowired
-	private EncaminhadorRepository encaminhadorRepo;
+	private EncaminhadorJpaRepository encaminhadorRepo;
 	
 	@Autowired
-	private HospedagemTipoServicoRepository hospedagemTipoServicoRepo;
+	private HospedagemTipoServicoJpaRepository hospedagemTipoServicoRepo;
 	
 	@Autowired
 	private QuartoService quartoService;

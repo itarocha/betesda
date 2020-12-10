@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.security;
 
 import br.com.itarocha.betesda.exception.ResourceNotFoundException;
-import br.com.itarocha.betesda.adapter.out.persistence.entity.UserEntity;
-import br.com.itarocha.betesda.adapter.out.persistence.repository.UserRepository;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.UserEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.UserJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,7 +15,7 @@ import javax.transaction.Transactional;
 public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
-    UserRepository userRepository;
+    UserJpaRepository userRepository;
 
     @Override
     @Transactional

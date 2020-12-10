@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.application;
 
-import br.com.itarocha.betesda.adapter.out.persistence.entity.*;
-import br.com.itarocha.betesda.adapter.out.persistence.repository.*;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.*;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.*;
 import br.com.itarocha.betesda.domain.enums.LogicoEnum;
 import br.com.itarocha.betesda.domain.EditLeitoVO;
 import br.com.itarocha.betesda.domain.EditQuartoVO;
@@ -23,19 +23,19 @@ import java.util.Optional;
 public class QuartoService {
 
 	@Autowired
-	private QuartoRepository quartoRepo;
+	private QuartoJpaRepository quartoRepo;
 	
 	@Autowired
-	private LeitoRepository leitoRepo;
+	private LeitoJpaRepository leitoRepo;
 	
 	@Autowired
-	private TipoLeitoRepository tipoLeitoRepo;
+	private TipoLeitoJpaRepository tipoLeitoRepo;
 	
 	@Autowired
-	private SituacaoLeitoRepository situacaoLeitoRepo;
+	private SituacaoLeitoJpaRepository situacaoLeitoRepo;
 	
 	@Autowired
-	private DestinacaoHospedagemRepository destinacaoHospedagemRepo;
+	private DestinacaoHospedagemJpaRepository destinacaoHospedagemRepo;
 
 	public QuartoEntity create(QuartoEntity model) {
 		try{

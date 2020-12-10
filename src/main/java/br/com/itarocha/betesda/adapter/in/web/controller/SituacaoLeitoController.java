@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
-import br.com.itarocha.betesda.adapter.out.persistence.entity.SituacaoLeitoEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.SituacaoLeitoEntity;
 import br.com.itarocha.betesda.application.SituacaoLeitoService;
 import br.com.itarocha.betesda.domain.SituacaoLeito;
 import br.com.itarocha.betesda.util.validation.ItaValidator;

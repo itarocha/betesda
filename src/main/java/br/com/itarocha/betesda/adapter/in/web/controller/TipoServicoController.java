@@ -1,10 +1,10 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
-import br.com.itarocha.betesda.adapter.out.persistence.entity.TipoServicoEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.TipoServicoEntity;
 import br.com.itarocha.betesda.application.TipoServicoService;
 import br.com.itarocha.betesda.domain.TipoServico;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/app/tipo_servico")
+@RequiredArgsConstructor
 public class TipoServicoController {
 
-	@Autowired
-	private TipoServicoService service;
+	private final TipoServicoService service;
 	
 	@GetMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
@@ -31,7 +31,7 @@ public class TipoServicoController {
 			if (model != null) {
 				return new ResponseEntity(model, HttpStatus.OK);
 			} else {
-				return new ResponseEntity("Tipo de SErviço não existe", HttpStatus.NOT_FOUND);
+				return new ResponseEntity("Tipo de Serviço não existe", HttpStatus.NOT_FOUND);
 			}
 		} catch (Exception e) {
 			return new ResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
