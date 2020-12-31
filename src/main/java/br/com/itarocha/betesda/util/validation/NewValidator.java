@@ -4,21 +4,20 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
-public class ItaValidator<T> {
-	
+public class NewValidator<T> {
+
 	private T ref;
 	private ResultError re;
 
-	public ItaValidator(T ref) {
+	public NewValidator(T ref) {
 		this.ref = ref;
 		this.re = new ResultError();
 	}
 	
-	public ResultError validate() {
+	public T validate() {
 		this.re.getErrors().clear();
 		
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -27,21 +26,8 @@ public class ItaValidator<T> {
 		for (ConstraintViolation<T> violation : violations ) {
 			this.re.addError(violation.getPropertyPath().toString(), violation.getMessage());
 		}
-		return this.re;
+		return ref;
 	}
-
-	public Optional<ResultError> newValidate() {
-		this.re.getErrors().clear();
-
-		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-		Validator validator = factory.getValidator();
-		Set<ConstraintViolation<T>> violations = validator.validate(this.ref);
-		for (ConstraintViolation<T> violation : violations ) {
-			this.re.addError(violation.getPropertyPath().toString(), violation.getMessage());
-		}
-		return hasErrors() ? Optional.empty() : Optional.of(this.re);
-	}
-
 
 	public boolean hasErrors() {
 		return this.re.getErrors().isEmpty();
@@ -59,4 +45,5 @@ public class ItaValidator<T> {
 		validate();
 		return  getErrors();
 	};
+
 }

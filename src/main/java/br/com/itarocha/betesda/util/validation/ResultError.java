@@ -23,4 +23,8 @@ public class ResultError {
 		this.errors.add(new FieldValidationError(fieldName, message));
 		return this;
 	}
+
+	public boolean hasErrors(){
+		return this.errors.size() > 0;
+	}
 }

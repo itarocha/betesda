@@ -2,13 +2,16 @@ package br.com.itarocha.betesda.adapter.in.web.controller;
 
 import br.com.itarocha.betesda.application.port.in.DestinacaoHospedagemUseCase;
 import br.com.itarocha.betesda.domain.DestinacaoHospedagem;
-import br.com.itarocha.betesda.util.validation.ItaValidator;
 import br.com.itarocha.betesda.util.validation.ResultError;
+import br.com.itarocha.betesda.util.validation.StaticValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.ConstraintViolationException;
 
 @RestController
 @RequestMapping("/api/app/destinacao_hospedagem")
@@ -38,17 +41,19 @@ public class DestinacaoHospedagemController {
 		}
 	}
 	
-	@PostMapping
+	@PostMapping(consumes =  MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody DestinacaoHospedagem model) {
-		ItaValidator<DestinacaoHospedagem> v = new ItaValidator(model);
-		v.validate();
-		if (!v.hasErrors() ) {
-			return new ResponseEntity<ResultError>(v.getErrors(), HttpStatus.BAD_REQUEST);
+	public ResponseEntity<DestinacaoHospedagem> gravar(@RequestBody DestinacaoHospedagem model) {
+
+		ResultError re = StaticValidator.validate(model);
+		if (!re.hasErrors() ) {
+			return new ResponseEntity(re.getErrors(), HttpStatus.BAD_REQUEST);
 		}
-		
+
 		try {
-		    return new ResponseEntity(service.create(model), HttpStatus.OK);
+			return new ResponseEntity(service.create(model), HttpStatus.OK);
+		} catch (ConstraintViolationException e){
+			return new ResponseEntity(e.getConstraintViolations(), HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
 			return new ResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

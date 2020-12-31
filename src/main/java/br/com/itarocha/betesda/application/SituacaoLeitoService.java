@@ -1,55 +1,49 @@
 package br.com.itarocha.betesda.application;
 
-import br.com.itarocha.betesda.adapter.out.persistence.mapper.SituacaoLeitoMapper;
+import br.com.itarocha.betesda.application.out.SituacaoLeitoRepository;
+import br.com.itarocha.betesda.application.port.in.SituacaoLeitoUseCase;
 import br.com.itarocha.betesda.domain.SelectValueVO;
-import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.SituacaoLeitoEntity;
-import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.SituacaoLeitoJpaRepository;
 import br.com.itarocha.betesda.domain.SituacaoLeito;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class SituacaoLeitoService {
+public class SituacaoLeitoService implements SituacaoLeitoUseCase {
 
-	private final SituacaoLeitoMapper mapper;
+	private final SituacaoLeitoRepository repository;
 
-	private final SituacaoLeitoJpaRepository repository;
-
-	public SituacaoLeito create(SituacaoLeitoEntity model) {
+	@Override
+	public SituacaoLeito create(SituacaoLeito model) {
 		try{
-			return mapper.toModel(repository.save(model));
+			return repository.save(model);
 		}catch(Exception e){
 			throw new IllegalArgumentException(e.getMessage());
 		}		
 	}
 
+	@Override
 	public void remove(Long id) {
 		repository.findById(id).ifPresent(model -> repository.delete(model));
 	}
 
+	@Override
 	public SituacaoLeito find(Long id) {
-		Optional<SituacaoLeitoEntity> result = repository.findById(id);
-		return result.isPresent() ? mapper.toModel(result.get()) : null;
+		Optional<SituacaoLeito> result = repository.findById(id);
+		return result.isPresent() ? result.get() : null;
 	}
 
+	@Override
 	public List<SituacaoLeito> findAll() {
-		return repository.findAllOrderByDescricao()
-				.stream()
-				.map(mapper::toModel)
-				.collect(Collectors.toList());
+		return repository.findAllOrderByDescricao();
 	}
-	
+
+	@Override
 	public List<SelectValueVO> listSelect() {
-		return repository.findAllOrderByDescricao()
-				.stream()
-				.map(mapper::toModel)
-				.map(mapper::toSelectValueVO)
-				.collect(Collectors.toList());
+		return repository.findAllToSelectVO();
 	}
 
 }

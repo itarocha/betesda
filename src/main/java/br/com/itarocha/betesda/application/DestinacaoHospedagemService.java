@@ -16,6 +16,7 @@ public class DestinacaoHospedagemService implements DestinacaoHospedagemUseCase 
 
 	private final DestinacaoHospedagemRepository repository;
 
+	@Override
 	public DestinacaoHospedagem create(DestinacaoHospedagem model) {
 		try{
 			return repository.save(model);
@@ -24,19 +25,23 @@ public class DestinacaoHospedagemService implements DestinacaoHospedagemUseCase 
 		}
 	}
 
+	@Override
 	public void remove(Long id) {
 		repository.findById(id).ifPresent(repository::delete);
 	}
-	
+
+	@Override
 	public DestinacaoHospedagem find(Long id) {
 		Optional<DestinacaoHospedagem> result = repository.findById(id);
 		return result.isPresent() ? result.get() : null;
 	}
 
+	@Override
 	public List<DestinacaoHospedagem> findAll() {
 		return repository.findAllOrderByDescricao();
 	}
 
+	@Override
 	public List<SelectValueVO> listSelect() {
 		return repository.findAllToSelectVO();
 	}
