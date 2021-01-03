@@ -17,7 +17,6 @@ public interface LeitoJpaRepository extends JpaRepository<LeitoEntity, Long> {
 	@Query(	"DELETE FROM LeitoEntity o WHERE o.quarto.id = :quartoId")
 	void deleteWhereQuartoId(@Param("quartoId") Long id);
 
-	
 	@Query("SELECT e FROM LeitoEntity e WHERE e.situacao.disponivel = :disponivel ORDER BY e.quarto.numero, e.numero")
 	List<LeitoEntity> findAllWhereDisponivel(@Param("disponivel") LogicoEnum s);
 

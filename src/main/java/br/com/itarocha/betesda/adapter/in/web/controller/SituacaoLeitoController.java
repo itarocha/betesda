@@ -40,7 +40,7 @@ public class SituacaoLeitoController {
 	
 	@PostMapping
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody SituacaoLeitoEntity model) {
+	public ResponseEntity<?> gravar(@RequestBody SituacaoLeito model) {
 		ItaValidator<SituacaoLeitoEntity> v = new ItaValidator(model);
 		v.validate();
 		if (!v.hasErrors() ) {

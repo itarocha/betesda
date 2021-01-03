@@ -40,8 +40,8 @@ public class TipoHospedeController {
 	
 	@PostMapping
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody TipoHospedeEntity model) {
-		ItaValidator<TipoHospedeEntity> v = new ItaValidator<TipoHospedeEntity>(model);
+	public ResponseEntity<?> gravar(@RequestBody TipoHospede model) {
+		ItaValidator<TipoHospede> v = new ItaValidator<TipoHospede>(model);
 		v.validate();
 		if (!v.hasErrors() ) {
 			return new ResponseEntity(v.getErrors(), HttpStatus.BAD_REQUEST);

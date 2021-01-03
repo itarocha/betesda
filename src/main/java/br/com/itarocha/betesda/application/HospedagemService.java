@@ -2,6 +2,7 @@ package br.com.itarocha.betesda.application;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.*;
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.*;
+import br.com.itarocha.betesda.application.port.in.QuartoUseCase;
 import br.com.itarocha.betesda.domain.*;
 import br.com.itarocha.betesda.domain.enums.LogicoEnum;
 import br.com.itarocha.betesda.domain.enums.TipoUtilizacaoHospedagemEnum;
@@ -69,7 +70,7 @@ public class HospedagemService {
 	private HospedagemTipoServicoJpaRepository hospedagemTipoServicoRepo;
 	
 	@Autowired
-	private QuartoService quartoService;
+	private QuartoUseCase quartoService;
 
 	DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	
@@ -503,7 +504,7 @@ public class HospedagemService {
 		Quadro quadro = new Quadro(); 
 
 		// Busca quartos e leitos do banco
-		List<QuartoEntity> listQuartoEntities = quartoService.findAll();
+		List<Quarto> listQuartoEntities = quartoService.findAll();
 		// Cria os quartos e verifica minimo e maximo dos leitos
 		listQuartoEntities.forEach(q -> {
 			quadro.quartos.add(new QuadroQuarto( q.getId(), q.getNumero()));
@@ -745,7 +746,7 @@ public class HospedagemService {
 		Quadro quadro = new Quadro(); 
 
 		// Busca quartos e leitos do banco
-		List<QuartoEntity> listQuartoEntities = quartoService.findAll();
+		List<Quarto> listQuartoEntities = quartoService.findAll();
 		// Cria os quartos e verifica minimo e maximo dos leitos
 		listQuartoEntities.forEach(q -> {
 			quadro.quartos.add(new QuadroQuarto( q.getId(), q.getNumero()));

@@ -1,6 +1,5 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
-import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.TipoServicoEntity;
 import br.com.itarocha.betesda.application.TipoServicoService;
 import br.com.itarocha.betesda.domain.TipoServico;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
@@ -40,8 +39,8 @@ public class TipoServicoController {
 	
 	@PostMapping
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody TipoServicoEntity model) {
-		ItaValidator<TipoServicoEntity> v = new ItaValidator(model);
+	public ResponseEntity<?> gravar(@RequestBody TipoServico model) {
+		ItaValidator<TipoServico> v = new ItaValidator(model);
 		v.validate();
 		if (!v.hasErrors() ) {
 			return new ResponseEntity(v.getErrors(), HttpStatus.BAD_REQUEST);

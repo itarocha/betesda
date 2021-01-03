@@ -1,12 +1,8 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
-import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.LeitoEntity;
-import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.QuartoEntity;
 import br.com.itarocha.betesda.application.*;
-import br.com.itarocha.betesda.domain.EditLeitoVO;
-import br.com.itarocha.betesda.domain.EditQuartoVO;
-import br.com.itarocha.betesda.domain.NovoQuartoVO;
-import br.com.itarocha.betesda.domain.SelectValueVO;
+import br.com.itarocha.betesda.application.port.in.*;
+import br.com.itarocha.betesda.domain.*;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,23 +17,29 @@ import java.util.List;
 @RequestMapping("/api/app/quarto")
 public class QuartoController {
 
+	// OK - refatorado
 	@Autowired
-	private QuartoService service;
+	private QuartoUseCase service;
 
+	// OK - refatorado
 	@Autowired
-	private TipoLeitoService tls;
+	private TipoLeitoUseCase tls;
 
+	// OK - refatorado
 	@Autowired
-	private DestinacaoHospedagemService dhs;
-	
+	private DestinacaoHospedagemUseCase dhs;
+
+	// OK - refatorado
 	@Autowired
-	private SituacaoLeitoService sls;
-	
+	private SituacaoLeitoUseCase sls;
+
+	// OK - refatorado
 	@Autowired
-	private TipoHospedeService ths;
-	
+	private TipoHospedeUseCase ths;
+
+	// OK - refatorado
 	@Autowired
-	private TipoServicoService tss;
+	private TipoServicoUseCase tss;
 	
 	@Autowired
 	private EntidadeService etds;
@@ -45,15 +47,15 @@ public class QuartoController {
 	@GetMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
-		List<QuartoEntity> lista = service.findAll();
-		return new ResponseEntity<List<QuartoEntity>>(lista, HttpStatus.OK);
+		List<Quarto> lista = service.findAll();
+		return new ResponseEntity<List<Quarto>>(lista, HttpStatus.OK);
 	}
 
 	@GetMapping("{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		try {
-			QuartoEntity model = service.find(id);
+			Quarto model = service.find(id);
 			if (model != null) {
 				return new ResponseEntity<>(model, HttpStatus.OK);
 			} else {
@@ -68,7 +70,7 @@ public class QuartoController {
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> getLeitoById(@PathVariable("id") Long id) {
 		try {
-			LeitoEntity model = service.findLeito(id);
+			Leito model = service.findLeito(id);
 			if (model != null) {
 				EditLeitoVO leito = new EditLeitoVO();
 				leito.setId(model.getId());
@@ -90,28 +92,28 @@ public class QuartoController {
 	@GetMapping("/por_destinacao_hospedagem/{id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listarByDestinacaoHospedagem(@PathVariable("id") Long id) {
-		List<QuartoEntity> lista = service.findAllByDestinacaoHospedagem(id);
-		return new ResponseEntity<List<QuartoEntity>>(lista, HttpStatus.OK);
+		List<Quarto> lista = service.findAllByDestinacaoHospedagem(id);
+		return new ResponseEntity<List<Quarto>>(lista, HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}/leitos")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listarLeitosByQuarto(@PathVariable("id") Long id) {
-		List<LeitoEntity> lista = service.findLeitosByQuarto(id);
-		return new ResponseEntity<List<LeitoEntity>>(lista, HttpStatus.OK);
+		List<Leito> lista = service.findLeitosByQuarto(id);
+		return new ResponseEntity<List<Leito>>(lista, HttpStatus.OK);
 	}
 
 	@GetMapping("/leitos_disponiveis")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listarLeitosDisponiveis() {
-		List<LeitoEntity> lista = service.findLeitosDisponiveis();
-		return new ResponseEntity<List<LeitoEntity>>(lista, HttpStatus.OK);
+		List<Leito> lista = service.findLeitosDisponiveis();
+		return new ResponseEntity<List<Leito>>(lista, HttpStatus.OK);
 	}
 
 	@PostMapping
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody NovoQuartoVO model) throws Exception {
-		ItaValidator<NovoQuartoVO> v = new ItaValidator<NovoQuartoVO>(model);
+	public ResponseEntity<?> gravar(@RequestBody QuartoNew model) throws Exception {
+		ItaValidator<QuartoNew> v = new ItaValidator<QuartoNew>(model);
 		v.validate();
 		if (service.existeOutroQuartoComEsseNumero(model.getNumero())) {
 			v.addError("numero", "Existe outro Quarto com esse número");
@@ -122,16 +124,16 @@ public class QuartoController {
 		}
 	
 		// TODO tratar exceção
-		QuartoEntity saved = null;
+		Quarto saved = null;
 		saved = service.create(model);
 	    //return Response.status(200).entity(saved).build();
-	    return new ResponseEntity<QuartoEntity>(saved, HttpStatus.OK);
+	    return new ResponseEntity<Quarto>(saved, HttpStatus.OK);
 	}
 	
 	@PostMapping("/alterar")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravarAlteracao(@RequestBody EditQuartoVO model) {
-		ItaValidator<EditQuartoVO> v = new ItaValidator<EditQuartoVO>(model);
+	public ResponseEntity<?> gravarAlteracao(@RequestBody QuartoEdit model) {
+		ItaValidator<QuartoEdit> v = new ItaValidator<QuartoEdit>(model);
 		v.validate();
 		try {
 			if (model.getId() != null) {
@@ -144,9 +146,9 @@ public class QuartoController {
 				return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
 			}
 		
-			QuartoEntity saved = null;
+			Quarto saved = null;
 			saved = service.update(model);
-		    return new ResponseEntity<QuartoEntity>(saved, HttpStatus.OK);
+		    return new ResponseEntity<Quarto>(saved, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -173,9 +175,9 @@ public class QuartoController {
 				return new ResponseEntity<>(v.getErrors(), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		
-			LeitoEntity saved = null;
+			Leito saved = null;
 			saved = service.saveLeito(model);
-			return new ResponseEntity<LeitoEntity>(saved, HttpStatus.OK);
+			return new ResponseEntity<Leito>(saved, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -230,5 +232,4 @@ public class QuartoController {
 		public List<SelectValueVO> listaTipoServico = new ArrayList<SelectValueVO>();
 		public List<SelectValueVO> listaEntidade = new ArrayList<SelectValueVO>();
 	} 
-	
 }
