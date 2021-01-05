@@ -29,8 +29,7 @@ public class QuartoService implements QuartoUseCase {
 	}
 
 	public Leito findLeito(Long id) {
-		Optional<Leito> opt = leitoRepo.findById(id);
-		return opt.orElse(null);
+		return leitoRepo.findById(id).orElse(null);
 	}
 
 	public Quarto create(Quarto model) {
@@ -42,7 +41,6 @@ public class QuartoService implements QuartoUseCase {
 	}
 
 	public Quarto create(QuartoNew model) throws Exception {
-
 		Quarto q = Quarto.builder()
 				.numero(model.getNumero())
 				.descricao(model.getDescricao())
@@ -124,8 +122,7 @@ public class QuartoService implements QuartoUseCase {
 	}
 
 	public List<Leito> findLeitosByQuarto(Long quartoId) {
-		Optional<Quarto> q = quartoRepo.findById(quartoId);
-		return q.isPresent() ? leitoRepo.findByQuartoId(q.get().getId()) : new ArrayList<>();
+		return leitoRepo.findByQuartoId(quartoId);
 	}
 
 	public List<Leito> findLeitosDisponiveis() {
@@ -156,18 +153,15 @@ public class QuartoService implements QuartoUseCase {
 	}
 
 	private TipoLeito findTipoLeitoById(Long id){
-		Optional<TipoLeito> opt = tipoLeitoRepo.findById(id);
-		return opt.orElse(null);
+		return tipoLeitoRepo.findById(id).orElse(null);
 	}
 
 	private SituacaoLeito findSituacaoLeitoById(Long id){
-		Optional<SituacaoLeito> opt = situacaoLeitoRepo.findById(id);
-		return opt.orElse(null);
+		return situacaoLeitoRepo.findById(id).orElse(null);
 	}
 
 	private Quarto findQuartoById(Long id) {
-		Optional<Quarto> opt = quartoRepo.findById(id);
-		return opt.orElse(null);
+		return quartoRepo.findById(id).orElse(null);
 	}
 
 }
