@@ -49,9 +49,10 @@ public class QuartoService implements QuartoUseCase {
 				.ativo(LogicoEnum.S)
 				.build();
 
-		for (Long id : model.getDestinacoes()) {
-			destinacaoHospedagemRepo.findById(id).ifPresent(d -> q.getDestinacoes().add(d));
-		}
+		Arrays.stream(model.getDestinacoes())
+				.forEach(id -> destinacaoHospedagemRepo.findById(id)
+						.ifPresent(d -> q.getDestinacoes().add(d)));
+
 		Quarto saved = quartoRepo.save(q);
 
 		final TipoLeito tipoLeitoEntity = findTipoLeitoById(model.getTipoLeito());
