@@ -4,35 +4,34 @@ import br.com.itarocha.betesda.application.out.*;
 import br.com.itarocha.betesda.application.port.in.QuartoUseCase;
 import br.com.itarocha.betesda.domain.*;
 import br.com.itarocha.betesda.domain.enums.LogicoEnum;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @Transactional
-//https://www.devmedia.com.br/conheca-o-spring-transactional-annotations/32472
-//https://docs.spring.io/spring-data/jpa/docs/current/reference/html/
+@RequiredArgsConstructor
 public class QuartoService implements QuartoUseCase {
 
-	@Autowired
-	private QuartoRepository quartoRepo;
+	private final QuartoRepository quartoRepo;
+	private final LeitoRepository leitoRepo;
+	private final TipoLeitoRepository tipoLeitoRepo;
+	private final SituacaoLeitoRepository situacaoLeitoRepo;
+	private final DestinacaoHospedagemRepository destinacaoHospedagemRepo;
 
-	@Autowired
-	private LeitoRepository leitoRepo;
+	public Quarto find(Long id) {
+		return findQuartoById(id);
+	}
 
-	@Autowired
-	private TipoLeitoRepository tipoLeitoRepo;
-
-	@Autowired
-	private SituacaoLeitoRepository situacaoLeitoRepo;
-
-	@Autowired
-	private DestinacaoHospedagemRepository destinacaoHospedagemRepo;
+	public Leito findLeito(Long id) {
+		Optional<Leito> opt = leitoRepo.findById(id);
+		return opt.orElse(null);
+	}
 
 	public Quarto create(Quarto model) {
 		try {
@@ -43,97 +42,55 @@ public class QuartoService implements QuartoUseCase {
 	}
 
 	public Quarto create(QuartoNew model) throws Exception {
-		Quarto q = new Quarto();
-		try {
-			TipoLeito tipoLeitoEntity = tipoLeitoRepo.findById(model.getTipoLeito()).get();
-			SituacaoLeito situacao = situacaoLeitoRepo.findById(model.getSituacao()).get();
 
-			q.setNumero(model.getNumero());
-			q.setDescricao(model.getDescricao());
+		Quarto q = Quarto.builder()
+				.numero(model.getNumero())
+				.descricao(model.getDescricao())
+				.ativo(LogicoEnum.S)
+				.build();
 
-			for (Long id : model.getDestinacoes()) {
-				DestinacaoHospedagem dh = destinacaoHospedagemRepo.findById(id).get();
-				if (dh != null) {
-					q.getDestinacoes().add(dh);
-				}
-			}
-
-			q.setAtivo(LogicoEnum.S);
-			quartoRepo.save(q);
-
-			for (int i = 1; i <= model.getQuantidadeLeitos(); i++) {
-				Leito leitoEntity = new Leito();
-				leitoEntity.setQuarto(q);
-				leitoEntity.setNumero(i);
-				leitoEntity.setTipoLeito(tipoLeitoEntity);
-				leitoEntity.setSituacao(situacao);
-
-				leitoRepo.save(leitoEntity);
-			}
-		} catch (Exception e) {
-			throw e;
+		for (Long id : model.getDestinacoes()) {
+			destinacaoHospedagemRepo.findById(id).ifPresent(d -> q.getDestinacoes().add(d));
 		}
-		return q;
+		Quarto saved = quartoRepo.save(q);
+
+		final TipoLeito tipoLeitoEntity = findTipoLeitoById(model.getTipoLeito());
+		final SituacaoLeito situacao = findSituacaoLeitoById(model.getSituacao());
+		IntStream.rangeClosed(1, model.getQuantidadeLeitos()-1).boxed()
+				.forEach(i -> {	Leito leitoEntity = Leito.builder()
+										.quarto(saved)
+										.numero(i)
+										.tipoLeito(tipoLeitoEntity)
+										.situacao(situacao)
+										.build();
+								leitoRepo.save(leitoEntity);
+				});
+		return saved;
 	}
 
-	public Quarto find(Long id) {
-		Optional<Quarto> retorno = quartoRepo.findById(id);
-		if (retorno.isPresent()) {
-			return retorno.get();
-		} else {
-			return null;
-		}
-	}
-
-	public Leito findLeito(Long id) {
-		Optional<Leito> retorno = leitoRepo.findById(id);
-		if (retorno.isPresent()) {
-			return retorno.get();
-		} else {
-			return null;
-		}
-	}
-
-	public Leito saveLeito(EditLeitoVO model) throws Exception {
-		Leito leitoEntity;
+	public Leito saveLeito(EditLeitoVO model) {
 		boolean isNovo = model.getId() == null;
+		Leito toSave = isNovo ? new Leito() : findLeito(model.getId());
+		if (!isNovo && toSave == null){
+			throw new RuntimeException("Leito inexistente: " + model.getId());
+		}
+		final TipoLeito tipoLeitoEntity = findTipoLeitoById(model.getTipoLeito());
+		final SituacaoLeito situacao = findSituacaoLeitoById(model.getSituacao());
+		toSave.setNumero(model.getNumero());
+		toSave.setTipoLeito(tipoLeitoEntity);
+		toSave.setSituacao(situacao);
 		if (isNovo) {
-			leitoEntity = new Leito();
-		} else {
-			Optional<Leito> optLeito = leitoRepo.findById(model.getId());
-
-			if (optLeito.isPresent()) {
-				leitoEntity = optLeito.get();
-			} else {
-				throw new Exception("Leito inexistente: " + model.getId());
-			}
+			Quarto quarto = findQuartoById(model.getQuartoId());
+			toSave.setQuarto(quarto);
 		}
-
-		try {
-			TipoLeito tipoLeitoEntity = tipoLeitoRepo.findById(model.getTipoLeito()).get();
-			SituacaoLeito situacao = situacaoLeitoRepo.findById(model.getSituacao()).get();
-			leitoEntity.setNumero(model.getNumero());
-			leitoEntity.setTipoLeito(tipoLeitoEntity);
-			leitoEntity.setSituacao(situacao);
-
-			if (isNovo) {
-				Quarto quartoEntity = quartoRepo.findById(model.getQuartoId()).get();
-				leitoEntity.setQuarto(quartoEntity);
-			}
-			leitoEntity = leitoRepo.save(leitoEntity);
-		} catch (Exception e) {
-			throw e;
-		}
-		return leitoEntity;
+		return leitoRepo.save(toSave);
 	}
 
 	public void remove(Long id) {
-		Optional<Quarto> model = quartoRepo.findById(id);
-
-		if (model.isPresent()) {
-			leitoRepo.deleteWhereQuartoId(model.get().getId());
-			quartoRepo.delete(model.get());
-		}
+		quartoRepo.findById(id).ifPresent( quarto -> {
+			leitoRepo.deleteWhereQuartoId(quarto.getId());
+			quartoRepo.delete(quarto);
+		});
 	}
 
 	public void removeLeito(Long id) {
@@ -141,27 +98,20 @@ public class QuartoService implements QuartoUseCase {
 	}
 
 	public Quarto update(QuartoEdit model) {
-		Optional<Quarto> oq = quartoRepo.findById(model.getId());
-		Quarto obj = null;
-		if (oq.isPresent()) {
-			obj = oq.get();
-			obj.setDescricao(model.getDescricao());
+		AtomicReference<Quarto> atomicQuarto = null;
+		quartoRepo.findById(model.getId()).ifPresent(quarto -> {
+			quarto.getDestinacoes().clear();
+			quarto.setDescricao(model.getDescricao());
+			quarto.setNumero(model.getNumero());
+			Arrays.stream(model.getDestinacoes())
+					.collect(Collectors.toList())
+					.forEach(id -> destinacaoHospedagemRepo.findById(id)
+							.ifPresent( d -> quarto.getDestinacoes().add(d))
+					);
 
-			obj.getDestinacoes().clear();
-			for (Long id : model.getDestinacoes()) {
-				DestinacaoHospedagem dh = destinacaoHospedagemRepo.findById(id).get();
-				if (dh != null) {
-					obj.getDestinacoes().add(dh);
-				}
-			}
-
-			// FIXME: propriedade removida
-			//DestinacaoHospedagem dest = destinacaoHospedagemRepo.getOne(model.getDestinacaoHospedagem());
-			//obj.setDestinacaoHospedagem(dest);
-			obj.setNumero(model.getNumero());
-			quartoRepo.save(obj);
-		}
-		return obj;
+			atomicQuarto.set(quartoRepo.save(quarto));
+		});
+		return atomicQuarto.get();
 	}
 
 	public List<Quarto> findAll() {
@@ -174,10 +124,7 @@ public class QuartoService implements QuartoUseCase {
 
 	public List<Leito> findLeitosByQuarto(Long quartoId) {
 		Optional<Quarto> q = quartoRepo.findById(quartoId);
-		if (!q.isPresent()) return new ArrayList<Leito>();
-
-		List<Leito> lst = leitoRepo.findByQuartoId(q.get().getId());
-		return lst;
+		return q.isPresent() ? leitoRepo.findByQuartoId(q.get().getId()) : new ArrayList<>();
 	}
 
 	public List<Leito> findLeitosDisponiveis() {
@@ -185,32 +132,41 @@ public class QuartoService implements QuartoUseCase {
 	}
 
 	public List<SelectValueVO> listTipoLeito() {
-		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
-
-		List<TipoLeito> lst = tipoLeitoRepo.findAllOrderByDescricao();
-
-		lst.forEach(x -> retorno.add(new SelectValueVO(x.getId(), x.getDescricao())));
-
-		return retorno;
+		return tipoLeitoRepo.findAllOrderByDescricao()
+				.stream()
+				.map(t -> new SelectValueVO(t.getId(), t.getDescricao()))
+				.collect(Collectors.toList());
 	}
 
 	public boolean existeOutroLeitoComEsseNumero(Long leitoId, Long quartoId, Integer numero) {
-		Collection<Leito> lst = quartoRepo.existeOutroLeitoComEsseNumero(leitoId, quartoId, numero);
-		return lst.size() > 0;
+		return !quartoRepo.existeOutroLeitoComEsseNumero(leitoId, quartoId, numero).isEmpty();
 	}
 
 	public boolean existeOutroLeitoComEsseNumero(Long quartoId, Integer numero) {
-		Collection<Leito> lst = quartoRepo.existeOutroLeitoComEsseNumero(quartoId, numero);
-		return lst.size() > 0;
+		return !quartoRepo.existeOutroLeitoComEsseNumero(quartoId, numero).isEmpty();
 	}
 
 	public boolean existeOutroQuartoComEsseNumero(Long id, Integer numero) {
-		List<Quarto> lst = quartoRepo.existeOutroQuartoComEsseNumero(id, numero);
-		return lst.size() > 0;
+		return !quartoRepo.existeOutroQuartoComEsseNumero(id, numero).isEmpty();
 	}
 
 	public boolean existeOutroQuartoComEsseNumero(Integer numero) {
-		List<Quarto> lst = quartoRepo.existeOutroQuartoComEsseNumero(numero);
-		return lst.size() > 0;
+		return !quartoRepo.existeOutroQuartoComEsseNumero(numero).isEmpty();
 	}
+
+	private TipoLeito findTipoLeitoById(Long id){
+		Optional<TipoLeito> opt = tipoLeitoRepo.findById(id);
+		return opt.orElse(null);
+	}
+
+	private SituacaoLeito findSituacaoLeitoById(Long id){
+		Optional<SituacaoLeito> opt = situacaoLeitoRepo.findById(id);
+		return opt.orElse(null);
+	}
+
+	private Quarto findQuartoById(Long id) {
+		Optional<Quarto> opt = quartoRepo.findById(id);
+		return opt.orElse(null);
+	}
+
 }
