@@ -87,11 +87,9 @@ public class TipoServicoRepositoryAdapterTest {
         String[] nomesInativos = {"VVVVVV", "CCCCCC", "EEEEEE"};
         String[] todos = ArrayUtils.addAll(nomesAtivos, nomesInativos);
 
-
         Arrays.stream(nomesAtivos).collect(Collectors.toList()).forEach(s -> {
             repoAdapter.save(TipoServico.builder().descricao(s).build());
         });
-
         Arrays.stream(nomesInativos).collect(Collectors.toList()).forEach(s -> {
             repoAdapter.save(TipoServico.builder().descricao(s).ativo(LogicoEnum.N).build());
         });
@@ -110,15 +108,11 @@ public class TipoServicoRepositoryAdapterTest {
 
         List<SelectValueVO> lstSelect = repoAdapter.findAllToSelectVO();
         assertThat(lstSelect).isNotNull();
-        // Somente ativos
         assertThat(lstSelect.size()).isEqualTo(nomesAtivos.length);
-
 
         List<TipoServico> lstAtivos = repoAdapter.findAllAtivosOrderByDescricao();
         assertThat(lstSelect).isNotNull();
-        // Somente ativos
         assertThat(lstSelect.size()).isEqualTo(nomesAtivos.length);
-
     }
 
     @Test
