@@ -30,7 +30,7 @@ public class QuartoRepositoryAdapter implements QuartoRepository {
     @Override
     public Optional<Quarto> findById(Long id) {
         Optional<QuartoEntity> opt = repository.findById(id);
-        return Optional.of(opt.isPresent() ? quartoMapper.toModel(opt.get()) : null);
+        return opt.isPresent() ? Optional.of(quartoMapper.toModel(opt.get())) : Optional.ofNullable(null);
     }
 
     @Override

@@ -21,5 +21,6 @@ public class TipoServico {
 	private String descricao;
 
 	@NotNull(message="Ativo é obrigatório")
+	@Builder.Default
 	private LogicoEnum ativo = LogicoEnum.S;
 }

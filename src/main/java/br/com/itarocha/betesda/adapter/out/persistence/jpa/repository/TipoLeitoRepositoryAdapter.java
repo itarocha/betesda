@@ -27,7 +27,7 @@ public class TipoLeitoRepositoryAdapter implements TipoLeitoRepository {
     @Override
     public Optional<TipoLeito> findById(Long id) {
         Optional<TipoLeitoEntity> opt = repository.findById(id);
-        return Optional.of(opt.isPresent() ? mapper.toModel(opt.get()) : null);
+        return opt.isPresent() ? Optional.of(mapper.toModel(opt.get())) : Optional.ofNullable(null);
     }
 
     @Override

@@ -27,7 +27,7 @@ public class TipoHospedeRepositoryAdapter implements TipoHospedeRepository {
     @Override
     public Optional<TipoHospede> findById(Long id) {
         Optional<TipoHospedeEntity> opt = repository.findById(id);
-        return Optional.of(opt.isPresent() ? mapper.toModel(opt.get()) : null);
+        return opt.isPresent() ? Optional.of(mapper.toModel(opt.get())) : Optional.ofNullable(null);
     }
 
     @Override

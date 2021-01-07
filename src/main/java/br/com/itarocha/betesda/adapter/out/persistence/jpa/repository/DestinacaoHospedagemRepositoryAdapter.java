@@ -27,7 +27,7 @@ public class DestinacaoHospedagemRepositoryAdapter implements DestinacaoHospedag
     @Override
     public Optional<DestinacaoHospedagem> findById(Long id) {
         Optional<DestinacaoHospedagemEntity> opt = repository.findById(id);
-        return opt.isEmpty() ? Optional.of(mapper.toModel(opt.get())) : Optional.empty();
+        return opt.isPresent() ? Optional.of(mapper.toModel(opt.get())) : Optional.ofNullable(null);
     }
 
     @Override

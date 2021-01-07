@@ -2,36 +2,24 @@ package br.com.itarocha.betesda.adapter.out.persistence.repository;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.TipoServicoEntity;
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.TipoServicoJpaRepository;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.TipoServicoRepositoryAdapter;
+import br.com.itarocha.betesda.adapter.out.persistence.mapper.TipoServicoMapper;
+import br.com.itarocha.betesda.domain.TipoServico;
 import br.com.itarocha.betesda.domain.enums.LogicoEnum;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import javax.validation.ConstraintViolationException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DataJpaTest
 public class TipoServicoEntityRepositoryTest {
 
-    @Autowired
-    private TipoServicoJpaRepository repository;
-
-    @Test
-    @DisplayName("Save persists TipoServico when Successful")
-    public void save_PersistTipoServico_WhenSuccessful(){
-        assertEquals(2, 1+1);
-        TipoServicoEntity entityToSave = TipoServicoEntity.builder()
-                .descricao("TESTE")
-                .ativo(LogicoEnum.S)
-                .build();
-
-        TipoServicoEntity entityToBeSaved = repository.save(entityToSave);
-
-        assertThat(entityToBeSaved).isNotNull();
-        assertThat(entityToBeSaved.getId()).isNotNull();
-        assertThat(entityToBeSaved.getDescricao()).isEqualTo(entityToSave.getDescricao());
-    }
 
 /*
 

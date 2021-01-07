@@ -165,3 +165,4 @@ public class QuartoService implements QuartoUseCase {
 	}
 
 }
+

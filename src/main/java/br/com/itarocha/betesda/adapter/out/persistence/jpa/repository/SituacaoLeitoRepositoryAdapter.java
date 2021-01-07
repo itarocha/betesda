@@ -27,7 +27,7 @@ public class SituacaoLeitoRepositoryAdapter implements SituacaoLeitoRepository {
     @Override
     public Optional<SituacaoLeito> findById(Long id) {
         Optional<SituacaoLeitoEntity> opt = repository.findById(id);
-        return Optional.of(opt.isPresent() ? mapper.toModel(opt.get()) : null);
+        return opt.isPresent() ? Optional.of(mapper.toModel(opt.get())) : Optional.ofNullable(null);
     }
 
     @Override

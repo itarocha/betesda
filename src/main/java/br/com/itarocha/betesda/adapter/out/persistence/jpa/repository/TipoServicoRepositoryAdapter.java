@@ -27,7 +27,7 @@ public class TipoServicoRepositoryAdapter implements TipoServicoRepository {
     @Override
     public Optional<TipoServico> findById(Long id) {
         Optional<TipoServicoEntity> opt = repository.findById(id);
-        return Optional.of(opt.isPresent() ? mapper.toModel(opt.get()) : null);
+        return opt.isPresent() ? Optional.of(mapper.toModel(opt.get())) : Optional.ofNullable(null);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class TipoServicoRepositoryAdapter implements TipoServicoRepository {
 
     @Override
     public List<SelectValueVO> findAllToSelectVO() {
-        return repository.findAllOrderByDescricao()
+        return repository.findAllAtivosOrderByDescricao()
                 .stream()
                 .map(mapper::toModel)
                 .map(mapper::toSelectValueVO)
