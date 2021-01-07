@@ -21,6 +21,7 @@ public class SituacaoLeito {
 	private String descricao;
 
 	@NotNull(message="Disponível é obrigatório")
+	@Builder.Default
 	private LogicoEnum disponivel = LogicoEnum.S;
 
 }

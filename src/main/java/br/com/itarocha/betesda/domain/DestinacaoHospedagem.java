@@ -1,6 +1,5 @@
 package br.com.itarocha.betesda.domain;
 
-import br.com.itarocha.betesda.util.validation.SelfValidating;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -8,6 +8,8 @@ import br.com.itarocha.betesda.domain.Quarto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,12 +26,14 @@ public class QuartoMapper {
     public Quarto toModel(QuartoEntity entity) {
         if (isNull(entity)) return null;
 
-        Set<DestinacaoHospedagem> destinacoes =  entity.getDestinacoes()
+        Set<DestinacaoHospedagem> destinacoes = isNull(entity.getDestinacoes()) ? new HashSet<>()
+                :  entity.getDestinacoes()
                 .stream()
                 .map(destinacaoHospedagemMapper::toModel)
                 .collect(Collectors.toSet());
 
-        List<Leito> leitos = entity.getLeitos()
+        List<Leito> leitos = isNull(entity.getLeitos()) ? new ArrayList<>()
+                : entity.getLeitos()
                 .stream()
                 .map(leitoMapper::toModel)
                 .collect(Collectors.toList());
@@ -47,7 +51,8 @@ public class QuartoMapper {
     public QuartoEntity toEntity(Quarto model) {
         if (isNull(model)) return null;
 
-        Set<DestinacaoHospedagemEntity> destinacoes =  model.getDestinacoes()
+        Set<DestinacaoHospedagemEntity> destinacoes = isNull(model.getDestinacoes()) ? new HashSet<>()
+                : model.getDestinacoes()
                 .stream()
                 .map(destinacaoHospedagemMapper::toEntity)
                 .collect(Collectors.toSet());
