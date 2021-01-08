@@ -137,11 +137,11 @@ public class QuartoService implements QuartoUseCase {
 	}
 
 	public boolean existeOutroLeitoComEsseNumero(Long leitoId, Long quartoId, Integer numero) {
-		return !quartoRepo.existeOutroLeitoComEsseNumero(leitoId, quartoId, numero).isEmpty();
+		return !leitoRepo.existeOutroLeitoComEsseNumero(leitoId, quartoId, numero).isEmpty();
 	}
 
 	public boolean existeOutroLeitoComEsseNumero(Long quartoId, Integer numero) {
-		return !quartoRepo.existeOutroLeitoComEsseNumero(quartoId, numero).isEmpty();
+		return !leitoRepo.existeOutroLeitoComEsseNumero(quartoId, numero).isEmpty();
 	}
 
 	public boolean existeOutroQuartoComEsseNumero(Long id, Integer numero) {

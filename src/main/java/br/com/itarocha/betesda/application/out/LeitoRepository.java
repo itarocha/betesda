@@ -3,6 +3,7 @@ package br.com.itarocha.betesda.application.out;
 import br.com.itarocha.betesda.domain.Leito;
 import br.com.itarocha.betesda.domain.enums.LogicoEnum;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,4 +22,8 @@ public interface LeitoRepository {
     void deleteWhereQuartoId(Long quartoId);
 
     List<Leito> findAllWhereDisponivel(LogicoEnum disponivel);
+
+    Collection<Leito> existeOutroLeitoComEsseNumero(Long leitoId, Long quartoId, Integer leitoNumero);
+
+    Collection<Leito> existeOutroLeitoComEsseNumero(Long quartoId, Integer leitoNumero);
 }

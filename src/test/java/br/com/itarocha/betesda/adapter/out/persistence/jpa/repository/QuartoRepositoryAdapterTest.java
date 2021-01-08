@@ -87,6 +87,6 @@ public class QuartoRepositoryAdapterTest {
         TipoLeitoMapper tipoLeitoMapper = new TipoLeitoMapper();
         SituacaoLeitoMapper situacaoLeitoMapper = new SituacaoLeitoMapper();
         LeitoMapper leitoMapper = new LeitoMapper(tipoLeitoMapper, situacaoLeitoMapper);
-        return new QuartoRepositoryAdapter(repository, new QuartoMapper(destinacaoHospedagemMapper, leitoMapper), leitoMapper);
+        return new QuartoRepositoryAdapter(repository, new QuartoMapper(destinacaoHospedagemMapper, leitoMapper));
     }
 }

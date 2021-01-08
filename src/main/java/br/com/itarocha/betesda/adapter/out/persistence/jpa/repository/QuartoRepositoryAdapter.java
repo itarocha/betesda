@@ -1,15 +1,12 @@
 package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.QuartoEntity;
-import br.com.itarocha.betesda.adapter.out.persistence.mapper.LeitoMapper;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.QuartoMapper;
 import br.com.itarocha.betesda.application.out.QuartoRepository;
-import br.com.itarocha.betesda.domain.Leito;
 import br.com.itarocha.betesda.domain.Quarto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,7 +17,6 @@ public class QuartoRepositoryAdapter implements QuartoRepository {
 
     private final QuartoJpaRepository repository;
     private final QuartoMapper quartoMapper;
-    private final LeitoMapper leitoMapper;
 
     @Override
     public Quarto save(Quarto model) {
@@ -41,22 +37,6 @@ public class QuartoRepositoryAdapter implements QuartoRepository {
     @Override
     public void deleteById(Long id) {
         repository.deleteById(id);
-    }
-
-    @Override
-    public Collection<Leito> existeOutroLeitoComEsseNumero(Long leitoId, Long quartoId, Integer leitoNumero){
-        return repository.existeOutroLeitoComEsseNumero(leitoId, quartoId, leitoNumero)
-                .stream()
-                .map(leitoMapper::toModel)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public Collection<Leito> existeOutroLeitoComEsseNumero(Long quartoId, Integer leitoNumero){
-        return repository.existeOutroLeitoComEsseNumero(quartoId, leitoNumero)
-                .stream()
-                .map(leitoMapper::toModel)
-                .collect(Collectors.toList());
     }
 
     @Override

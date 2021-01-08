@@ -8,6 +8,7 @@ import br.com.itarocha.betesda.domain.enums.LogicoEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -60,4 +61,21 @@ public class LeitoRepositoryAdapter implements LeitoRepository {
                 .map(mapper::toModel)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Collection<Leito> existeOutroLeitoComEsseNumero(Long leitoId, Long quartoId, Integer leitoNumero){
+        return repository.existeOutroLeitoComEsseNumero(leitoId, quartoId, leitoNumero)
+                .stream()
+                .map(mapper::toModel)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<Leito> existeOutroLeitoComEsseNumero(Long quartoId, Integer leitoNumero){
+        return repository.existeOutroLeitoComEsseNumero(quartoId, leitoNumero)
+                .stream()
+                .map(mapper::toModel)
+                .collect(Collectors.toList());
+    }
+
 }

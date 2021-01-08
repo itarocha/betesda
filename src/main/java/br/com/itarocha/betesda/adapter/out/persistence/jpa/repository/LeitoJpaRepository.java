@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface LeitoJpaRepository extends JpaRepository<LeitoEntity, Long> {
@@ -19,5 +20,11 @@ public interface LeitoJpaRepository extends JpaRepository<LeitoEntity, Long> {
 
 	@Query("SELECT e FROM LeitoEntity e WHERE e.situacao.disponivel = :disponivel ORDER BY e.quarto.numero, e.numero")
 	List<LeitoEntity> findAllWhereDisponivel(@Param("disponivel") LogicoEnum s);
+
+	@Query("SELECT o FROM LeitoEntity o WHERE (o.quarto.id = :quartoId) AND (o.id <> :id) AND (o.numero = :numero)")
+	Collection<LeitoEntity> existeOutroLeitoComEsseNumero(@Param("id") Long leito_id, @Param("quartoId") Long quartoId, @Param("numero") Integer numero);
+
+	@Query("SELECT o FROM LeitoEntity o WHERE (o.quarto.id = :quartoId) AND (o.numero = :numero)")
+	Collection<LeitoEntity> existeOutroLeitoComEsseNumero(@Param("quartoId") Long quartoId, @Param("numero") Integer numero);
 
 }
