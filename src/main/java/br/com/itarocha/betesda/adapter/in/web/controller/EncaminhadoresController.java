@@ -48,7 +48,7 @@ public class EncaminhadoresController {
 		ItaValidator<EncaminhadorEntity> v = new ItaValidator<EncaminhadorEntity>(model);
 		v.validate();
 		if (!v.hasErrors() ) {
-			return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(v.getValidationResult(), HttpStatus.BAD_REQUEST);
 		}
 		
 		try {

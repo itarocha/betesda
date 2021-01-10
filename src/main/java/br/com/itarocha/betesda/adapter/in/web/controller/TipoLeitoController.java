@@ -1,5 +1,6 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
+import br.com.itarocha.betesda.adapter.dto.ApiError;
 import br.com.itarocha.betesda.application.TipoLeitoService;
 import br.com.itarocha.betesda.domain.TipoLeito;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
@@ -39,13 +40,15 @@ public class TipoLeitoController {
 		ItaValidator<TipoLeito> v = new ItaValidator<TipoLeito>(model);
 		v.validate();
 		if (!v.hasErrors() ) {
-			return new ResponseEntity(v.getErrors(), HttpStatus.BAD_REQUEST);
+			return ResponseEntity.unprocessableEntity()
+					.body(new ApiError(v.getValidationResult().getErrors()));
 		}
 		
 		try {
 		    return new ResponseEntity(service.create(model), HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(new ApiError(e.getMessage()),
+										HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
@@ -56,8 +59,8 @@ public class TipoLeitoController {
 			service.remove(id);
 		    return new ResponseEntity(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
-			// TODO: encapsular erro
-			return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity(	new ApiError(e.getMessage()),
+										HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	 }
 }

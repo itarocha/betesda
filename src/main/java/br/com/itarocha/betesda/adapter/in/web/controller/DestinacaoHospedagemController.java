@@ -1,8 +1,9 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
+import br.com.itarocha.betesda.adapter.dto.ApiError;
 import br.com.itarocha.betesda.application.port.in.DestinacaoHospedagemUseCase;
 import br.com.itarocha.betesda.domain.DestinacaoHospedagem;
-import br.com.itarocha.betesda.util.validation.ResultError;
+import br.com.itarocha.betesda.util.validation.EntityValidationError;
 import br.com.itarocha.betesda.util.validation.StaticValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,9 +33,9 @@ public class DestinacaoHospedagemController {
 		try {
 			DestinacaoHospedagem model = service.find(id);
 			if (model != null) {
-				return new ResponseEntity<>(model, HttpStatus.OK);
+				return ResponseEntity.ok(model);
 			} else {
-				return new ResponseEntity<>("Destinação de Hospedagem não existe", HttpStatus.NOT_FOUND);
+				return ResponseEntity.notFound().build();
 			}
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -43,19 +44,18 @@ public class DestinacaoHospedagemController {
 	
 	@PostMapping(consumes =  MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<DestinacaoHospedagem> gravar(@RequestBody DestinacaoHospedagem model) {
-
-		ResultError re = StaticValidator.validate(model);
+	public ResponseEntity<?> gravar(@RequestBody DestinacaoHospedagem model) {
+		EntityValidationError re = StaticValidator.validate(model);
 		if (!re.hasErrors() ) {
-			return new ResponseEntity(re.getErrors(), HttpStatus.BAD_REQUEST);
+			return ResponseEntity.unprocessableEntity().body(new ApiError(re.getErrors()));
 		}
 
 		try {
-			return new ResponseEntity(service.create(model), HttpStatus.OK);
+			return ResponseEntity.ok(service.create(model));
 		} catch (ConstraintViolationException e){
-			return new ResponseEntity(e.getConstraintViolations(), HttpStatus.BAD_REQUEST);
+			return ResponseEntity.badRequest().body(new ApiError(e.getMessage()));
 		} catch (Exception e) {
-			return new ResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	

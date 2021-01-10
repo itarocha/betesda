@@ -93,7 +93,7 @@ public class PessoasController {
 		}
 		
 		if (!v.hasErrors() ) {
-			return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(v.getValidationResult(), HttpStatus.BAD_REQUEST);
 		}
 		
 		try {

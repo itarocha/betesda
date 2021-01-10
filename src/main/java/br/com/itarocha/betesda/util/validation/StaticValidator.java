@@ -9,8 +9,8 @@ import java.util.function.BiFunction;
 
 public class StaticValidator {
 
-    public static <T> ResultError validate(T model){
-        ResultError result = new ResultError();
+    public static <T> EntityValidationError validate(T model){
+        EntityValidationError result = EntityValidationError.builder().build();
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
         Set<ConstraintViolation<T>> violations = validator.validate(model);
@@ -21,7 +21,7 @@ public class StaticValidator {
     }
 
     public static <T> boolean instanceIsValid(T model){
-        ResultError result = new ResultError();
+        EntityValidationError result = EntityValidationError.builder().build();
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
         Set<ConstraintViolation<T>> violations = validator.validate(model);

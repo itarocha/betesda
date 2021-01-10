@@ -1,5 +1,6 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
+import br.com.itarocha.betesda.adapter.dto.ApiError;
 import br.com.itarocha.betesda.application.*;
 import br.com.itarocha.betesda.application.port.in.*;
 import br.com.itarocha.betesda.domain.*;
@@ -17,27 +18,21 @@ import java.util.List;
 @RequestMapping("/api/app/quarto")
 public class QuartoController {
 
-	// OK - refatorado
 	@Autowired
 	private QuartoUseCase service;
 
-	// OK - refatorado
 	@Autowired
 	private TipoLeitoUseCase tls;
 
-	// OK - refatorado
 	@Autowired
 	private DestinacaoHospedagemUseCase dhs;
 
-	// OK - refatorado
 	@Autowired
 	private SituacaoLeitoUseCase sls;
 
-	// OK - refatorado
 	@Autowired
 	private TipoHospedeUseCase ths;
 
-	// OK - refatorado
 	@Autowired
 	private TipoServicoUseCase tss;
 	
@@ -46,29 +41,25 @@ public class QuartoController {
 	
 	@GetMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<?> listar() {
+	public ResponseEntity listar() {
 		List<Quarto> lista = service.findAll();
-		return new ResponseEntity<List<Quarto>>(lista, HttpStatus.OK);
+		return new ResponseEntity(lista, HttpStatus.OK);
 	}
 
 	@GetMapping("{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
-		try {
-			Quarto model = service.find(id);
-			if (model != null) {
-				return new ResponseEntity<>(model, HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>("Quarto não existe", HttpStatus.NOT_FOUND);
-			}
-		} catch (Exception e) {
-			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+	public ResponseEntity getById(@PathVariable("id") Long id) {
+		Quarto model = service.find(id);
+		if (model != null) {
+			return new ResponseEntity(model, HttpStatus.OK);
+		} else {
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
 		}
 	}
 	
 	@GetMapping("/leito/{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> getLeitoById(@PathVariable("id") Long id) {
+	public ResponseEntity getLeitoById(@PathVariable("id") Long id) {
 		try {
 			Leito model = service.findLeito(id);
 			if (model != null) {
@@ -80,39 +71,37 @@ public class QuartoController {
 				leito.setTipoLeito(model.getTipoLeito().getId());
 				leito.setSituacao(model.getSituacao().getId());
 				
-				return new ResponseEntity<>(leito, HttpStatus.OK);
+				return ResponseEntity.ok(leito);
 			} else {
-				return new ResponseEntity<>("Leito não existe", HttpStatus.NOT_FOUND);
+				return ResponseEntity.notFound().build();
 			}
 		} catch (Exception e) {
-			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity(new ApiError(e.getMessage()),
+										HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
 	@GetMapping("/por_destinacao_hospedagem/{id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<?> listarByDestinacaoHospedagem(@PathVariable("id") Long id) {
-		List<Quarto> lista = service.findAllByDestinacaoHospedagem(id);
-		return new ResponseEntity<List<Quarto>>(lista, HttpStatus.OK);
+	public ResponseEntity listarByDestinacaoHospedagem(@PathVariable("id") Long id) {
+		return ResponseEntity.ok(service.findAllByDestinacaoHospedagem(id));
 	}
 
 	@GetMapping("/{id}/leitos")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<?> listarLeitosByQuarto(@PathVariable("id") Long id) {
-		List<Leito> lista = service.findLeitosByQuarto(id);
-		return new ResponseEntity<List<Leito>>(lista, HttpStatus.OK);
+	public ResponseEntity<List<Leito>> listarLeitosByQuarto(@PathVariable("id") Long id) {
+		return ResponseEntity.ok(service.findLeitosByQuarto(id));
 	}
 
 	@GetMapping("/leitos_disponiveis")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<?> listarLeitosDisponiveis() {
-		List<Leito> lista = service.findLeitosDisponiveis();
-		return new ResponseEntity<List<Leito>>(lista, HttpStatus.OK);
+	public ResponseEntity listarLeitosDisponiveis() {
+		return ResponseEntity.ok(service.findLeitosDisponiveis());
 	}
 
 	@PostMapping
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody QuartoNew model) throws Exception {
+	public ResponseEntity gravar(@RequestBody QuartoNew model) throws Exception {
 		ItaValidator<QuartoNew> v = new ItaValidator<QuartoNew>(model);
 		v.validate();
 		if (service.existeOutroQuartoComEsseNumero(model.getNumero())) {
@@ -120,19 +109,14 @@ public class QuartoController {
 		}
 		
 		if (!v.hasErrors() ) {
-			return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
+			return ResponseEntity.unprocessableEntity().body(new ApiError(v.getValidationResult().getErrors()));
 		}
-	
-		// TODO tratar exceção
-		Quarto saved = null;
-		saved = service.create(model);
-	    //return Response.status(200).entity(saved).build();
-	    return new ResponseEntity<Quarto>(saved, HttpStatus.OK);
+		return ResponseEntity.ok(service.create(model));
 	}
 	
 	@PostMapping("/alterar")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravarAlteracao(@RequestBody QuartoEdit model) {
+	public ResponseEntity gravarAlteracao(@RequestBody QuartoEdit model) {
 		ItaValidator<QuartoEdit> v = new ItaValidator<QuartoEdit>(model);
 		v.validate();
 		try {
@@ -143,21 +127,22 @@ public class QuartoController {
 			}
 			
 			if (!v.hasErrors() ) {
-				return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
+				return ResponseEntity.unprocessableEntity().body(new ApiError(v.getValidationResult().getErrors()));
 			}
 		
 			Quarto saved = null;
 			saved = service.update(model);
 		    return new ResponseEntity<Quarto>(saved, HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<ApiError>(new ApiError(e.getMessage()),
+										HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	@PostMapping("/leito")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> gravarLeito(@RequestBody EditLeitoVO model) {
-		ItaValidator<EditLeitoVO> v = new ItaValidator<EditLeitoVO>(model);
+		ItaValidator<EditLeitoVO> v = new ItaValidator<>(model);
 		v.validate();
 		
 		try {
@@ -172,12 +157,9 @@ public class QuartoController {
 			}
 			
 			if (!v.hasErrors() ) {
-				return new ResponseEntity<>(v.getErrors(), HttpStatus.INTERNAL_SERVER_ERROR);
+				return ResponseEntity.unprocessableEntity().body(new ApiError(v.getValidationResult().getErrors()));
 			}
-		
-			Leito saved = null;
-			saved = service.saveLeito(model);
-			return new ResponseEntity<Leito>(saved, HttpStatus.OK);
+			return ResponseEntity.ok(service.saveLeito(model));
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -188,9 +170,9 @@ public class QuartoController {
 	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
 		try {
 			service.remove(id);
-			return new ResponseEntity<String>("sucesso", HttpStatus.OK);
+			return ResponseEntity.noContent().build();
 		} catch (Exception e) {
-			return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
+			return ResponseEntity.badRequest().body(new ApiError(e.getMessage()));
 		}
 	 }
 
@@ -199,37 +181,32 @@ public class QuartoController {
 	public ResponseEntity<?> excluirLeito(@PathVariable("id") Long id) {
 		try {
 			service.removeLeito(id);
-			return new ResponseEntity<String>("sucesso", HttpStatus.OK);
+			return ResponseEntity.noContent().build();
 		} catch (Exception e) {
-			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<ApiError>(new ApiError(e.getMessage()),
+										HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	 }
 	
 	@GetMapping("/listas")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<?> listas() {
+	public ResponseEntity<AutoWired> listas() {
 		AutoWired retorno = new AutoWired();
 		retorno.listaTipoLeito = tls.listSelect();
-		
 		retorno.listaDestinacaoHospedagem = dhs.listSelect();
-		
 		retorno.listaSituacaoLeito = sls.listSelect();
-		
 		retorno.listaTipoHospede = ths.listSelect();
-		
 		retorno.listaTipoServico = tss.listSelect();
-
 		retorno.listaEntidade = etds.listSelect();
-		
-		return new ResponseEntity<AutoWired>(retorno, HttpStatus.OK);
+		return ResponseEntity.ok(retorno);
 	}
 
 	static class AutoWired {
-		public List<SelectValueVO> listaTipoLeito = new ArrayList<SelectValueVO>();
+		public List<SelectValueVO> listaTipoLeito = new ArrayList<>();
 		public List<SelectValueVO> listaDestinacaoHospedagem = new ArrayList<SelectValueVO>();
-		public List<SelectValueVO> listaSituacaoLeito = new ArrayList<SelectValueVO>();
-		public List<SelectValueVO> listaTipoHospede = new ArrayList<SelectValueVO>();
-		public List<SelectValueVO> listaTipoServico = new ArrayList<SelectValueVO>();
-		public List<SelectValueVO> listaEntidade = new ArrayList<SelectValueVO>();
+		public List<SelectValueVO> listaSituacaoLeito = new ArrayList<>();
+		public List<SelectValueVO> listaTipoHospede = new ArrayList<>();
+		public List<SelectValueVO> listaTipoServico = new ArrayList<>();
+		public List<SelectValueVO> listaEntidade = new ArrayList<>();
 	} 
 }

@@ -5,7 +5,7 @@ import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.EntidadeEntity
 import br.com.itarocha.betesda.domain.SelectValueVO;
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.EnderecoJpaRepository;
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.EntidadeJpaRepository;
-import br.com.itarocha.betesda.util.validation.ResultError;
+import br.com.itarocha.betesda.util.validation.EntityValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +36,7 @@ public class EntidadeService {
 			Long id = model.getId() == null ? 0L : model.getId();
 			
 			if (this.entidadeCadastradaPorCampo(id, "cnpj", model.getCnpj())) {
-				throw new ValidationException(new ResultError().addError("cnpj", "CNPJ já casdastrado para outra Entidade"));
+				throw new ValidationException(EntityValidationError.builder().build().addError("cnpj", "CNPJ já casdastrado para outra Entidade"));
 			}
 			
 			enderecoRepo.save(model.getEndereco());

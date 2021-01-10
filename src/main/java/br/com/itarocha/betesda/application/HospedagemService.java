@@ -8,7 +8,7 @@ import br.com.itarocha.betesda.domain.enums.LogicoEnum;
 import br.com.itarocha.betesda.domain.enums.TipoUtilizacaoHospedagemEnum;
 import br.com.itarocha.betesda.domain.hospedagem.*;
 import br.com.itarocha.betesda.exception.ValidationException;
-import br.com.itarocha.betesda.util.validation.ResultError;
+import br.com.itarocha.betesda.util.validation.EntityValidationError;
 import br.com.itarocha.betesda.utils.LocalDateUtils;
 import br.com.itarocha.betesda.utils.StrUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,18 +81,18 @@ public class HospedagemService {
 		LocalDate hoje = LocalDate.now();
 			
 		if (model.getDataEntrada().isAfter(hoje)) {
-			throw new ValidationException(new ResultError().addError("*", 
+			throw new ValidationException(EntityValidationError.builder().build().addError("*",
 					String.format("Data de Entrada não pode ser superior a data atual (%s)",fmt.format(hoje))));
 		}
 		
 		if (model.getDataPrevistaSaida().isBefore(model.getDataEntrada())) {
-			throw new ValidationException(new ResultError().addError("*", 
+			throw new ValidationException(EntityValidationError.builder().build().addError("*",
 					String.format("Data Prevista de Saída não pode ser inferior a Data de Entrada (%s)",fmt.format(model.getDataEntrada()))));
 		}
 		
 		for (HospedeVO h : model.getHospedes()) {
 			if (!this.pessoaLivreNoPeriodo(h.getPessoaId(), model.getDataEntrada(), model.getDataPrevistaSaida())) {
-				throw new ValidationException(new ResultError().addError("*", String.format("[%s] está em outra hospedagem nesse período", h.getPessoaNome() )));
+				throw new ValidationException(EntityValidationError.builder().build().addError("*", String.format("[%s] está em outra hospedagem nesse período", h.getPessoaNome() )));
 			}
 		}
 		
@@ -898,31 +898,31 @@ public class HospedagemService {
 			
 			HospedagemEntity h = opt.get();
 			if ((h.getDataEfetivaSaida() != null)) {
-				throw new ValidationException(new ResultError().addError("*", "Hospedagem deve ter status = emAberto"));
+				throw new ValidationException(EntityValidationError.builder().build().addError("*", "Hospedagem deve ter status = emAberto"));
 			}
 	
 			LocalDate hoje = LocalDate.now();
 			
 			if (dataEncerramento.isAfter(hoje)) {
-				throw new ValidationException(new ResultError().addError("*", 
+				throw new ValidationException(EntityValidationError.builder().build().addError("*",
 						String.format("Data de Encerramento não pode ser superior a data atual (%s)",fmt.format(hoje))));
 			}
 
 			if (TipoUtilizacaoHospedagemEnum.P.equals(h.getTipoUtilizacao())) {
 				if (h.getDataEntrada().isAfter(dataEncerramento)) {
-					throw new ValidationException(new ResultError().addError("*", 
+					throw new ValidationException(EntityValidationError.builder().build().addError("*",
 							String.format("Data de Encerramento deve ser igual ou superior a Data de Entrada (%s)", fmt.format(h.getDataEntrada())) ));
 				} 
 			} else {
 				LocalDate dataMinima = hospedeLeitoRepo.ultimaDataEntradaByHospedagemId(hospedagemId);
 				if (dataEncerramento.isBefore(dataMinima)) {
-					throw new ValidationException(new ResultError().addError("*", 
+					throw new ValidationException(EntityValidationError.builder().build().addError("*",
 							String.format("Data de Encerramento deve ser igual ou superior a Data de Entrada da última movimentação (%s)",fmt.format(dataMinima))));
 				}
 			}
 			
 			if (dataEncerramento.isAfter(h.getDataPrevistaSaida())) {
-				throw new ValidationException(new ResultError().addError("*", 
+				throw new ValidationException(EntityValidationError.builder().build().addError("*",
 						String.format("Data de Encerramento deve ser inferior a data Prevista de Saída (%s)",fmt.format(h.getDataPrevistaSaida()))));
 			}
 			
@@ -959,7 +959,7 @@ public class HospedagemService {
 			HospedeEntity hospedeEntity = hospedeOpt.get();
 
 			if ((LogicoEnum.S.equals(hospedeEntity.getBaixado())  )) {
-				throw new ValidationException(new ResultError().addError("*", "Hóspede já está baixado"));
+				throw new ValidationException(EntityValidationError.builder().build().addError("*", "Hóspede já está baixado"));
 			}
 
 			Optional<HospedagemEntity> opt = hospedagemRepo.findById(hospedagemId);
@@ -967,22 +967,22 @@ public class HospedagemService {
 				
 				HospedagemEntity h = opt.get();
 				if ((h.getDataEfetivaSaida() != null)) {
-					throw new ValidationException(new ResultError().addError("*", "Hospedagem deve ter status = emAberto"));
+					throw new ValidationException(EntityValidationError.builder().build().addError("*", "Hospedagem deve ter status = emAberto"));
 				}
 				
 				Long qtd = hospedeLeitoRepo.countHospedesNaoBaixadosByHospedagemId(hospedagemId);
 				if (qtd <= 1) {
-					throw new ValidationException(new ResultError().addError("*", "Para baixar hóspede é necessário ter pelo menos 2 hóspedes ativos"));
+					throw new ValidationException(EntityValidationError.builder().build().addError("*", "Para baixar hóspede é necessário ter pelo menos 2 hóspedes ativos"));
 				}
 				
 				if (dataBaixa.isBefore(h.getDataEntrada())) {
-					throw new ValidationException(new ResultError().addError("*", "Data de encerramento deve ser superior a data de entrada"));
+					throw new ValidationException(EntityValidationError.builder().build().addError("*", "Data de encerramento deve ser superior a data de entrada"));
 				}
 				
 				List<HospedeLeitoEntity> listaHospedeLeitoEntity = hospedeLeitoRepo.findUltimoByHospedeId(hospedeId);
 				for (HospedeLeitoEntity hl : listaHospedeLeitoEntity) {
 					if (hl.getDataEntrada().isAfter(dataBaixa)) {
-						throw new ValidationException(new ResultError().addError("*", "Existe movimentação com data ANTERIOR a data da baixa"));
+						throw new ValidationException(EntityValidationError.builder().build().addError("*", "Existe movimentação com data ANTERIOR a data da baixa"));
 					}
 					
 					hl.setDataSaida(dataBaixa);
@@ -1006,12 +1006,12 @@ public class HospedagemService {
 				
 				HospedagemEntity h = opt.get();
 				if ((h.getDataEfetivaSaida() != null)) {
-					throw new ValidationException(new ResultError().addError("*", "Hospedagem deve ter status = emAberto"));
+					throw new ValidationException(EntityValidationError.builder().build().addError("*", "Hospedagem deve ter status = emAberto"));
 				}
 				
 				Long qtd = hospedeLeitoRepo.countHospedesNaoBaixadosByHospedagemId(hospedagemId);
 				if (qtd <= 1) {
-					throw new ValidationException(new ResultError().addError("*", "Para remover hóspede é necessário ter pelo menos 2 hóspedes ativos na hospedagem"));
+					throw new ValidationException(EntityValidationError.builder().build().addError("*", "Para remover hóspede é necessário ter pelo menos 2 hóspedes ativos na hospedagem"));
 				}
 				
 				hospedeRepo.delete(hospedeEntity);
@@ -1027,7 +1027,7 @@ public class HospedagemService {
 			HospedeEntity hospedeEntity = hospedeOpt.get();
 
 			if ((LogicoEnum.S.equals(hospedeEntity.getBaixado())  )) {
-				throw new ValidationException(new ResultError().addError("*", "Hóspede já está baixado"));
+				throw new ValidationException(EntityValidationError.builder().build().addError("*", "Hóspede já está baixado"));
 			}
 	
 			Optional<TipoHospedeEntity> th = tipoHospedeRepo.findById(tipoHospedeId);
@@ -1044,7 +1044,7 @@ public class HospedagemService {
 			HospedeEntity hospedeEntity = hospedeOpt.get();
 
 			if ((LogicoEnum.S.equals(hospedeEntity.getBaixado())  )) {
-				throw new ValidationException(new ResultError().addError("*", "Hóspede já está baixado"));
+				throw new ValidationException(EntityValidationError.builder().build().addError("*", "Hóspede já está baixado"));
 			}
 
 			Optional<HospedagemEntity> opt = hospedagemRepo.findById(hospedagemId);
@@ -1053,11 +1053,11 @@ public class HospedagemService {
 				HospedagemEntity h = opt.get();
 				
 				if (!TipoUtilizacaoHospedagemEnum.T.equals(h.getTipoUtilizacao())) {
-					throw new ValidationException(new ResultError().addError("*", "Tipo de Utilização da Hospedagem deve ser Total"));
+					throw new ValidationException(EntityValidationError.builder().build().addError("*", "Tipo de Utilização da Hospedagem deve ser Total"));
 				} 
 				
 				if ((h.getDataEfetivaSaida() != null)) {
-					throw new ValidationException(new ResultError().addError("*", "Hospedagem deve ter status = emAberto"));
+					throw new ValidationException(EntityValidationError.builder().build().addError("*", "Hospedagem deve ter status = emAberto"));
 				}
 				
 				List<BigInteger> hospedagens = hospedagensNoPeriodo(leitoId, dataTransferencia, h.getDataPrevistaSaida());
@@ -1065,29 +1065,29 @@ public class HospedagemService {
 				for (BigInteger _hospedagemId : hospedagens) {
 					Long value = hospedagemId.longValue(); 
 					if (!value.equals(h.getId())) {
-						throw new ValidationException(new ResultError().addError("*", "Este Leito já está em uso no período por outra Hospedagem"));
+						throw new ValidationException(EntityValidationError.builder().build().addError("*", "Este Leito já está em uso no período por outra Hospedagem"));
 					}
 				}
 
 				if (dataTransferencia.isBefore(h.getDataEntrada())) {
-					throw new ValidationException(new ResultError().addError("*", "Data de encerramento deve ser superior a data de entrada"));
+					throw new ValidationException(EntityValidationError.builder().build().addError("*", "Data de encerramento deve ser superior a data de entrada"));
 				}
 				
 				if (dataTransferencia.isAfter(h.getDataPrevistaSaida())) {
-					throw new ValidationException(new ResultError().addError("*", 
+					throw new ValidationException(EntityValidationError.builder().build().addError("*",
 							String.format("Data de Transferência deve ser inferior a data Prevista de Saída (%s)",fmt.format(h.getDataPrevistaSaida()))));
 				}
 				
 				LocalDate dataMinima = hospedeLeitoRepo.ultimaDataEntradaByHospedagemId(hospedagemId, hospedeId);
 				if (dataTransferencia.isBefore(dataMinima.plusDays(1))) {
-					throw new ValidationException(new ResultError().addError("*", 
+					throw new ValidationException(EntityValidationError.builder().build().addError("*",
 							String.format("Data de Transferência deve ser igual ou superior a Data de Entrada da última movimentação (%s)",fmt.format(dataMinima))));
 				}
 				
 				List<HospedeLeitoEntity> listaHospedeLeitoEntity = hospedeLeitoRepo.findUltimoByHospedeId(hospedeId);
 				for (HospedeLeitoEntity hl : listaHospedeLeitoEntity) {
 					if (hl.getDataEntrada().isAfter(dataTransferencia)) {
-						throw new ValidationException(new ResultError().addError("*", "Existe movimentação com data ANTERIOR a data da transferência"));
+						throw new ValidationException(EntityValidationError.builder().build().addError("*", "Existe movimentação com data ANTERIOR a data da transferência"));
 					}
 					
 					hl.setDataSaida(dataTransferencia.minusDays(1));
@@ -1126,39 +1126,39 @@ public class HospedagemService {
 		Optional<TipoHospedeEntity> tipoHospedeOpt = tipoHospedeRepo.findById(tipoHospedeId);
 		
 		if (!hospedagemOpt.isPresent()) {
-			throw new ValidationException(new ResultError().addError("*", "Hospedagem não existe"));
+			throw new ValidationException(EntityValidationError.builder().build().addError("*", "Hospedagem não existe"));
 		}
 		
 		if (!pessoaOpt.isPresent()) {
-			throw new ValidationException(new ResultError().addError("*", "Pessoa não cadastrada"));
+			throw new ValidationException(EntityValidationError.builder().build().addError("*", "Pessoa não cadastrada"));
 		}
 		
 		if (!leitoOpt.isPresent()) {
-			throw new ValidationException(new ResultError().addError("*", "Leito não encontrado"));
+			throw new ValidationException(EntityValidationError.builder().build().addError("*", "Leito não encontrado"));
 		}
 		
 		HospedagemEntity hospedagemEntity = hospedagemOpt.get();
 		if (!TipoUtilizacaoHospedagemEnum.T.equals(hospedagemEntity.getTipoUtilizacao())) {
-			throw new ValidationException(new ResultError().addError("*", "Tipo de Utilização da Hospedagem deve ser Total"));
+			throw new ValidationException(EntityValidationError.builder().build().addError("*", "Tipo de Utilização da Hospedagem deve ser Total"));
 		} 
 		
 		if ((hospedagemEntity.getDataEfetivaSaida() != null)) {
-			throw new ValidationException(new ResultError().addError("*", "Hospedagem deve ter status = emAberto"));
+			throw new ValidationException(EntityValidationError.builder().build().addError("*", "Hospedagem deve ter status = emAberto"));
 		}
 
 		if (dataEntrada.isBefore(hospedagemEntity.getDataEntrada())){
-			throw new ValidationException(new ResultError().addError("*", "Data não pode ser inferior a Data de Início da Hospedagem"));
+			throw new ValidationException(EntityValidationError.builder().build().addError("*", "Data não pode ser inferior a Data de Início da Hospedagem"));
 		}
 		
 		LocalDate hoje = LocalDate.now();
 		
 		if (dataEntrada.isAfter(hoje)) {
-			throw new ValidationException(new ResultError().addError("*", 
+			throw new ValidationException(EntityValidationError.builder().build().addError("*",
 					String.format("Data de Entrada não pode ser superior a data atual (%s)",fmt.format(hoje))));
 		}
 		
 		if (dataEntrada.isAfter(hospedagemEntity.getDataPrevistaSaida())) {
-			throw new ValidationException(new ResultError().addError("*", 
+			throw new ValidationException(EntityValidationError.builder().build().addError("*",
 					String.format("Data de Entrada deve ser inferior a data Prevista de Saída (%s)",fmt.format(hospedagemEntity.getDataPrevistaSaida()))));
 		}
 		
@@ -1202,11 +1202,11 @@ public class HospedagemService {
 			
 			HospedagemEntity h = opt.get();
 			if ((h.getDataEfetivaSaida() != null)) {
-				throw new ValidationException(new ResultError().addError("*", "Hospedagem deve ter status = emAberto"));
+				throw new ValidationException(EntityValidationError.builder().build().addError("*", "Hospedagem deve ter status = emAberto"));
 			}
 	
 			if (!dataRenovacao.isAfter(h.getDataPrevistaSaida())) {
-				throw new ValidationException(new ResultError().addError("*", 
+				throw new ValidationException(EntityValidationError.builder().build().addError("*",
 						String.format("Data de Renovação deve ser igual ou superior a Data Prevista de Saída (%s)", fmt.format(h.getDataPrevistaSaida())) ));
 			} 
 
@@ -1221,7 +1221,7 @@ public class HospedagemService {
 					
 					//hpd.getPessoa().getId()
 					if (!this.pessoaLivreNoPeriodo(hpd.getPessoa().getId(), h.getDataPrevistaSaida().plusDays(1L), dataRenovacao)) {
-						throw new ValidationException(new ResultError().addError("*", String.format("[%s] está em outra hospedagem nesse novo período", hpd.getPessoa().getNome() )));
+						throw new ValidationException(EntityValidationError.builder().build().addError("*", String.format("[%s] está em outra hospedagem nesse novo período", hpd.getPessoa().getNome() )));
 					}
 
 					List<HospedeLeitoEntity> listaHospedeLeitoEntity = hospedeLeitoRepo.findUltimoByHospedeId(hpd.getId());
@@ -1239,7 +1239,7 @@ public class HospedagemService {
 									Integer quartoNumero = hl.getQuarto().getNumero();
 									Integer leitoNumero = hl.getLeito().getNumero() ;
 
-									throw new ValidationException(new ResultError().addError("*", String.format("O Leito %s do Quarto %s já está em uso no período por outra Hospedagem", leitoNumero, quartoNumero)));
+									throw new ValidationException(EntityValidationError.builder().build().addError("*", String.format("O Leito %s do Quarto %s já está em uso no período por outra Hospedagem", leitoNumero, quartoNumero)));
 								}
 							}
 							

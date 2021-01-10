@@ -5,8 +5,10 @@ import br.com.itarocha.betesda.adapter.out.persistence.mapper.QuartoMapper;
 import br.com.itarocha.betesda.application.out.QuartoRepository;
 import br.com.itarocha.betesda.domain.Quarto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,34 +18,46 @@ import java.util.stream.Collectors;
 public class QuartoRepositoryAdapter implements QuartoRepository {
 
     private final QuartoJpaRepository repository;
-    private final QuartoMapper quartoMapper;
+    private final QuartoMapper mapper;
 
     @Override
     public Quarto save(Quarto model) {
-        return quartoMapper.toModel(repository.save(quartoMapper.toEntity(model)));
+        return mapper.toModel(repository.save(mapper.toEntity(model)));
     }
 
     @Override
     public Optional<Quarto> findById(Long id) {
         Optional<QuartoEntity> opt = repository.findById(id);
-        return opt.isPresent() ? Optional.of(quartoMapper.toModel(opt.get())) : Optional.ofNullable(null);
+        return opt.isPresent() ? Optional.of(mapper.toModel(opt.get())) : Optional.ofNullable(null);
     }
 
     @Override
     public void delete(Quarto model) {
-        repository.delete(quartoMapper.toEntity(model));
+        try {
+            repository.delete(mapper.toEntity(model));
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new RuntimeException("Tipo de Serviço não pode ser excluído. Ação fere as regras de integridade");
+        } catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override
     public void deleteById(Long id) {
-        repository.deleteById(id);
+        try {
+            repository.deleteById(id);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new RuntimeException("Tipo de Serviço não pode ser excluído. Ação fere as regras de integridade");
+        } catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override
     public List<Quarto> findAllOrderByQuartoNumero(){
         return repository.findAllOrderByQuartoNumero()
                 .stream()
-                .map(quartoMapper::toModel)
+                .map(mapper::toModel)
                 .collect(Collectors.toList());
     }
 
@@ -51,7 +65,7 @@ public class QuartoRepositoryAdapter implements QuartoRepository {
     public List<Quarto> existeOutroQuartoComEsseNumero(Long quartoId, Integer quartoNumero){
         return repository.existeOutroQuartoComEsseNumero(quartoId, quartoNumero)
                 .stream()
-                .map(quartoMapper::toModel)
+                .map(mapper::toModel)
                 .collect(Collectors.toList());
     }
 
@@ -59,7 +73,7 @@ public class QuartoRepositoryAdapter implements QuartoRepository {
     public List<Quarto> existeOutroQuartoComEsseNumero(Integer numero){
         return repository.existeOutroQuartoComEsseNumero(numero)
                 .stream()
-                .map(quartoMapper::toModel)
+                .map(mapper::toModel)
                 .collect(Collectors.toList());
     }
 
@@ -67,7 +81,7 @@ public class QuartoRepositoryAdapter implements QuartoRepository {
     public List<Quarto> findByDestinacaoHospedagemId(Long quartoId){
         return repository.findByDestinacaoHospedagemId(quartoId)
                 .stream()
-                .map(quartoMapper::toModel)
+                .map(mapper::toModel)
                 .collect(Collectors.toList());
     }
 }

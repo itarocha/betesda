@@ -5,7 +5,7 @@ import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.EnderecoEntity
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.PessoaEntity;
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.EnderecoJpaRepository;
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.PessoaJpaRepository;
-import br.com.itarocha.betesda.util.validation.ResultError;
+import br.com.itarocha.betesda.util.validation.EntityValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -40,15 +40,15 @@ public class PessoaService {
 			Long id = model.getId() == null ? 0L : model.getId();
 			
 			if (this.pessoaCadastradaPorCampo(id, "cpf", model.getCpf())) {
-				throw new ValidationException(new ResultError().addError("cpf", "CPF já casdastrado para outra pessoa"));
+				throw new ValidationException(EntityValidationError.builder().build().addError("cpf", "CPF já casdastrado para outra pessoa"));
 			}
 			
 			if (this.pessoaCadastradaPorCampo(id, "rg", model.getRg())) {
-				throw new ValidationException(new ResultError().addError("rg", "RG já casdastrado para outra pessoa"));
+				throw new ValidationException(EntityValidationError.builder().build().addError("rg", "RG já casdastrado para outra pessoa"));
 			}
 			
 			if (this.pessoaCadastradaPorCampo(id, "cartao_sus", model.getCartaoSus())) {
-				throw new ValidationException(new ResultError().addError("cartaoSus", "Cartão do SUS já casdastrado para outra pessoa"));
+				throw new ValidationException(EntityValidationError.builder().build().addError("cartaoSus", "Cartão do SUS já casdastrado para outra pessoa"));
 			}
 			
 			repositorio.save(model);

@@ -37,7 +37,7 @@ public class TipoLeitoRepositoryAdapter implements TipoLeitoRepository {
         try {
             repository.delete(mapper.toEntity(model));
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
-            throw new RuntimeException("Tipo de leito não pode ser excluído. Ação fere as regras de integridade");
+            throw new RuntimeException("Tipo de Leito não pode ser excluído. Ação fere as regras de integridade");
         } catch (Exception e){
             throw new RuntimeException(e.getMessage());
         }

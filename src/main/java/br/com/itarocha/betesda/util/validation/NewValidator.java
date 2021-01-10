@@ -10,11 +10,11 @@ import java.util.function.Function;
 public class NewValidator<T> {
 
 	private T ref;
-	private ResultError re;
+	private EntityValidationError re;
 
 	public NewValidator(T ref) {
 		this.ref = ref;
-		this.re = new ResultError();
+		this.re = EntityValidationError.builder().build();
 	}
 	
 	public T validate() {
@@ -33,7 +33,7 @@ public class NewValidator<T> {
 		return this.re.getErrors().isEmpty();
 	}
 	
-	public ResultError getErrors() {
+	public EntityValidationError getErrors() {
 		return this.re;
 	}
 
@@ -41,7 +41,7 @@ public class NewValidator<T> {
 		this.re.addError(fieldName, message);
 	}
 
-	public Function<T, ResultError> teste = t -> {
+	public Function<T, EntityValidationError> teste = t -> {
 		validate();
 		return  getErrors();
 	};

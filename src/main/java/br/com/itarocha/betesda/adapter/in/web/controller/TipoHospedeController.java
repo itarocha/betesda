@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
-import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.TipoHospedeEntity;
+import br.com.itarocha.betesda.adapter.dto.ApiError;
 import br.com.itarocha.betesda.application.TipoHospedeService;
 import br.com.itarocha.betesda.domain.TipoHospede;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
@@ -26,15 +26,11 @@ public class TipoHospedeController {
 	@GetMapping("{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
-		try {
-			TipoHospede model = service.find(id);
-			if (model != null) {
-				return new ResponseEntity(model, HttpStatus.OK);
-			} else {
-				return new ResponseEntity("Tipo de Hóspede não existe", HttpStatus.NOT_FOUND);
-			}
-		} catch (Exception e) {
-			return new ResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
+		TipoHospede model = service.find(id);
+		if (model != null) {
+			return ResponseEntity.ok(model);
+		} else {
+			return ResponseEntity.notFound().build();
 		}
 	 }
 	
@@ -44,13 +40,15 @@ public class TipoHospedeController {
 		ItaValidator<TipoHospede> v = new ItaValidator<TipoHospede>(model);
 		v.validate();
 		if (!v.hasErrors() ) {
-			return new ResponseEntity(v.getErrors(), HttpStatus.BAD_REQUEST);
+			return ResponseEntity.unprocessableEntity()
+					.body(new ApiError(v.getValidationResult().getErrors()));
 		}
 		
 		try {
 		    return new ResponseEntity(service.create(model), HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(new ApiError(e.getMessage()),
+										HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
@@ -59,9 +57,10 @@ public class TipoHospedeController {
 	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
 		try {
 			service.remove(id);
-		    return new ResponseEntity("sucesso", HttpStatus.OK);
+		    return new ResponseEntity(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
-			return new ResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity(	new ApiError(e.getMessage()),
+										HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	 }
 }

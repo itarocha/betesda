@@ -1,5 +1,6 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
+import br.com.itarocha.betesda.adapter.dto.ApiError;
 import br.com.itarocha.betesda.application.TipoServicoService;
 import br.com.itarocha.betesda.domain.TipoServico;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
@@ -19,21 +20,17 @@ public class TipoServicoController {
 	@GetMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
-	    return new ResponseEntity(service.findAll(), HttpStatus.OK);
+	    return ResponseEntity.ok(service.findAll());
 	}
 
 	@GetMapping(value="{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
-		try {
-			TipoServico model = service.find(id);
-			if (model != null) {
-				return new ResponseEntity(model, HttpStatus.OK);
-			} else {
-				return new ResponseEntity("Tipo de Serviço não existe", HttpStatus.NOT_FOUND);
-			}
-		} catch (Exception e) {
-			return new ResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
+		TipoServico model = service.find(id);
+		if (model != null) {
+			return ResponseEntity.ok(model);
+		} else {
+			return ResponseEntity.notFound().build();
 		}
 	}
 	
@@ -43,14 +40,15 @@ public class TipoServicoController {
 		ItaValidator<TipoServico> v = new ItaValidator(model);
 		v.validate();
 		if (!v.hasErrors() ) {
-			return new ResponseEntity(v.getErrors(), HttpStatus.BAD_REQUEST);
+			return ResponseEntity.unprocessableEntity()
+					.body(new ApiError(v.getValidationResult().getErrors()));
 		}
 		
 		try {
-			TipoServico saved = service.create(model);
-		    return new ResponseEntity(saved, HttpStatus.OK);
+		    return ResponseEntity.ok(service.create(model));
 		} catch (Exception e) {
-			return new ResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity(	new ApiError(e.getMessage()),
+										HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
@@ -59,9 +57,10 @@ public class TipoServicoController {
 	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
 		try {
 			service.remove(id);
-		    return new ResponseEntity("sucesso", HttpStatus.OK);
+		    return new ResponseEntity(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
-			return new ResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity(	new ApiError(e.getMessage()),
+										HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	 }
 }

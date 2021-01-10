@@ -6,8 +6,10 @@ import br.com.itarocha.betesda.application.out.LeitoRepository;
 import br.com.itarocha.betesda.domain.Leito;
 import br.com.itarocha.betesda.domain.enums.LogicoEnum;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -33,12 +35,24 @@ public class LeitoRepositoryAdapter implements LeitoRepository {
 
     @Override
     public void delete(Leito model) {
-        repository.delete(mapper.toEntity(model));
+        try {
+            repository.delete(mapper.toEntity(model));
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new RuntimeException("Tipo de Serviço não pode ser excluído. Ação fere as regras de integridade");
+        } catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override
     public void deleteById(Long id) {
-        repository.deleteById(id);
+        try {
+            repository.deleteById(id);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new RuntimeException("Tipo de Serviço não pode ser excluído. Ação fere as regras de integridade");
+        } catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override

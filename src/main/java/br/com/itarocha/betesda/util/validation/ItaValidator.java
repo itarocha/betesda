@@ -11,14 +11,14 @@ import java.util.function.Function;
 public class ItaValidator<T> {
 	
 	private T ref;
-	private ResultError re;
+	private EntityValidationError re;
 
 	public ItaValidator(T ref) {
 		this.ref = ref;
-		this.re = new ResultError();
+		this.re = EntityValidationError.builder().build();
 	}
 	
-	public ResultError validate() {
+	public EntityValidationError validate() {
 		this.re.getErrors().clear();
 		
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -30,7 +30,7 @@ public class ItaValidator<T> {
 		return this.re;
 	}
 
-	public Optional<ResultError> newValidate() {
+	public Optional<EntityValidationError> newValidate() {
 		this.re.getErrors().clear();
 
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -47,7 +47,7 @@ public class ItaValidator<T> {
 		return this.re.getErrors().isEmpty();
 	}
 	
-	public ResultError getErrors() {
+	public EntityValidationError getValidationResult() {
 		return this.re;
 	}
 
@@ -55,8 +55,8 @@ public class ItaValidator<T> {
 		this.re.addError(fieldName, message);
 	}
 
-	public Function<T, ResultError> teste = t -> {
+	public Function<T, EntityValidationError> teste = t -> {
 		validate();
-		return  getErrors();
+		return  getValidationResult();
 	};
 }
