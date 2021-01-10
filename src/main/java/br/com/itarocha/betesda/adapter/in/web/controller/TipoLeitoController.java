@@ -25,15 +25,11 @@ public class TipoLeitoController {
 	@GetMapping("{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
-		try {
-			TipoLeito model = service.find(id);
-			if (model != null) {
-				return new ResponseEntity(model, HttpStatus.OK);
-			} else {
-				return new ResponseEntity("Tipo de Leito não existe", HttpStatus.NOT_FOUND);
-			}
-		} catch (Exception e) {
-			return new ResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
+		TipoLeito model = service.find(id);
+		if (model != null) {
+			return new ResponseEntity(model, HttpStatus.OK);
+		} else {
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
 		}
 	}
 	
@@ -58,9 +54,10 @@ public class TipoLeitoController {
 	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
 		try {
 			service.remove(id);
-		    return new ResponseEntity("sucesso", HttpStatus.OK);
+		    return new ResponseEntity(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
-			return new ResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
+			// TODO: encapsular erro
+			return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	 }
 }

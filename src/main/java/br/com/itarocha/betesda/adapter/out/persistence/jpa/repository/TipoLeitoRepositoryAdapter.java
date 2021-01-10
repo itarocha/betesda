@@ -6,8 +6,10 @@ import br.com.itarocha.betesda.application.out.TipoLeitoRepository;
 import br.com.itarocha.betesda.domain.SelectValueVO;
 import br.com.itarocha.betesda.domain.TipoLeito;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,7 +34,13 @@ public class TipoLeitoRepositoryAdapter implements TipoLeitoRepository {
 
     @Override
     public void delete(TipoLeito model) {
-        repository.delete(mapper.toEntity(model));
+        try {
+            repository.delete(mapper.toEntity(model));
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new RuntimeException("Tipo de leito não pode ser excluído. Ação fere as regras de integridade");
+        } catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override

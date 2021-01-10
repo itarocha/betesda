@@ -18,7 +18,7 @@ public class TipoLeito {
 	private Long id;
 
 	@NotNull(message="Descrição é obrigatória")
-	@Size(max = 32, message="Descrição da Destinação da Hospedagem não pode ter mais que 32 caracteres")
+	@Size(min = 3, max = 32, message="Descrição da Destinação da Hospedagem deve ter entre 3 e 32 caracteres")
 	private String descricao;
 
 	@NotNull(message="Quantidade de Camas precisa ser informada")

@@ -14,7 +14,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TipoLeitoService implements TipoLeitoUseCase {
 
-	private TipoLeitoRepository repository;
+	private final TipoLeitoRepository repository;
 
 	@Override
 	public TipoLeito create(TipoLeito model) {
