@@ -97,7 +97,7 @@ public class QuartoService implements QuartoUseCase {
 	}
 
 	public Quarto update(QuartoEdit model) {
-		AtomicReference<Quarto> atomicQuarto = null;
+		AtomicReference<Quarto> atomicQuarto = new AtomicReference<>();
 		quartoRepo.findById(model.getId()).ifPresent(quarto -> {
 			quarto.getDestinacoes().clear();
 			quarto.setDescricao(model.getDescricao());

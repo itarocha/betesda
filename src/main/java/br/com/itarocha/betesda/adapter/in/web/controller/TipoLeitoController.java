@@ -3,12 +3,15 @@ package br.com.itarocha.betesda.adapter.in.web.controller;
 import br.com.itarocha.betesda.adapter.dto.ApiError;
 import br.com.itarocha.betesda.application.TipoLeitoService;
 import br.com.itarocha.betesda.domain.TipoLeito;
-import br.com.itarocha.betesda.util.validation.ItaValidator;
+import br.com.itarocha.betesda.util.validation.Validavel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 @RestController
 @RequestMapping("/api/app/tipo_leito")
@@ -27,29 +30,23 @@ public class TipoLeitoController {
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		TipoLeito model = service.find(id);
-		if (model != null) {
-			return new ResponseEntity(model, HttpStatus.OK);
-		} else {
-			return new ResponseEntity(HttpStatus.NOT_FOUND);
-		}
+		return Objects.nonNull(model) ? ResponseEntity.ok(model) : ResponseEntity.notFound().build();
 	}
 	
 	@PostMapping
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> gravar(@RequestBody TipoLeito model) {
-		ItaValidator<TipoLeito> v = new ItaValidator<TipoLeito>(model);
-		v.validate();
-		if (!v.hasErrors() ) {
-			return ResponseEntity.unprocessableEntity()
-					.body(new ApiError(v.getValidationResult().getErrors()));
-		}
-		
-		try {
-		    return new ResponseEntity(service.create(model), HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(new ApiError(e.getMessage()),
-										HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		AtomicReference<ResponseEntity<?>> atomicReference = new AtomicReference<>();
+		Validavel<TipoLeito> validavel = new Validavel(model);
+		validavel.isValid( obj -> {
+					try {
+						atomicReference.set(ResponseEntity.ok(service.create(obj)));
+					} catch (Exception e) {
+						atomicReference.set(new ResponseEntity(new ApiError(e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR));
+					}
+				})
+				.orElse(i -> atomicReference.set(new ResponseEntity(new ApiError(i.getErrors()),HttpStatus.INTERNAL_SERVER_ERROR)));
+		return atomicReference.get();
 	}
 	
 	@DeleteMapping("{id}")
@@ -59,8 +56,7 @@ public class TipoLeitoController {
 			service.remove(id);
 		    return new ResponseEntity(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
-			return new ResponseEntity(	new ApiError(e.getMessage()),
-										HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity(	new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	 }
 }

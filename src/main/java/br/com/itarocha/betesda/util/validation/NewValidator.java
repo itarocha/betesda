@@ -42,7 +42,7 @@ public class NewValidator<T> {
 	}
 
 	public Function<T, EntityValidationError> teste = t -> {
-		validate();
+		T retorno = validate();
 		return  getErrors();
 	};
 

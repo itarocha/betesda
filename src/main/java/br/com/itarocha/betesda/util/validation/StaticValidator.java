@@ -6,6 +6,7 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class StaticValidator {
 
@@ -35,11 +36,24 @@ public class StaticValidator {
     //BIPREDICATE
     // T, U, R
     class BiFunctionDemo implements BiFunction<Integer, Integer, Integer>{
-
         @Override
         public Integer apply(Integer t, Integer u) {
             return null;
         }
+    }
+
+    public static <T> EntityValidationError validar(T trem){
+        Function<T, EntityValidationError> func = entrada -> {
+            EntityValidationError result = EntityValidationError.builder().build();
+            ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+            Validator validator = factory.getValidator();
+            Set<ConstraintViolation<T>> violations = validator.validate(entrada);
+            for (ConstraintViolation<T> violation : violations ) {
+                result.addError(violation.getPropertyPath().toString(), violation.getMessage());
+            }
+            return result;
+        };
+        return func.apply(trem);
     }
 
 }
