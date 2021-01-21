@@ -7,6 +7,7 @@ import javax.validation.ValidatorFactory;
 import java.util.Set;
 import java.util.function.Function;
 
+@Deprecated
 public class NewValidator<T> {
 
 	private T ref;

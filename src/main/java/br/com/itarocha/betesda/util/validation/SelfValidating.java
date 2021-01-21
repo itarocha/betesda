@@ -7,6 +7,7 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.Set;
 
+@Deprecated
 public abstract class SelfValidating<T> {
 
     private Validator validator;

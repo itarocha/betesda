@@ -1,5 +1,6 @@
 package br.com.itarocha.betesda.util.validation;
 
+@Deprecated
 public class FieldValidationError {
 	
 	private String fieldName;

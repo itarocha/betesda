@@ -3,7 +3,7 @@ package br.com.itarocha.betesda.adapter.in.web.controller;
 import br.com.itarocha.betesda.adapter.dto.ApiError;
 import br.com.itarocha.betesda.application.TipoLeitoService;
 import br.com.itarocha.betesda.domain.TipoLeito;
-import br.com.itarocha.betesda.util.validation.Validavel;
+import br.com.itarocha.betesda.util.validacoes.ValidatorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +19,9 @@ public class TipoLeitoController {
 
 	@Autowired
 	private TipoLeitoService service;
+
+	@Autowired
+	private ValidatorUtil validationUtils;
 	
 	@GetMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
@@ -36,17 +39,13 @@ public class TipoLeitoController {
 	@PostMapping
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> gravar(@RequestBody TipoLeito model) {
-		AtomicReference<ResponseEntity<?>> atomicReference = new AtomicReference<>();
-		Validavel<TipoLeito> validavel = new Validavel(model);
-		validavel.isValid( obj -> {
-					try {
-						atomicReference.set(ResponseEntity.ok(service.create(obj)));
-					} catch (Exception e) {
-						atomicReference.set(new ResponseEntity(new ApiError(e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR));
-					}
-				})
-				.orElse(i -> atomicReference.set(new ResponseEntity(new ApiError(i.getErrors()),HttpStatus.INTERNAL_SERVER_ERROR)));
-		return atomicReference.get();
+		validationUtils.validate(model);
+
+		try {
+			return ResponseEntity.ok(service.create(model));
+		} catch (Exception e) {
+			return new ResponseEntity(new ApiError(e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	@DeleteMapping("{id}")

@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+@Deprecated
 public class StaticValidator {
 
     public static <T> EntityValidationError validate(T model){

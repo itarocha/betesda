@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
+@Deprecated
 public class ItaValidator<T> {
 	
 	private T ref;
