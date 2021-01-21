@@ -4,15 +4,14 @@ import java.util.Set;
 
 public class ValidationException extends RuntimeException{
 
-    private ErrorResult errorResult;
+    private Set<Violation> errors;
 
     public ValidationException(Set<Violation> errors){
         super();
-        this.errorResult = new ErrorResult();
-        this.errorResult.setErrors(errors);
+        this.errors = errors;
     }
 
-    public ErrorResult getErrorResult(){
-        return this.errorResult;
+    public Set<Violation> getErrors(){
+        return this.errors;
     }
 }
