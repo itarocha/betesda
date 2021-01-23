@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.application;
 
-import br.com.itarocha.betesda.exception.ValidationException;
+import br.com.itarocha.betesda.exception.ObsoleteValidationException;
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.EntidadeEntity;
 import br.com.itarocha.betesda.domain.SelectValueVO;
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.EnderecoJpaRepository;
@@ -30,18 +30,18 @@ public class EntidadeService {
 	public EntidadeService() {
 	}
 
-	public EntidadeEntity create(EntidadeEntity model) throws ValidationException {
+	public EntidadeEntity create(EntidadeEntity model) throws ObsoleteValidationException {
 		try{
 			
 			Long id = model.getId() == null ? 0L : model.getId();
 			
 			if (this.entidadeCadastradaPorCampo(id, "cnpj", model.getCnpj())) {
-				throw new ValidationException(EntityValidationError.builder().build().addError("cnpj", "CNPJ já casdastrado para outra Entidade"));
+				throw new ObsoleteValidationException(EntityValidationError.builder().build().addError("cnpj", "CNPJ já casdastrado para outra Entidade"));
 			}
 			
 			enderecoRepo.save(model.getEndereco());
 			repositorio.save(model);
-		} catch (ValidationException e) {
+		} catch (ObsoleteValidationException e) {
 			throw e;
 		}catch(Exception e){
 			throw new IllegalArgumentException(e.getMessage());

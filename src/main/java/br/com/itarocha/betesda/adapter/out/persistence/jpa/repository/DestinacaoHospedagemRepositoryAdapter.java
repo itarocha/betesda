@@ -3,9 +3,11 @@ package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.DestinacaoHospedagemEntity;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.DestinacaoHospedagemMapper;
 import br.com.itarocha.betesda.application.out.DestinacaoHospedagemRepository;
+import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
 import br.com.itarocha.betesda.domain.DestinacaoHospedagem;
 import br.com.itarocha.betesda.domain.SelectValueVO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,7 +23,12 @@ public class DestinacaoHospedagemRepositoryAdapter implements DestinacaoHospedag
 
     @Override
     public DestinacaoHospedagem save(DestinacaoHospedagem model) {
-        return mapper.toModel(repository.save(mapper.toEntity(model)));
+        try {
+            return mapper.toModel(repository.save(mapper.toEntity(model)));
+        } catch ( DataIntegrityViolationException e) {
+            throw new IntegridadeException("Falha de integridade ao tentar gravar Destinação de Hospedagem"
+                    , e.getMostSpecificCause().getMessage());
+        }
     }
 
     @Override
@@ -32,7 +39,12 @@ public class DestinacaoHospedagemRepositoryAdapter implements DestinacaoHospedag
 
     @Override
     public void delete(DestinacaoHospedagem model) {
-        repository.delete(mapper.toEntity(model));
+        try {
+            repository.delete(mapper.toEntity(model));
+        } catch ( DataIntegrityViolationException e) {
+            throw new IntegridadeException("Falha de integridade ao tentar excluir Destinação de Hospedagem"
+                    , e.getMostSpecificCause().getMessage());
+        }
     }
 
     @Override

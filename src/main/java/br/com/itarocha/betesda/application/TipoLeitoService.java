@@ -18,11 +18,7 @@ public class TipoLeitoService implements TipoLeitoUseCase {
 
 	@Override
 	public TipoLeito create(TipoLeito model) {
-		try{
-			return repository.save(model);
-		}catch(Exception e){
-			throw new IllegalArgumentException(e.getMessage());
-		}
+		return repository.save(model);
 	}
 
 	@Override

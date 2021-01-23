@@ -3,13 +3,13 @@ package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.LeitoEntity;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.LeitoMapper;
 import br.com.itarocha.betesda.application.out.LeitoRepository;
+import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
 import br.com.itarocha.betesda.domain.Leito;
 import br.com.itarocha.betesda.domain.enums.LogicoEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import javax.validation.ConstraintViolationException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +24,12 @@ public class LeitoRepositoryAdapter implements LeitoRepository {
 
     @Override
     public Leito save(Leito model) {
-        return mapper.toModel(repository.save(mapper.toEntity(model)));
+        try {
+            return mapper.toModel(repository.save(mapper.toEntity(model)));
+        } catch ( DataIntegrityViolationException e) {
+            throw new IntegridadeException("Falha de integridade ao tentar gravar Leito"
+                    , e.getMostSpecificCause().getMessage());
+        }
     }
 
     @Override
@@ -37,10 +42,9 @@ public class LeitoRepositoryAdapter implements LeitoRepository {
     public void delete(Leito model) {
         try {
             repository.delete(mapper.toEntity(model));
-        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
-            throw new RuntimeException("Tipo de Serviço não pode ser excluído. Ação fere as regras de integridade");
-        } catch (Exception e){
-            throw new RuntimeException(e.getMessage());
+        } catch ( DataIntegrityViolationException e) {
+            throw new IntegridadeException("Falha de integridade ao tentar excluir Leito"
+                    , e.getMostSpecificCause().getMessage());
         }
     }
 
@@ -48,10 +52,9 @@ public class LeitoRepositoryAdapter implements LeitoRepository {
     public void deleteById(Long id) {
         try {
             repository.deleteById(id);
-        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
-            throw new RuntimeException("Tipo de Serviço não pode ser excluído. Ação fere as regras de integridade");
-        } catch (Exception e){
-            throw new RuntimeException(e.getMessage());
+        } catch ( DataIntegrityViolationException e) {
+            throw new IntegridadeException("Falha de integridade ao tentar excluir Leito"
+                    , e.getMostSpecificCause().getMessage());
         }
     }
 
@@ -91,5 +94,4 @@ public class LeitoRepositoryAdapter implements LeitoRepository {
                 .map(mapper::toModel)
                 .collect(Collectors.toList());
     }
-
 }

@@ -3,13 +3,13 @@ package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.TipoHospedeEntity;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.TipoHospedeMapper;
 import br.com.itarocha.betesda.application.out.TipoHospedeRepository;
+import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
 import br.com.itarocha.betesda.domain.SelectValueVO;
 import br.com.itarocha.betesda.domain.TipoHospede;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,7 +23,12 @@ public class TipoHospedeRepositoryAdapter implements TipoHospedeRepository {
 
     @Override
     public TipoHospede save(TipoHospede model) {
-        return mapper.toModel(repository.save(mapper.toEntity(model)));
+        try {
+            return mapper.toModel(repository.save(mapper.toEntity(model)));
+        } catch ( DataIntegrityViolationException e) {
+            throw new IntegridadeException("Falha de integridade ao tentar gravar Tipo de Hóspede"
+                    , e.getMostSpecificCause().getMessage());
+        }
     }
 
     @Override
@@ -36,10 +41,9 @@ public class TipoHospedeRepositoryAdapter implements TipoHospedeRepository {
     public void delete(TipoHospede model) {
         try {
             repository.delete(mapper.toEntity(model));
-        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
-            throw new RuntimeException("Tipo de Serviço não pode ser excluído. Ação fere as regras de integridade");
-        } catch (Exception e){
-            throw new RuntimeException(e.getMessage());
+        } catch (DataIntegrityViolationException e) {
+            throw new IntegridadeException("Falha de integridade ao tentar excluir Tipo de Hóspede"
+                    , e.getMostSpecificCause().getMessage());
         }
     }
 

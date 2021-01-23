@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
 import br.com.itarocha.betesda.domain.hospedagem.*;
-import br.com.itarocha.betesda.exception.ValidationException;
+import br.com.itarocha.betesda.exception.ObsoleteValidationException;
 import br.com.itarocha.betesda.domain.HospedagemFullVO;
 import br.com.itarocha.betesda.domain.HospedagemVO;
 import br.com.itarocha.betesda.domain.HospedeVO;
@@ -77,7 +77,7 @@ public class HospedagemController {
 		try {
 			service.create(model);
 		    return new ResponseEntity<HospedagemVO>(model, HttpStatus.OK);
-		} catch (ValidationException e) {
+		} catch (ObsoleteValidationException e) {
 			return new ResponseEntity<EntityValidationError>(e.getRe(), HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -223,7 +223,7 @@ public class HospedagemController {
 		try {
 			service.alterarTipoHospede(model.hospedeId, model.tipoHospedeId);
 			return new ResponseEntity<String>("ok", HttpStatus.OK);
-		} catch(ValidationException e) {
+		} catch(ObsoleteValidationException e) {
 			return new ResponseEntity<EntityValidationError>(e.getRe(), HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -235,7 +235,7 @@ public class HospedagemController {
 		try {
 			service.encerrarHospedagem(model.hospedagemId, model.data);
 			return new ResponseEntity<String>("ok", HttpStatus.OK);
-		} catch(ValidationException e) {
+		} catch(ObsoleteValidationException e) {
 			return new ResponseEntity<EntityValidationError>(e.getRe(), HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -247,7 +247,7 @@ public class HospedagemController {
 		try {
 			service.renovarHospedagem(model.hospedagemId, model.data);
 			return new ResponseEntity<String>("ok", HttpStatus.OK);
-		} catch(ValidationException e) {
+		} catch(ObsoleteValidationException e) {
 			return new ResponseEntity<EntityValidationError>(e.getRe(), HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -259,7 +259,7 @@ public class HospedagemController {
 		try {
 			service.removerHospede(model.hospedagemId, model.hospedeId);
 			return new ResponseEntity<String>("ok", HttpStatus.OK); 
-		} catch(ValidationException e) {
+		} catch(ObsoleteValidationException e) {
 			return new ResponseEntity<EntityValidationError>(e.getRe(), HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -271,7 +271,7 @@ public class HospedagemController {
 		try {
 			service.baixarHospede(model.hospedeId, model.data);
 			return new ResponseEntity<String>("ok", HttpStatus.OK); 
-		} catch(ValidationException e) {
+		} catch(ObsoleteValidationException e) {
 			return new ResponseEntity<EntityValidationError>(e.getRe(), HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -283,7 +283,7 @@ public class HospedagemController {
 		try {
 			service.transferirHospede(model.hospedeId, model.leitoId, model.data);
 			return new ResponseEntity<String>("ok", HttpStatus.OK); 
-		} catch(ValidationException e) {
+		} catch(ObsoleteValidationException e) {
 			return new ResponseEntity<EntityValidationError>(e.getRe(), HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -295,7 +295,7 @@ public class HospedagemController {
 		try {
 			service.adicionarHospede(model.hospedagemId, model.pessoaId, model.tipoHospedeId, model.leitoId, model.data);
 			return new ResponseEntity<String>("ok", HttpStatus.OK); 
-		} catch(ValidationException e) {
+		} catch(ObsoleteValidationException e) {
 			return new ResponseEntity<EntityValidationError>(e.getRe(), HttpStatus.BAD_REQUEST);
 		}
 	}

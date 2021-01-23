@@ -1,12 +1,13 @@
 package br.com.itarocha.betesda.util.validacoes;
 
+import java.io.Serializable;
 import java.util.Set;
 
-public class ValidationException extends RuntimeException{
+public class EntityValidationException extends RuntimeException implements Serializable {
 
     private Set<Violation> errors;
 
-    public ValidationException(Set<Violation> errors){
+    public EntityValidationException(Set<Violation> errors){
         super();
         this.errors = errors;
     }

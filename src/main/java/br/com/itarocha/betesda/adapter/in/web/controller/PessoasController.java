@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
-import br.com.itarocha.betesda.exception.ValidationException;
+import br.com.itarocha.betesda.exception.ObsoleteValidationException;
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.PessoaEntity;
 import br.com.itarocha.betesda.domain.SearchRequest;
 import br.com.itarocha.betesda.application.PessoaService;
@@ -100,7 +100,7 @@ public class PessoasController {
 			PessoaEntity saved = null;
 			saved = service.create(model);
 		    return new ResponseEntity<PessoaEntity>(saved, HttpStatus.OK);
-		} catch (ValidationException e) {
+		} catch (ObsoleteValidationException e) {
 			ResponseEntity<?> re = new ResponseEntity<>(e.getRe(), HttpStatus.BAD_REQUEST); 
 			return re;
 		} catch (Exception e) {

@@ -4,8 +4,8 @@ import br.com.itarocha.betesda.adapter.dto.ApiError;
 import br.com.itarocha.betesda.application.*;
 import br.com.itarocha.betesda.application.port.in.*;
 import br.com.itarocha.betesda.domain.*;
-import br.com.itarocha.betesda.util.validation.ItaValidator;
-import org.springframework.beans.factory.annotation.Autowired;
+import br.com.itarocha.betesda.util.validacoes.ValidatorUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,50 +16,41 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/app/quarto")
+@RequiredArgsConstructor
 public class QuartoController {
 
-	@Autowired
-	private QuartoUseCase service;
+	private final QuartoUseCase service;
+	private final ValidatorUtil validationUtils;
 
-	@Autowired
-	private TipoLeitoUseCase tls;
+	// TODO serviços devem sair daqui
+	private final TipoLeitoUseCase tls;
+	private final DestinacaoHospedagemUseCase dhs;
+	private final SituacaoLeitoUseCase sls;
+	private final TipoHospedeUseCase ths;
+	private final TipoServicoUseCase tss;
+	private final EntidadeService etds;
 
-	@Autowired
-	private DestinacaoHospedagemUseCase dhs;
 
-	@Autowired
-	private SituacaoLeitoUseCase sls;
-
-	@Autowired
-	private TipoHospedeUseCase ths;
-
-	@Autowired
-	private TipoServicoUseCase tss;
-	
-	@Autowired
-	private EntidadeService etds;
-	
 	@GetMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity listar() {
-		List<Quarto> lista = service.findAll();
-		return new ResponseEntity(lista, HttpStatus.OK);
+	public ResponseEntity<List<Quarto>> listar() {
+		return ResponseEntity.ok(service.findAll());
 	}
 
 	@GetMapping("{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity getById(@PathVariable("id") Long id) {
+	public ResponseEntity<Quarto> getById(@PathVariable("id") Long id) {
 		Quarto model = service.find(id);
 		if (model != null) {
-			return new ResponseEntity(model, HttpStatus.OK);
+			return ResponseEntity.ok(model);
 		} else {
-			return new ResponseEntity(HttpStatus.NOT_FOUND);
+			return ResponseEntity.notFound().build();
 		}
 	}
 	
 	@GetMapping("/leito/{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity getLeitoById(@PathVariable("id") Long id) {
+	public ResponseEntity<EditLeitoVO> getLeitoById(@PathVariable("id") Long id) {
 		try {
 			Leito model = service.findLeito(id);
 			if (model != null) {
@@ -76,14 +67,13 @@ public class QuartoController {
 				return ResponseEntity.notFound().build();
 			}
 		} catch (Exception e) {
-			return new ResponseEntity(new ApiError(e.getMessage()),
-										HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
 	@GetMapping("/por_destinacao_hospedagem/{id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity listarByDestinacaoHospedagem(@PathVariable("id") Long id) {
+	public ResponseEntity<List<Quarto>> listarByDestinacaoHospedagem(@PathVariable("id") Long id) {
 		return ResponseEntity.ok(service.findAllByDestinacaoHospedagem(id));
 	}
 
@@ -95,73 +85,37 @@ public class QuartoController {
 
 	@GetMapping("/leitos_disponiveis")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity listarLeitosDisponiveis() {
+	public ResponseEntity<List<Leito>> listarLeitosDisponiveis() {
 		return ResponseEntity.ok(service.findLeitosDisponiveis());
 	}
 
 	@PostMapping
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity gravar(@RequestBody QuartoNew model) throws Exception {
-		ItaValidator<QuartoNew> v = new ItaValidator<QuartoNew>(model);
-		v.validate();
-		if (service.existeOutroQuartoComEsseNumero(model.getNumero())) {
-			v.addError("numero", "Existe outro Quarto com esse número");
-		}
-		
-		if (!v.hasErrors() ) {
-			return ResponseEntity.unprocessableEntity().body(new ApiError(v.getValidationResult().getErrors()));
-		}
+	public ResponseEntity<Quarto> gravar(@RequestBody QuartoNew model) throws Exception {
+		validationUtils.validate(model);
 		return ResponseEntity.ok(service.create(model));
 	}
 	
 	@PostMapping("/alterar")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity gravarAlteracao(@RequestBody QuartoEdit model) {
-		ItaValidator<QuartoEdit> v = new ItaValidator<QuartoEdit>(model);
-		v.validate();
+	public ResponseEntity<Quarto> gravarAlteracao(@RequestBody QuartoEdit model) {
+		validationUtils.validate(model);
 		try {
-			if (model.getId() != null) {
-				if (service.existeOutroQuartoComEsseNumero(model.getId(), model.getNumero())) {
-					v.addError("numero", "Existe outro Quarto com esse número");
-				}
-			}
-			
-			if (!v.hasErrors() ) {
-				return ResponseEntity.unprocessableEntity().body(new ApiError(v.getValidationResult().getErrors()));
-			}
-		
-			Quarto saved = null;
-			saved = service.update(model);
-		    return new ResponseEntity<Quarto>(saved, HttpStatus.OK);
+			Quarto saved = service.update(model);
+		    return ResponseEntity.ok(saved);
 		} catch (Exception e) {
-			return new ResponseEntity<ApiError>(new ApiError(e.getMessage()),
-										HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	@PostMapping("/leito")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravarLeito(@RequestBody EditLeitoVO model) {
-		ItaValidator<EditLeitoVO> v = new ItaValidator<>(model);
-		v.validate();
-		
+	public ResponseEntity<Leito> gravarLeito(@RequestBody EditLeitoVO model) {
+		validationUtils.validate(model);
 		try {
-			if (model.getId() == null) {
-				if (service.existeOutroLeitoComEsseNumero(model.getQuartoId(), model.getNumero())) {
-					v.addError("numero", "Existe outro Leito com esse número");
-				}
-			} else {
-				if (service.existeOutroLeitoComEsseNumero(model.getId(), model.getQuartoId(), model.getNumero())) {
-					v.addError("numero", "Existe outro Leito com esse número");
-				}
-			}
-			
-			if (!v.hasErrors() ) {
-				return ResponseEntity.unprocessableEntity().body(new ApiError(v.getValidationResult().getErrors()));
-			}
 			return ResponseEntity.ok(service.saveLeito(model));
 		} catch (Exception e) {
-			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
@@ -183,11 +137,11 @@ public class QuartoController {
 			service.removeLeito(id);
 			return ResponseEntity.noContent().build();
 		} catch (Exception e) {
-			return new ResponseEntity<ApiError>(new ApiError(e.getMessage()),
-										HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<ApiError>(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	 }
-	
+
+	// TODO serviços devem sair daqui
 	@GetMapping("/listas")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<AutoWired> listas() {

@@ -1,5 +1,6 @@
-package br.com.itarocha.betesda.util.validacoes;
+package br.com.itarocha.betesda.exception.handler;
 
+import br.com.itarocha.betesda.util.validacoes.Violation;
 import lombok.Builder;
 import lombok.Data;
 

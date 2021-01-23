@@ -9,7 +9,7 @@ import java.util.Set;
 @Component
 public class ValidatorUtil {
 
-    public void validate(Object obj) throws ValidationException {
+    public void validate(Object obj) throws EntityValidationException {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
 
@@ -21,7 +21,7 @@ public class ValidatorUtil {
         });
 
         if (!violations.isEmpty()){
-            throw new ValidationException(violations);
+            throw new EntityValidationException(violations);
         }
     }
 

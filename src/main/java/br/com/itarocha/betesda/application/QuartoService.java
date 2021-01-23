@@ -4,6 +4,8 @@ import br.com.itarocha.betesda.application.out.*;
 import br.com.itarocha.betesda.application.port.in.QuartoUseCase;
 import br.com.itarocha.betesda.domain.*;
 import br.com.itarocha.betesda.domain.enums.LogicoEnum;
+import br.com.itarocha.betesda.util.validacoes.EntityValidationException;
+import br.com.itarocha.betesda.util.validacoes.Violation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -69,6 +71,21 @@ public class QuartoService implements QuartoUseCase {
 
 	public Leito saveLeito(EditLeitoVO model) {
 		boolean isNovo = model.getId() == null;
+
+		Set<Violation> violations = new HashSet<>();
+		if (isNovo) {
+			if (this.existeOutroLeitoComEsseNumero(model.getQuartoId(), model.getNumero())) {
+				violations.add(new Violation("numero", "Existe outro Leito com esse número"));
+			}
+		} else {
+			if (this.existeOutroLeitoComEsseNumero(model.getId(), model.getQuartoId(), model.getNumero())) {
+				violations.add(new Violation("numero", "Existe outro Leito com esse número"));
+			}
+		}
+		if (!violations.isEmpty()){
+			throw new EntityValidationException(violations);
+		}
+
 		Leito toSave = isNovo ? new Leito() : findLeito(model.getId());
 		if (!isNovo && toSave == null){
 			throw new RuntimeException("Leito inexistente: " + model.getId());
@@ -97,6 +114,14 @@ public class QuartoService implements QuartoUseCase {
 	}
 
 	public Quarto update(QuartoEdit model) {
+		if (model.getId() != null) {
+			if (this.existeOutroQuartoComEsseNumero(model.getId(), model.getNumero())) {
+				Set<Violation> violations = new HashSet<>();
+				violations.add(new Violation("numero", "Existe outro Quarto com esse número"));
+				throw new EntityValidationException(violations);
+			}
+		}
+
 		AtomicReference<Quarto> atomicQuarto = new AtomicReference<>();
 		quartoRepo.findById(model.getId()).ifPresent(quarto -> {
 			quarto.getDestinacoes().clear();

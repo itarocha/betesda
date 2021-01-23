@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.application;
 
-import br.com.itarocha.betesda.exception.ValidationException;
+import br.com.itarocha.betesda.exception.ObsoleteValidationException;
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.EnderecoEntity;
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.PessoaEntity;
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.EnderecoJpaRepository;
@@ -33,26 +33,26 @@ public class PessoaService {
 	public PessoaService() {
 	}
 
-	public PessoaEntity create(PessoaEntity model) throws ValidationException {
+	public PessoaEntity create(PessoaEntity model) throws ObsoleteValidationException {
 		try{
 			enderecoRepo.save(model.getEndereco());
 			
 			Long id = model.getId() == null ? 0L : model.getId();
 			
 			if (this.pessoaCadastradaPorCampo(id, "cpf", model.getCpf())) {
-				throw new ValidationException(EntityValidationError.builder().build().addError("cpf", "CPF já casdastrado para outra pessoa"));
+				throw new ObsoleteValidationException(EntityValidationError.builder().build().addError("cpf", "CPF já casdastrado para outra pessoa"));
 			}
 			
 			if (this.pessoaCadastradaPorCampo(id, "rg", model.getRg())) {
-				throw new ValidationException(EntityValidationError.builder().build().addError("rg", "RG já casdastrado para outra pessoa"));
+				throw new ObsoleteValidationException(EntityValidationError.builder().build().addError("rg", "RG já casdastrado para outra pessoa"));
 			}
 			
 			if (this.pessoaCadastradaPorCampo(id, "cartao_sus", model.getCartaoSus())) {
-				throw new ValidationException(EntityValidationError.builder().build().addError("cartaoSus", "Cartão do SUS já casdastrado para outra pessoa"));
+				throw new ObsoleteValidationException(EntityValidationError.builder().build().addError("cartaoSus", "Cartão do SUS já casdastrado para outra pessoa"));
 			}
 			
 			repositorio.save(model);
-		} catch (ValidationException e) {
+		} catch (ObsoleteValidationException e) {
 			throw e;
 		}catch(Exception e){
 			throw new IllegalArgumentException(e.getMessage());

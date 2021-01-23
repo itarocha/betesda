@@ -1,61 +1,50 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
-import br.com.itarocha.betesda.adapter.dto.ApiError;
 import br.com.itarocha.betesda.application.TipoLeitoService;
 import br.com.itarocha.betesda.domain.TipoLeito;
 import br.com.itarocha.betesda.util.validacoes.ValidatorUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
 
 @RestController
 @RequestMapping("/api/app/tipo_leito")
+@RequiredArgsConstructor
 public class TipoLeitoController {
 
-	@Autowired
-	private TipoLeitoService service;
+	private final TipoLeitoService service;
+	private final ValidatorUtil validationUtils;
 
-	@Autowired
-	private ValidatorUtil validationUtils;
-	
 	@GetMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<?> listar() {
+	public ResponseEntity<List<TipoLeito>> listar() {
 	    return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
 	}
 
 	@GetMapping("{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
+	public ResponseEntity<TipoLeito> getById(@PathVariable("id") Long id) {
 		TipoLeito model = service.find(id);
 		return Objects.nonNull(model) ? ResponseEntity.ok(model) : ResponseEntity.notFound().build();
 	}
 	
 	@PostMapping
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody TipoLeito model) {
+	public ResponseEntity<TipoLeito> gravar(@RequestBody TipoLeito model) {
 		validationUtils.validate(model);
-
-		try {
-			return ResponseEntity.ok(service.create(model));
-		} catch (Exception e) {
-			return new ResponseEntity(new ApiError(e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		return ResponseEntity.ok(service.create(model));
 	}
 	
 	@DeleteMapping("{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
-		try {
-			service.remove(id);
-		    return new ResponseEntity(HttpStatus.NO_CONTENT);
-		} catch (Exception e) {
-			return new ResponseEntity(	new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+	public ResponseEntity excluir(@PathVariable("id") Long id) {
+		service.remove(id);
+		return ResponseEntity.noContent().build();
 	 }
 }
