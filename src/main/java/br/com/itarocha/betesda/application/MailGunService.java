@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.application;
 
-import br.com.itarocha.betesda.domain.Email;
+import br.com.itarocha.betesda.domain.EmailDocument;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
@@ -17,7 +17,7 @@ public class MailGunService {
 	@Autowired
 	private Environment env;
 	
-    public JsonNode sendHtmlMail(Email eParams) {
+    public JsonNode sendHtmlMail(EmailDocument eParams) {
     	
     	String domainName = env.getProperty("application.domain.name");
     	String apiKey = env.getProperty("service.apikey"); 

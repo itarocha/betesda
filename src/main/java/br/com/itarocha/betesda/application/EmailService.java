@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.application;
 
-import br.com.itarocha.betesda.domain.Email;
+import br.com.itarocha.betesda.domain.EmailDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -47,13 +47,13 @@ public class EmailService {
 
 		String message = template.getTemplate(replacements);
 
-		Email email = new Email(from, to, subject, message);
-		email.setHtml(true);
+		EmailDocument emailDocument = new EmailDocument(from, to, subject, message);
+		emailDocument.setHtml(true);
 		
-		ms.sendHtmlMail(email);
+		ms.sendHtmlMail(emailDocument);
 	}
 	
-	public void send(Email eParams) {
+	public void send(EmailDocument eParams) {
 		if (eParams.isHtml()) {
 			try {
 				sendHtmlMail(eParams);
@@ -65,7 +65,7 @@ public class EmailService {
 		}
 	}
 
-	private void sendHtmlMail(Email eParams) throws MessagingException {
+	private void sendHtmlMail(EmailDocument eParams) throws MessagingException {
 
 		boolean isHtml = true;
 
@@ -84,7 +84,7 @@ public class EmailService {
 		mailSender.send(message);
 	}
 
-	private void sendPlainTextMail(Email eParams) {
+	private void sendPlainTextMail(EmailDocument eParams) {
 
 		SimpleMailMessage mailMessage = new SimpleMailMessage();
 

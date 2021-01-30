@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-public class Email {
+public class EmailDocument {
 	
 	private String from;
 
@@ -19,12 +19,12 @@ public class Email {
 	
 	private boolean isHtml;
 
-	public Email() {
+	public EmailDocument() {
 		this.to = new ArrayList<>();
 		this.cc = new ArrayList<>();
 	}
 
-	public Email(String from, String toList, String subject, String message) {
+	public EmailDocument(String from, String toList, String subject, String message) {
 		this();
 		this.from = from;
 		this.subject = subject;
@@ -32,7 +32,7 @@ public class Email {
 		this.to.addAll(Arrays.asList(splitByComma(toList)));
 	}
 
-	public Email(String from, String toList, String ccList, String subject, String message) {
+	public EmailDocument(String from, String toList, String ccList, String subject, String message) {
 		this();
 		this.from = from;
 		this.subject = subject;
