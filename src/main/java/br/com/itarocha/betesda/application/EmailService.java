@@ -1,7 +1,9 @@
 package br.com.itarocha.betesda.application;
 
 import br.com.itarocha.betesda.domain.EmailDocument;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
@@ -15,22 +17,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-@PropertySource("classpath:env/mail.properties")
+@RequiredArgsConstructor
 public class EmailService {
 
-	@Autowired
-	private JavaMailSender mailSender;
-	
-	@Autowired
-	MailGunService ms;
+	// VM Options:  -Dspring.profiles.active=local
 
-	@Autowired
-	private Environment env;
+	private final JavaMailSender mailSender;
+	private final MailGunService ms;
+
+	@Value("${application.link.reset}")
+	private String resource;
 
 	public void redefinirSenha(String emailDestinatario, String nome, String token) {
 		
-    	String resource = env.getProperty("application.link.reset");
-        String link = String.format("%s%s",resource, token);
+    	//String resource = env.getProperty("application.link.reset");
+        String link = String.format("%s%s", resource, token);
 
         //String link = String.format("%s/criar-senha/%s/",url, token);
         

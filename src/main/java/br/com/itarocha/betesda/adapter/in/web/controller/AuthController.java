@@ -1,5 +1,6 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
+import br.com.itarocha.betesda.adapter.dto.RedefinicaoSenhaRequest;
 import br.com.itarocha.betesda.application.port.in.AutenticacaoUseCase;
 import br.com.itarocha.betesda.domain.User;
 import br.com.itarocha.betesda.adapter.in.web.security.AuthenticationToken;
@@ -55,6 +56,12 @@ public class AuthController {
     @PreAuthorize("hasAnyRole('ROOT')")
     public ResponseEntity<User> registerUser(@Valid @RequestBody UserToSave userToSave) {
         return ResponseEntity.ok().body(service.create(userToSave));
+    }
+
+    @PostMapping("/redefinir_senha")
+    public ResponseEntity<?> redefinirSenha(@RequestBody RedefinicaoSenhaRequest detalhes){
+        emailService.redefinirSenha(detalhes.getEmailDestinatario(), detalhes.getNome(), detalhes.getToken());
+        return ResponseEntity.noContent().build();
     }
     
  }

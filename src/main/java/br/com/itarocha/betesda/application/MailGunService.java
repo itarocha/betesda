@@ -5,23 +5,24 @@ import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
 import kong.unirest.UnirestException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+//TODO ISSO tem que ir para adapter.out
 @Component
-@PropertySource("classpath:env/mail.properties")
 public class MailGunService {
 
-	@Autowired
-	private Environment env;
-	
-    public JsonNode sendHtmlMail(EmailDocument eParams) {
-    	
-    	String domainName = env.getProperty("application.domain.name");
-    	String apiKey = env.getProperty("service.apikey"); 
-    	String serviceUrl = env.getProperty("service.url"); 
+	@Value("${application.domain.name}")
+	private String domainName;
+
+	@Value("${service.apikey}")
+	private String apiKey;
+
+	@Value("${service.url}")
+	private String serviceUrl;
+
+
+	public JsonNode sendHtmlMail(EmailDocument eParams) {
     	
         HttpResponse<JsonNode> request = null;
 		try {
@@ -42,10 +43,6 @@ public class MailGunService {
 		} catch (UnirestException e) {
 			e.printStackTrace();
 		}
-		
-		System.out.println(eParams.getTo());
-		System.out.println(request.getBody());
-
         return request.getBody();
     }
 	
