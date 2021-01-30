@@ -1,5 +1,6 @@
 package br.com.itarocha.betesda.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,9 +33,11 @@ public class User {
     @Email
     private String email;
 
+    @JsonIgnore
     @NotBlank
     @Size(max = 128)
     private String password;
 
+    @JsonIgnore
     private Set<Role> roles = new HashSet<>();
 }

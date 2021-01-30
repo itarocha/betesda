@@ -1,4 +1,4 @@
-package br.com.itarocha.betesda.config;
+package br.com.itarocha.betesda.configuration;
 
 
 import br.com.itarocha.betesda.security.UserPrincipal;

@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.security;
 
-import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.UserEntity;
+import br.com.itarocha.betesda.domain.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,9 +12,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class UserPrincipal implements UserDetails {
-    /**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -3646234354473425901L;
 
 	private Long id;
@@ -40,17 +38,17 @@ public class UserPrincipal implements UserDetails {
         this.authorities = authorities;
     }
 
-    public static UserPrincipal create(UserEntity userEntity) {
-        List<GrantedAuthority> authorities = userEntity.getRoles().stream().map(role ->
+    public static UserPrincipal create(User user) {
+        List<GrantedAuthority> authorities = user.getRoles().stream().map(role ->
                 new SimpleGrantedAuthority(role.getName().name())
         ).collect(Collectors.toList());
 
         return new UserPrincipal(
-                userEntity.getId(),
-                userEntity.getName(),
-                userEntity.getUsername(),
-                userEntity.getEmail(),
-                userEntity.getPassword(),
+                user.getId(),
+                user.getName(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getPassword(),
                 authorities
         );
     }
@@ -112,7 +110,6 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(id);
     }
 }

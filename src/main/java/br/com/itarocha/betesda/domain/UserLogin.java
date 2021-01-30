@@ -1,4 +1,4 @@
-package br.com.itarocha.betesda.adapter;
+package br.com.itarocha.betesda.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 @NoArgsConstructor
-public class LoginRequest {
+public class UserLogin {
     @NotBlank
     private String usernameOrEmail;
 

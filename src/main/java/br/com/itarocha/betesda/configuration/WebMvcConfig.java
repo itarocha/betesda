@@ -1,4 +1,4 @@
-package br.com.itarocha.betesda.config;
+package br.com.itarocha.betesda.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

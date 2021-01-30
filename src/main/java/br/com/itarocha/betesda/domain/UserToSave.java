@@ -1,4 +1,4 @@
-package br.com.itarocha.betesda.adapter;
+package br.com.itarocha.betesda.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @NoArgsConstructor
-public class SignUpRequest {
+public class UserToSave {
     @NotBlank
     @Size(min = 4, max = 64)
     private String name;

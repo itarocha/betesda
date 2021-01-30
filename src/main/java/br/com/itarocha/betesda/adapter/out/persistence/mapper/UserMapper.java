@@ -1,9 +1,11 @@
 package br.com.itarocha.betesda.adapter.out.persistence.mapper;
 
+import br.com.itarocha.betesda.domain.UserToSave;
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.RoleEntity;
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.UserEntity;
 import br.com.itarocha.betesda.domain.Role;
 import br.com.itarocha.betesda.domain.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -13,14 +15,17 @@ import java.util.stream.Collectors;
 import static java.util.Objects.isNull;
 
 @Component
+@RequiredArgsConstructor
 public class UserMapper {
+
+    private final RoleMapper roleMapper;
 
     public User toModel(UserEntity entity){
         if (isNull(entity)) { return null; }
 
         Set<Role> roles = isNull(entity.getRoles()) ? new HashSet<>() : entity.getRoles()
                 .stream()
-                .map(this::roleToModel)
+                .map(roleMapper::toModel)
                 .collect(Collectors.toSet());
 
         return User.builder()
@@ -38,7 +43,7 @@ public class UserMapper {
 
         Set<RoleEntity> roles = isNull(model.getRoles()) ? new HashSet<>() : model.getRoles()
                 .stream()
-                .map(this::roleModelToEntity)
+                .map(roleMapper::toEntity)
                 .collect(Collectors.toSet());
 
         return UserEntity.builder()
@@ -51,22 +56,15 @@ public class UserMapper {
                 .build();
     }
 
-    private Role roleToModel(RoleEntity entity){
-        if (isNull(entity)) { return null; }
+    public User toModel(UserToSave userToSave, String passwordEncoded, Set<Role> roles) {
+        if (isNull(userToSave)) { return null; }
 
-        return Role.builder()
-                .id(entity.getId())
-                .name(entity.getName())
+        return User.builder()
+                .name(userToSave.getName())
+                .username(userToSave.getUsername())
+                .email(userToSave.getEmail())
+                .password(passwordEncoded)
+                .roles(roles)
                 .build();
     }
-
-    private RoleEntity roleModelToEntity(Role model){
-        if (isNull(model)) { return null; }
-
-        return RoleEntity.builder()
-                .id(model.getId())
-                .name(model.getName())
-                .build();
-    }
-
 }

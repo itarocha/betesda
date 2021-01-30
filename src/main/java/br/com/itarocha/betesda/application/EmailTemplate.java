@@ -24,18 +24,6 @@ public class EmailTemplate {
 		}
 	}
 
-	private String loadTemplate(String templateId) throws Exception {
-		String content = BLANK;
-		try {
-			StringBuilder sb = StrUtil.loadFile("/email-templates/" + templateId);
-			content = sb.toString();
-			this.template = content;
-		} catch (Exception e) {
-			throw new Exception("Could not read template with ID = " + templateId);
-		}
-		return content;
-	}
-
 	public String getTemplate(Map<String, String> replacements) {
 		String cTemplate = this.template;
 
@@ -44,29 +32,9 @@ public class EmailTemplate {
 				cTemplate = cTemplate.replace("{{" + entry.getKey() + "}}", entry.getValue());
 			}
 		}
-		
+
 		return cTemplate;
 	}
-	
-	private static boolean isObjectEmpty(Object object) {
-		if(object == null) return true;
-		else if(object instanceof String) {
-			if (((String)object).trim().length() == 0) {
-				return true;
-			}
-		} else if(object instanceof Collection) {
-			return isCollectionEmpty((Collection<?>)object);
-		}
-		return false;
-	}    
-	
-	private static boolean isCollectionEmpty(Collection<?> collection) {
-		if (collection == null || collection.isEmpty()) {
-			return true;
-		}
-		return false;
-	}
-	
 
 	public String getTemplateId() {
 		return templateId;
@@ -92,4 +60,35 @@ public class EmailTemplate {
 		this.replacementParams = replacementParams;
 	}
 
+
+	private String loadTemplate(String templateId) throws Exception {
+		String content = BLANK;
+		try {
+			StringBuilder sb = StrUtil.loadFile("/email-templates/" + templateId);
+			content = sb.toString();
+			this.template = content;
+		} catch (Exception e) {
+			throw new Exception("Could not read template with ID = " + templateId);
+		}
+		return content;
+	}
+
+	private static boolean isObjectEmpty(Object object) {
+		if(object == null) return true;
+		else if(object instanceof String) {
+			if (((String)object).trim().length() == 0) {
+				return true;
+			}
+		} else if(object instanceof Collection) {
+			return isCollectionEmpty((Collection<?>)object);
+		}
+		return false;
+	}    
+	
+	private static boolean isCollectionEmpty(Collection<?> collection) {
+		if (collection == null || collection.isEmpty()) {
+			return true;
+		}
+		return false;
+	}
 }

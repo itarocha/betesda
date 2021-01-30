@@ -28,8 +28,6 @@ public class JwtTokenProvider {
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-        //FIXME LocalDate? 
-        Date now = new Date();
         Date expiryDate = toDate(LocalDateTime.now().plusHours(5L)); //new Date(now.getTime() + jwtExpirationInMs); .plusMinutes(60L)
         
         //https://www.programcreek.com/java-api-examples/?api=io.jsonwebtoken.Jwts

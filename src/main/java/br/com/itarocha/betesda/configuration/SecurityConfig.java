@@ -1,6 +1,6 @@
-package br.com.itarocha.betesda.config;
+package br.com.itarocha.betesda.configuration;
 
-import br.com.itarocha.betesda.security.CustomUserDetailsService;
+import br.com.itarocha.betesda.security.JpaUserDetailsService;
 import br.com.itarocha.betesda.security.JwtAuthenticationEntryPoint;
 import br.com.itarocha.betesda.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 	@Autowired
-	private CustomUserDetailsService customUserDetailsService;
+	private JpaUserDetailsService jpaUserDetailsService;
 	
 	@Autowired
 	private JwtAuthenticationEntryPoint unauthorizedHandler;
@@ -41,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	@Override
 	public void configure(AuthenticationManagerBuilder builder) throws Exception {
 		builder
-			.userDetailsService(customUserDetailsService)
+			.userDetailsService(jpaUserDetailsService)
 			.passwordEncoder(passwordEncoder());
 	}
 
