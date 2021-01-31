@@ -1,6 +1,5 @@
 package br.com.itarocha.betesda.application.out;
 
-import br.com.itarocha.betesda.domain.TipoServico;
 import br.com.itarocha.betesda.domain.User;
 
 import java.util.List;

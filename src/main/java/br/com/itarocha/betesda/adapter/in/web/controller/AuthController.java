@@ -1,13 +1,13 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
-import br.com.itarocha.betesda.adapter.dto.RedefinicaoSenhaRequest;
+import br.com.itarocha.betesda.adapter.dto.EmailRequest;
+import br.com.itarocha.betesda.adapter.dto.RedefinicaoSenha;
 import br.com.itarocha.betesda.application.port.in.AutenticacaoUseCase;
 import br.com.itarocha.betesda.domain.User;
 import br.com.itarocha.betesda.adapter.in.web.security.AuthenticationToken;
 import br.com.itarocha.betesda.domain.UserLogin;
 import br.com.itarocha.betesda.domain.UserToSave;
 import br.com.itarocha.betesda.security.JwtTokenProvider;
-import br.com.itarocha.betesda.application.EmailService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +25,10 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AutenticacaoUseCase service;
+    private final AutenticacaoUseCase autenticacaoService;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
-    private final EmailService emailService;
+    //private final EmailService emailService;
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationToken> authenticateUser(@Valid @RequestBody UserLogin userLogin) {
@@ -55,13 +55,19 @@ public class AuthController {
     @PostMapping("/assinar") // novo_usuario
     @PreAuthorize("hasAnyRole('ROOT')")
     public ResponseEntity<User> registerUser(@Valid @RequestBody UserToSave userToSave) {
-        return ResponseEntity.ok().body(service.create(userToSave));
+        return ResponseEntity.ok().body(autenticacaoService.create(userToSave));
     }
 
-    @PostMapping("/redefinir_senha")
-    public ResponseEntity<?> redefinirSenha(@RequestBody RedefinicaoSenhaRequest detalhes){
-        emailService.redefinirSenha(detalhes.getEmailDestinatario(), detalhes.getNome(), detalhes.getToken());
+    @PostMapping("/solicitar-nova-senha")
+    public ResponseEntity<?> solicitarNovaSenha(@Valid @RequestBody EmailRequest request){
+        //emailService.solicitarSenha(detalhes.getEmailDestinatario(), detalhes.getNome(), detalhes.getToken());
+        autenticacaoService.solicitarEnvioSenha(request.getEmail());
         return ResponseEntity.noContent().build();
     }
-    
+
+    @PostMapping("/redefinir-senha")
+    public ResponseEntity<?> redefinirSenha(@Valid @RequestBody RedefinicaoSenha request){
+        autenticacaoService.redefinirSenha(request);
+        return ResponseEntity.noContent().build();
+    }
  }

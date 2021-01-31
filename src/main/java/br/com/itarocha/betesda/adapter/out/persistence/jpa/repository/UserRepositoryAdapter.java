@@ -78,4 +78,5 @@ public class UserRepositoryAdapter implements UserRepository {
                     , e.getMostSpecificCause().getMessage());
         }
     }
+
 }

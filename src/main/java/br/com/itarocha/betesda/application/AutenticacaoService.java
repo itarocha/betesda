@@ -1,9 +1,12 @@
 package br.com.itarocha.betesda.application;
 
+import br.com.itarocha.betesda.adapter.dto.RedefinicaoSenha;
 import br.com.itarocha.betesda.application.out.RoleRepository;
 import br.com.itarocha.betesda.application.out.UserRepository;
+import br.com.itarocha.betesda.application.out.UserTokenRepository;
 import br.com.itarocha.betesda.application.port.in.AutenticacaoUseCase;
 import br.com.itarocha.betesda.domain.*;
+import br.com.itarocha.betesda.domain.enums.LogicoEnum;
 import br.com.itarocha.betesda.domain.enums.RoleNameEnum;
 import br.com.itarocha.betesda.util.validacoes.EntityValidationException;
 import br.com.itarocha.betesda.util.validacoes.Violation;
@@ -11,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -18,10 +23,13 @@ import java.util.*;
 public class AutenticacaoService implements AutenticacaoUseCase {
 
 	private final UserRepository userRepository;
+	private final UserTokenRepository userTokenRepository;
 	private final RoleRepository roleRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final EmailService emailService;
 
 	@Override
+	@Transactional
 	public User create(UserToSave userToSave) {
 		Set<Violation> violations = new HashSet<>();
 
@@ -52,39 +60,82 @@ public class AutenticacaoService implements AutenticacaoUseCase {
 		return userRepository.save(user);
 	}
 
-	/*
 	@Override
-	public TipoLeito create(TipoLeito model) {
-		return repository.save(model);
-	}
-	*/
+	@Transactional
+	public void solicitarEnvioSenha(String email) {
+		/*
+		this.$route.path
+		https://stackoverflow.com/questions/40382388/how-to-set-url-query-params-in-vue-with-vue-router
+		routes: [
+		{ name: 'user-view', path: '/user/:id', component: UserView },
+		// other routes
+		]
+		this.$router.replace({ name: "user-view", params: {id:"123"}, query: {q1: "q1"} })
+		*/
 
-	/*
-	@Override
-	public void remove(Long id) {
-		repository.findById(id).ifPresent(model -> repository.delete(model));
+		Set<Violation> violations = new HashSet<>();
+
+		Optional<User> optUser  = userRepository.findByEmail(email);
+
+		if (optUser.isEmpty()) {
+			violations.add(new Violation("email", "Email não encontrado"));
+		}
+		if (!violations.isEmpty()){
+			throw new EntityValidationException(violations);
+		}
+
+		// Excluir todos os tokens desse email
+		userTokenRepository.deleteAllByEmail(email);
+
+		String token = UUID.randomUUID().toString();
+		LocalDateTime agora = LocalDateTime.now();
+		LocalDateTime validade = agora.plusHours(6);
+
+		UserToken ut = UserToken.builder()
+				.email(email)
+				.token(token)
+				.ativo(LogicoEnum.S)
+				.dataHoraCriacao(agora)
+				.dataHoraValidade(validade)
+				.build();
+
+		userTokenRepository.save(ut);
+
+		User user = optUser.get();
+		emailService.solicitarSenha(user.getEmail(), user.getName(), token);
 	}
 
 	@Override
-	public TipoLeito update(TipoLeito model) {
-		Optional<TipoLeito> result = repository.findById(model.getId());
-		return result.isPresent() ? repository.save(result.get()) : null;
+	public boolean redefinirSenha(RedefinicaoSenha request) {
+		//request.getEmail()
+		// Verifica se existe email e token na tabela de userToken
+		Set<Violation> violations = new HashSet<>();
+
+		List<UserToken> lstUser  = userTokenRepository.findByEmailAndToken(request.getEmail(), request.getToken());
+
+		if (lstUser.isEmpty()) {
+			violations.add(new Violation("email", "Combinação email e token não encontrados"));
+		}
+
+		LocalDateTime agora = LocalDateTime.now();
+
+		lstUser.stream().forEach(userToken -> {
+			if (agora.isAfter(userToken.getDataHoraValidade())) {
+				violations.add(new Violation("token", "Token fora de validade"));
+			}
+		});
+
+		// Verifica se user existe na tabela de users
+
+		if (!violations.isEmpty()){
+			throw new EntityValidationException(violations);
+		}
+
+
+		// Altera senha
+
+		return false;
 	}
 
-	@Override
-  	public TipoLeito find(Long id) {
-		Optional<TipoLeito> result = repository.findById(id);
-		return result.isPresent() ? result.get() : null;
-	}
 
-	@Override
-	public List<TipoLeito> findAll() {
-		return repository.findAllOrderByDescricao();
-	}
-
-	@Override
-	public List<SelectValueVO> listSelect() {
-		return repository.findAllToSelectVO();
-	}
-	*/
 }
