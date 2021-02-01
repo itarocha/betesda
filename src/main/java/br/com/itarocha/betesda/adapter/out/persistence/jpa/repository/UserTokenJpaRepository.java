@@ -22,4 +22,8 @@ public interface UserTokenJpaRepository extends JpaRepository<UserTokenEntity, L
     void deleteAllWhereEmail(@Param("email") String email);
 
     List<UserTokenEntity> findByEmailAndToken(String email, String token);
+
+    @Modifying
+    @Query("update UserEntity u set u.password = :newPassword where u.email = :email")
+    void updatePassword(@Param("email") String email, @Param("newPassword") String newPassword);
 }

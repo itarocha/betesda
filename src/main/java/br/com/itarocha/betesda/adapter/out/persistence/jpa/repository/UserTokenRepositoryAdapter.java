@@ -71,4 +71,10 @@ public class UserTokenRepositoryAdapter implements UserTokenRepository {
     public List<UserToken> findByEmailAndToken(String email, String token) {
         return repository.findByEmailAndToken(email, token).stream().map(mapper::toModel).collect(Collectors.toList());
     }
+
+    @Override
+    public void updatePassword(String email, String newPassword) {
+        repository.updatePassword(email, newPassword);
+    }
+
 }

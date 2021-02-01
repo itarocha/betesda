@@ -32,7 +32,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationToken> authenticateUser(@Valid @RequestBody UserLogin userLogin) {
-
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         userLogin.getUsernameOrEmail(),
@@ -49,7 +48,6 @@ public class AuthController {
         return ResponseEntity.ok(AuthenticationToken.builder().accessToken(jwtToken).build());
     }
 
-    //TODO Criar endpoint para redefinir senha
 
     // TODO Criar endpoint para gerenciamento de usuários. list, create, details, update(alterar roles), desabilitar
     @PostMapping("/assinar") // novo_usuario
@@ -62,12 +60,12 @@ public class AuthController {
     public ResponseEntity<?> solicitarNovaSenha(@Valid @RequestBody EmailRequest request){
         //emailService.solicitarSenha(detalhes.getEmailDestinatario(), detalhes.getNome(), detalhes.getToken());
         autenticacaoService.solicitarEnvioSenha(request.getEmail());
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/redefinir-senha")
     public ResponseEntity<?> redefinirSenha(@Valid @RequestBody RedefinicaoSenha request){
         autenticacaoService.redefinirSenha(request);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
  }

@@ -1,6 +1,5 @@
 package br.com.itarocha.betesda.application.out;
 
-import br.com.itarocha.betesda.domain.User;
 import br.com.itarocha.betesda.domain.UserToken;
 
 import java.util.List;
@@ -21,4 +20,6 @@ public interface UserTokenRepository {
     void deleteAllByEmail(String email);
 
     List<UserToken> findByEmailAndToken(String email, String token);
+
+    void updatePassword(String email, String newPassword);
 }

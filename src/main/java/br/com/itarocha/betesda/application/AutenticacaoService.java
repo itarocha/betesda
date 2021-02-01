@@ -106,36 +106,39 @@ public class AutenticacaoService implements AutenticacaoUseCase {
 	}
 
 	@Override
+	@Transactional
 	public boolean redefinirSenha(RedefinicaoSenha request) {
-		//request.getEmail()
-		// Verifica se existe email e token na tabela de userToken
 		Set<Violation> violations = new HashSet<>();
 
-		List<UserToken> lstUser  = userTokenRepository.findByEmailAndToken(request.getEmail(), request.getToken());
+		if (!request.getSenha().equals(request.getSenhaConfirmacao())) {
+			violations.add(new Violation("senha", "Senha de confirmação diferente da senha informada"));
+		}
 
+		if (userRepository.findByEmail(request.getEmail()).isEmpty()) {
+			violations.add(new Violation("email", "Email não cadastrado"));
+		}
+
+		List<UserToken> lstUser  = userTokenRepository.findByEmailAndToken(request.getEmail(), request.getToken());
 		if (lstUser.isEmpty()) {
 			violations.add(new Violation("email", "Combinação email e token não encontrados"));
 		}
 
 		LocalDateTime agora = LocalDateTime.now();
-
 		lstUser.stream().forEach(userToken -> {
 			if (agora.isAfter(userToken.getDataHoraValidade())) {
 				violations.add(new Violation("token", "Token fora de validade"));
 			}
 		});
 
-		// Verifica se user existe na tabela de users
-
 		if (!violations.isEmpty()){
 			throw new EntityValidationException(violations);
 		}
 
+		String newPassword = passwordEncoder.encode(request.getSenha());
+		userTokenRepository.updatePassword(request.getEmail(), newPassword);
 
-		// Altera senha
+		userTokenRepository.deleteAllByEmail(request.getEmail());
 
-		return false;
+		return true;
 	}
-
-
 }
