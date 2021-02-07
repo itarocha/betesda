@@ -11,8 +11,8 @@ import br.com.itarocha.betesda.exception.ObsoleteValidationException;
 import br.com.itarocha.betesda.util.validation.EntityValidationError;
 import br.com.itarocha.betesda.utils.LocalDateUtils;
 import br.com.itarocha.betesda.utils.StrUtil;
-import org.jooq.*;
-import org.jooq.impl.DSL;
+import org.jooq.Condition;
+import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,7 +99,8 @@ public class HospedagemService {
 		
 		for (HospedeVO h : model.getHospedes()) {
 			if (!this.pessoaLivreNoPeriodo(h.getPessoaId(), model.getDataEntrada(), model.getDataPrevistaSaida())) {
-				throw new ObsoleteValidationException(EntityValidationError.builder().build().addError("*", String.format("[%s] está em outra hospedagem nesse período", h.getPessoaNome() )));
+				throw new ObsoleteValidationException(EntityValidationError.builder().build().addError("*",
+						String.format("[%s] está em outra hospedagem nesse período", h.getPessoaNome() )));
 			}
 		}
 		
@@ -761,7 +762,7 @@ public class HospedagemService {
 		
 		Map<BigInteger, Boolean> map = new HashMap<>();
 		
-		List<OcupacaoLeito> lista = new ArrayList<OcupacaoLeito>();
+		List<OcupacaoLeito> lista = new ArrayList<>();
 		
 		todosLeitosNoPeriodo.forEach(x -> map.put(x, false));
 		hospedagemLeitosNoPeriodo.forEach(x -> map.put(x, true));
