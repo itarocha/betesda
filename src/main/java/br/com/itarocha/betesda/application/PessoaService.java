@@ -84,11 +84,11 @@ public class PessoaService {
 	}
 	
 	public List<PessoaEntity> findAll() {
-		return em.createQuery("SELECT model FROM Pessoa model ORDER BY model.nome", PessoaEntity.class).getResultList();
+		return em.createQuery("SELECT model FROM PessoaEntity model ORDER BY model.nome", PessoaEntity.class).getResultList();
 	}
 
 	public List<PessoaEntity> consultar(String texto) {
-		return em.createQuery("SELECT model FROM Pessoa model WHERE lower(model.nome) LIKE :texto ORDER BY model.nome", PessoaEntity.class)
+		return em.createQuery("SELECT model FROM PessoaEntity model WHERE lower(model.nome) LIKE :texto ORDER BY model.nome", PessoaEntity.class)
 				.setParameter("texto", "%"+texto.toLowerCase()+"%")
 				.getResultList();
 	}

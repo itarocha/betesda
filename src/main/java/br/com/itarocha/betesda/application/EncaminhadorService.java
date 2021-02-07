@@ -53,7 +53,7 @@ public class EncaminhadorService {
 	}
 
 	public List<EncaminhadorEntity> findAll(Long entidadeId) {
-		return em.createQuery("SELECT model FROM Encaminhador model WHERE model.entidade.id = :entidadeId ORDER BY model.nome", EncaminhadorEntity.class)
+		return em.createQuery("SELECT model FROM EncaminhadorEntity model WHERE model.entidade.id = :entidadeId ORDER BY model.nome", EncaminhadorEntity.class)
 				.setParameter("entidadeId", entidadeId)
 				.getResultList();
 	}
@@ -61,7 +61,7 @@ public class EncaminhadorService {
 	//TODO Por código da entidade
 	public List<SelectValueVO> listSelect(Long entidadeId) {
 		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
-		em.createQuery("SELECT model FROM Encaminhador model WHERE model.entidade.id = :entidadeId AND model.ativo = 'S' ORDER BY model.nome", EncaminhadorEntity.class)
+		em.createQuery("SELECT model FROM EncaminhadorEntity model WHERE model.entidade.id = :entidadeId AND model.ativo = 'S' ORDER BY model.nome", EncaminhadorEntity.class)
 			.setParameter("entidadeId", entidadeId)
 			.getResultList()
 			.forEach(x -> retorno.add(new SelectValueVO(x.getId(), x.getNome())));

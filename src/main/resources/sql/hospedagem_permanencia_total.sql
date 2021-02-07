@@ -1,6 +1,6 @@
 SELECT 
 DISTINCT    hospedagem 
-FROM        HospedeLeito hospedeLeito
+FROM        HospedeLeitoEntity hospedeLeito
 INNER JOIN  hospedeLeito.leito leito
 INNER JOIN  hospedeLeito.hospede hospede
 INNER JOIN  hospede.pessoa pessoa

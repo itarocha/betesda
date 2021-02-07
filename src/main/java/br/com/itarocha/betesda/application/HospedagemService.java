@@ -11,18 +11,22 @@ import br.com.itarocha.betesda.exception.ObsoleteValidationException;
 import br.com.itarocha.betesda.util.validation.EntityValidationError;
 import br.com.itarocha.betesda.utils.LocalDateUtils;
 import br.com.itarocha.betesda.utils.StrUtil;
+import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+
+import static br.com.itarocha.betesda.jooq.model.Tables.*;
+import static org.jooq.impl.DSL.coalesce;
 
 @Service
 @Transactional
@@ -71,6 +75,9 @@ public class HospedagemService {
 	
 	@Autowired
 	private QuartoUseCase quartoService;
+
+	@Autowired
+	private DSLContext create;
 
 	DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	
@@ -180,40 +187,30 @@ public class HospedagemService {
 	}
 	
 	private Map<Long, MicroLeito> buildListaLeitos() {
-		
 		Map<Long, MicroLeito> _mapLeitos = new TreeMap<>();
-		
-		StringBuilder sb = StrUtil.loadFile("/sql/leitos_header_native.sql");
-		Query q = em.createNativeQuery(sb.toString());
-		List<Object[]> rec =  q.getResultList();
-		rec.stream().forEach(record -> {
-			Long leitoId = recordToLong(record[0]);
-			_mapLeitos.put(leitoId, new MicroLeito(leitoId, (Integer)record[1], recordToLong(record[2]), (Integer)record[3]));
+		listCabecalhosLeitos().stream().forEach(record -> {
+			_mapLeitos.put(record.getId(), new MicroLeito(record.getId(), record.getNumero(), record.getQuartoId(), record.getQuartoNumero() ));
 		});
 		_mapLeitos.put(99999L, new MicroLeito(9999L, 9999, 9999L, 9999));
 		return _mapLeitos;
 	}
 	
 	private Map<Long, MiniLeito> buildListaMiniLeitos() {
-		
 		Map<Long, MiniLeito> _mapLeitos = new TreeMap<>();
-		
-		StringBuilder sb = StrUtil.loadFile("/sql/leitos_header_native.sql");
-		Query q = em.createNativeQuery(sb.toString());
-		List<Object[]> rec =  q.getResultList();
-		rec.stream().forEach(record -> {
-			Long leitoId = recordToLong(record[0]);
-			_mapLeitos.put(leitoId, new MiniLeito(leitoId, (Integer)record[1], recordToLong(record[2]), (Integer)record[3]));
+		listCabecalhosLeitos().stream().forEach(record -> {
+			_mapLeitos.put(record.getId(), new MiniLeito(record.getId(), record.getNumero(), record.getQuartoId(), record.getQuartoNumero() ));
 		});
 		_mapLeitos.put(99999L, new MiniLeito(9999L, 9999, 9999L, 9999));
 		return _mapLeitos;
 	}
-	
+
 	// Use buildHospedeMapa
 	@Deprecated
 	private List<HospedeLeitoMapa> buildHospedeLeito(LocalDate dIni, LocalDate dFim) {
 		LocalDate hoje = LocalDate.now();
-		
+
+		testeJooq(dIni, dFim);
+
 		StringBuilder sb = StrUtil.loadFile("/sql/hospede_leito_native.sql");
 		Query q = em.createNativeQuery(sb.toString())
 					.setParameter("DATA_INI", dIni )
@@ -274,7 +271,7 @@ public class HospedagemService {
 		});
 		return lst;
 	}
-	
+
 	private List<HospedeMapa> buildHospedeMapa(LocalDate dIni, LocalDate dFim) {
 		LocalDate hoje = LocalDate.now();
 		
@@ -623,7 +620,6 @@ public class HospedagemService {
 				lst.add(linhaHospedagem);
 				_mapHospedagens.put(hospedeLeito.getLeitoId(), lst);
 			}
-			
 		});
 		
 		_mapLeitos.entrySet().forEach(m -> {
@@ -719,26 +715,6 @@ public class HospedagemService {
 		retorno.setDataFim(mapaHospedes.getDataFim());
 		retorno.setDias(mapaHospedes.getDias());
 		
-		/*
-		Map<String, List<HospedeMapa>> porCidade = new TreeMap<>();
-		mapaHospedes.getHospedes().forEach(h -> {
-			if (porCidade.get(h.getPessoaCidadeUfOrigem()) == null ) {
-				List<HospedeMapa> lst = new ArrayList<>();
-				lst.add(h);
-				porCidade.put(h.getPessoaCidadeUfOrigem(), lst);
-			} else {
-				List<HospedeMapa> lst = porCidade.get(h.getPessoaCidadeUfOrigem());
-				lst.add(h);
-			}
-		});
-
-		List<HospedagensPorCidade> cidades = new ArrayList<>();
-		porCidade.keySet().forEach(k -> {
-			cidades.add(new HospedagensPorCidade(k, porCidade.get(k)));
-		});
-		retorno.setCidades(cidades);
-		*/
-		
 		//TRATATIVA DO QUADRO
 		Integer[] minLeito = {Integer.MAX_VALUE};
 		Integer[] maxLeito = {Integer.MIN_VALUE};
@@ -773,43 +749,8 @@ public class HospedagemService {
 				quadro.setLeitoIdPorNumero(q.getId(), leito.getNumero(), leito.getId());
 			});
 		});
-		
-		/*
-		quadro.quartos.forEach(q -> {
-			q.leitos.forEach(leito -> {
-				if (leito.id == 0) {
-					//System.out.print("[  ] ");
-				} else {
-					// Busca o array de linhas de hospedagens.
-					// Cada quarto contém um array 
-					Long leitoId = leito.id;
 
-					mapaHospedes
-					.getHospedes()
-					.stream()
-					.filter(_leito -> _leito.getLeitoId().equals( leitoId )) // theLeito.getId().equals
-					.findFirst()
-					.ifPresent(theLeito -> {
-
-						theLeito.getHospedagens().forEach(linhaHpd -> {
-							// Quando um índice maior que zero, significa que há hospedagem nesse dia da semana
-							for (int i = 0; i < QTD_DIAS; i++) {
-								boolean marcar = linhaHpd.getDias()[i] > 0;
-								if ( marcar ) {
-									leito.getDias()[i] = 1;
-								}
-							}
-						});
-					});
-				}
-				
-			});
-		});
-		*/
-		
 		retorno.setQuadro(quadro);
-		
-		
 		return retorno;
 	}
 
@@ -867,23 +808,20 @@ public class HospedagemService {
 		retorno.setTipoUtilizacao(h.getTipoUtilizacao());
 		retorno.setObservacoes(h.getObservacoes());
 		retorno.setHospedes(h.getHospedes());
-		
-		StringBuilder sbLeito = StrUtil.loadFile("/sql/leito_by_hospede_leito_id.sql");
-		TypedQuery<LeitoVO> qLeitos = em.createQuery(sbLeito.toString(), LeitoVO.class);
-		
+
 		CellStatusHospedagem status = resolveStatusHospedagemNew(LocalDate.now(), h.getDataPrevistaSaida(), h.getDataEfetivaSaida());
 		retorno.setStatus(status);
-		
+
 		for (HospedeEntity hospedeEntity : h.getHospedes()) {
 			for (HospedeLeitoEntity hl : hospedeEntity.getLeitos()) {
-				LeitoVO leito = qLeitos.setParameter("id", hl.getId()) .getSingleResult();
-				hl.setQuartoNumero( leito.getQuartoNumero() );
-				hl.setLeitoNumero( leito.getNumero() );
+				LeitoDTO leitoDTO = findLeitoByHospedeLeitoId(hl.getId());
+				hl.setQuartoNumero( leitoDTO.getQuartoNumero() );
+				hl.setLeitoNumero( leitoDTO.getNumero() );
 			}
 		}
 		return retorno;
 	}
-	
+
 	public void encerrarHospedagem(Long hospedagemId, LocalDate dataEncerramento) throws ObsoleteValidationException {
 		/*
 		* hospedagem = getHospedagem(hospedagemId)
@@ -948,7 +886,6 @@ public class HospedagemService {
 			}	
 			h.setDataEfetivaSaida(dataEncerramento);
 			hospedagemRepo.save(h);
-			
 		}
 	} 
 	
@@ -1013,13 +950,10 @@ public class HospedagemService {
 				if (qtd <= 1) {
 					throw new ObsoleteValidationException(EntityValidationError.builder().build().addError("*", "Para remover hóspede é necessário ter pelo menos 2 hóspedes ativos na hospedagem"));
 				}
-				
 				hospedeRepo.delete(hospedeEntity);
-				
 			}
 		}
-		
-	} 
+	}
 	
 	public void alterarTipoHospede(Long hospedeId, Long tipoHospedeId) throws ObsoleteValidationException {
 		Optional<HospedeEntity> hospedeOpt = hospedeRepo.findById(hospedeId);
@@ -1114,8 +1048,7 @@ public class HospedagemService {
 		    	}
 			}
 		}
-		
-	} 
+	}
 	
 	public void adicionarHospede(Long hospedagemId, Long pessoaId, Long tipoHospedeId, Long leitoId, LocalDate dataEntrada) throws ObsoleteValidationException {
 		DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -1242,7 +1175,6 @@ public class HospedagemService {
 									throw new ObsoleteValidationException(EntityValidationError.builder().build().addError("*", String.format("O Leito %s do Quarto %s já está em uso no período por outra Hospedagem", leitoNumero, quartoNumero)));
 								}
 							}
-							
 							hlToSave.add(hl);
 						}
 					}
@@ -1348,9 +1280,85 @@ public class HospedagemService {
 								 .setParameter("dataIni", dataIni)
 								 .setParameter("dataFim", dataFim)
 								 .getResultList();
-		
-		return lista; 
+		return lista;
+	}
+
+	//TODO Mover para repositório
+	private LeitoDTO findLeitoByHospedeLeitoId(Long hospedeLeitoId){
+		// Substituindo _OBSOLETO_leito_by_hospede_leito_id.sql
+		LeitoDTO retorno =
+				create.select(LEITO.ID, LEITO.NUMERO, QUARTO.ID, QUARTO.NUMERO)
+						.from(HOSPEDE_LEITO)
+						.innerJoin(LEITO).on(HOSPEDE_LEITO.LEITO_ID.eq(LEITO.ID))
+						.innerJoin(QUARTO).on(HOSPEDE_LEITO.QUARTO_ID.eq(QUARTO.ID))
+						.where(HOSPEDE_LEITO.ID.eq(hospedeLeitoId))
+						.fetchOne()
+						.map(r -> new LeitoDTO(r.get(LEITO.ID),r.get(LEITO.NUMERO),r.get(QUARTO.ID),r.get(QUARTO.NUMERO)));
+		return retorno;
+	}
+
+	//TODO Mover para repositório
+	private List<LeitoDTO> listCabecalhosLeitos(){
+		// Substituindo /sql/_OBSOLETO_leitos_header_native.sql
+		return create.select(LEITO.ID, LEITO.NUMERO, QUARTO.ID, QUARTO.NUMERO)
+				.from(LEITO)
+				.innerJoin(QUARTO).on(LEITO.QUARTO_ID.eq(QUARTO.ID))
+				.orderBy(QUARTO.NUMERO, LEITO.NUMERO)
+				.fetch()
+				.map(r -> new LeitoDTO(r.get(LEITO.ID),r.get(LEITO.NUMERO),r.get(QUARTO.ID),r.get(QUARTO.NUMERO)));
+	}
+
+	private void testeJooq(LocalDate dataIni, LocalDate dataFim){
+		Condition a = HOSPEDE_LEITO.DATA_ENTRADA.between(dataIni, dataFim).or(HOSPEDE_LEITO.DATA_SAIDA.between(dataIni, dataFim));
+		Condition b = HOSPEDE_LEITO.DATA_ENTRADA.lessOrEqual(dataIni).and(HOSPEDE_LEITO.DATA_SAIDA.greaterOrEqual(dataFim));
+		Condition condicao = a.or(b);
+
+		System.out.println(
+
+				create.select(HOSPEDE_LEITO.ID, HOSPEDE_LEITO.DATA_ENTRADA, HOSPEDE_LEITO.DATA_SAIDA)
+						.from(HOSPEDE_LEITO)
+						.where(condicao)
+						.fetch()
+
+		);
+
+
+
+
+/*
+			WHERE ((hl.data_entrada BETWEEN :DATA_INI and :DATA_FIM) OR (hl.data_saida BETWEEN :DATA_INI and :DATA_FIM))
+			OR    ((hl.data_entrada <= :DATA_INI) and (hl.data_saida >= :DATA_FIM))
+
+*/
+/*
+		WHERE      (((hpd.data_entrada BETWEEN :DATA_INI and :DATA_FIM) OR (COALESCE(hpd.data_efetiva_saida, hpd.data_prevista_saida) BETWEEN :DATA_INI and :DATA_FIM))
+		OR          ((hpd.data_entrada <= :DATA_INI) AND (COALESCE(hpd.data_efetiva_saida,hpd.data_prevista_saida) >= :DATA_FIM)))
+		AND         (hpd.tipo_utilizacao = 'P')
+*/
+		//Field<LocalDate> dataSaida = DSL.field(DSL.coalesce(HOSPEDAGEM.DATA_EFETIVA_SAIDA, HOSPEDAGEM.DATA_PREVISTA_SAIDA));
+		Condition hpdA1 = HOSPEDAGEM.DATA_ENTRADA.between(dataIni, dataFim)
+							.or(coalesce(HOSPEDAGEM.DATA_EFETIVA_SAIDA, HOSPEDAGEM.DATA_PREVISTA_SAIDA)
+								.between(dataIni, dataFim));
+		Condition hpdA2 = HOSPEDAGEM.DATA_ENTRADA.lessOrEqual(dataIni)
+							.and(coalesce(HOSPEDAGEM.DATA_EFETIVA_SAIDA, HOSPEDAGEM.DATA_PREVISTA_SAIDA).ge(dataFim));
+
+		Condition hpdA = hpdA1.or(hpdA2);
+		Condition hpd = hpdA.and(HOSPEDAGEM.TIPO_UTILIZACAO.eq("P"));
+
+		System.out.println(
+
+				create.select(	HOSPEDAGEM.ID,
+								HOSPEDAGEM.DATA_ENTRADA,
+								HOSPEDAGEM.DATA_PREVISTA_SAIDA,
+								HOSPEDAGEM.DATA_EFETIVA_SAIDA,
+								coalesce(HOSPEDAGEM.DATA_EFETIVA_SAIDA, HOSPEDAGEM.DATA_PREVISTA_SAIDA).as("data_saida_corrigida")
+						)
+						.from(HOSPEDAGEM)
+						.where(hpd)
+						.fetch()
+
+		);
+
 	}
 
 }
-

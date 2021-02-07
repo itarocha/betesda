@@ -7,7 +7,7 @@ SELECT      new br.com.itarocha.betesda.report.HospedePermanencia( hospede.pesso
 			, hospedagem
 			, hospede
 			, hospede.pessoa)
-FROM        HospedeLeito hospedeLeito
+FROM        HospedeLeitoEntity hospedeLeito
 INNER JOIN  hospedeLeito.leito leito
 INNER JOIN  hospedeLeito.hospede hospede
 INNER JOIN  hospede.hospedagem hospedagem

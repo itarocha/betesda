@@ -1,8 +1,8 @@
 SELECT hospedagem 
-FROM   Hospedagem hospedagem
+FROM   HospedagemEntity hospedagem
 WHERE  EXISTS(
 				SELECT      h
-				FROM        hospedagem h
+				FROM        hospedagemEntity h
 				INNER JOIN  hospede hpd
 				ON          hpd.hospedagem_id = h.id
 				INNER JOIN  hospede_leito hl

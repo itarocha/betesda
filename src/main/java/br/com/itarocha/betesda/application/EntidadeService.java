@@ -69,18 +69,18 @@ public class EntidadeService {
 	}
 
 	public List<EntidadeEntity> findAll() {
-		return em.createQuery("SELECT model FROM Entidade model ORDER BY model.nome", EntidadeEntity.class).getResultList();
+		return em.createQuery("SELECT model FROM EntidadeEntity model ORDER BY model.nome", EntidadeEntity.class).getResultList();
 	}
 
 	public List<EntidadeEntity> consultar(String texto) {
-		return em.createQuery("SELECT model FROM Entidade model WHERE lower(model.nome) LIKE :texto ORDER BY model.nome", EntidadeEntity.class)
+		return em.createQuery("SELECT model FROM EntidadeEntity model WHERE lower(model.nome) LIKE :texto ORDER BY model.nome", EntidadeEntity.class)
 				.setParameter("texto", "%"+texto.toLowerCase()+"%")
 				.getResultList();
 	}
 
 	public List<SelectValueVO> listSelect() {
 		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
-		em.createQuery("SELECT e FROM Entidade e ORDER BY e.nome", EntidadeEntity.class)
+		em.createQuery("SELECT e FROM EntidadeEntity e ORDER BY e.nome", EntidadeEntity.class)
 			.getResultList()
 			.forEach(x -> retorno.add(new SelectValueVO(x.getId(), x.getNome())));
 		return retorno;

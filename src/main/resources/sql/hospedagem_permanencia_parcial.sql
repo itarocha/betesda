@@ -1,6 +1,6 @@
 SELECT      
 DISTINCT    hospedagem
-FROM        Hospede hospede
+FROM        HospedeEntity hospede
 INNER JOIN  hospede.hospedagem hospedagem
 INNER JOIN  hospede.pessoa pessoa 
 WHERE       (((hospedagem.dataEntrada BETWEEN :DATA_INI AND :DATA_FIM) OR (COALESCE(hospedagem.dataEfetivaSaida,hospedagem.dataPrevistaSaida) BETWEEN :DATA_INI AND :DATA_FIM))
