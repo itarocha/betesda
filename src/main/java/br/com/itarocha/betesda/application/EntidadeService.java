@@ -1,112 +1,92 @@
 package br.com.itarocha.betesda.application;
 
-import br.com.itarocha.betesda.exception.ObsoleteValidationException;
-import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.EntidadeEntity;
+import br.com.itarocha.betesda.application.out.EnderecoRepository;
+import br.com.itarocha.betesda.application.out.EntidadeRepository;
+import br.com.itarocha.betesda.application.port.in.EntidadeUseCase;
+import br.com.itarocha.betesda.domain.Entidade;
 import br.com.itarocha.betesda.domain.SelectValueVO;
-import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.EnderecoJpaRepository;
-import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.EntidadeJpaRepository;
-import br.com.itarocha.betesda.util.validation.EntityValidationError;
-import org.springframework.beans.factory.annotation.Autowired;
+import br.com.itarocha.betesda.util.validacoes.EntityValidationException;
+import br.com.itarocha.betesda.util.validacoes.Violation;
+import br.com.itarocha.betesda.utils.Validadores;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import javax.transaction.Transactional;
+import java.util.*;
+
+import static java.util.Objects.isNull;
 
 @Service
-public class EntidadeService {
+@Transactional
+@RequiredArgsConstructor
+public class EntidadeService implements EntidadeUseCase {
 
-	@Autowired
-	private EntityManager em;
+	private final EntidadeRepository repositorio;
+	private final EnderecoRepository enderecoRepository;
 
-	@Autowired
-	private EntidadeJpaRepository repositorio;
+	@Override
+	public Entidade create(Entidade model) {
+		Set<Violation> violations = new HashSet<>();
 
-	@Autowired
-	private EnderecoJpaRepository enderecoRepo;
-
-	public EntidadeService() {
-	}
-
-	public EntidadeEntity create(EntidadeEntity model) throws ObsoleteValidationException {
-		try{
-			
-			Long id = model.getId() == null ? 0L : model.getId();
-			
-			if (this.entidadeCadastradaPorCampo(id, "cnpj", model.getCnpj())) {
-				throw new ObsoleteValidationException(EntityValidationError.builder().build().addError("cnpj", "CNPJ já casdastrado para outra Entidade"));
+		if (model.getCnpj() != null && model.getCnpj() != "") {
+			if (!Validadores.isValidCNPJ(model.getCnpj())) {
+				violations.add(new Violation("cnpj", "CNPJ inválido"));
 			}
-			
-			enderecoRepo.save(model.getEndereco());
-			repositorio.save(model);
-		} catch (ObsoleteValidationException e) {
-			throw e;
-		}catch(Exception e){
+		}
+		if (!repositorio.existeOutraEntidadeComEsseCNPJ(model.getId(), model.getCnpj()).isEmpty()) {
+			violations.add(new Violation("cnpj", "CNPJ já casdastrado para outra Entidade"));
+		}
+		if (!violations.isEmpty()){
+			throw new EntityValidationException(violations);
+		}
+
+		if (model.getCnpj() != null) {
+			model.setCnpj(model.getCnpj().replaceAll("\\.", "").replaceAll("\\-", "").replaceAll("\\/", ""));
+		}
+		if (model.getEndereco() != null && model.getEndereco().getCep() != null) {
+			model.getEndereco().setCep((model.getEndereco().getCep().replaceAll("\\-", "")));
+		}
+
+		try {
+			enderecoRepository.save(model.getEndereco());
+			return repositorio.save(model);
+		} catch (Exception e) {
 			throw new IllegalArgumentException(e.getMessage());
 		}
-		return model;
 	}
 
+	@Override
 	public void remove(Long id) {
-		Optional<EntidadeEntity> model = find(id);
-		if (model.isPresent()) {
-			repositorio.delete(model.get());
-		}
+		repositorio.deleteById(id);
 	}
 
-	public EntidadeEntity update(EntidadeEntity model) {
-		Optional<EntidadeEntity> obj = find(model.getId());
-		if (obj.isPresent()) {
+	@Override
+	public Entidade update(Entidade model) {
+		Entidade obj = find(model.getId());
+		if (!isNull(obj)) {
 			return repositorio.save(model);
 		}
 		return model;
 	}
 
-	public Optional<EntidadeEntity> find(Long id) {
-		return repositorio.findById(id);
+	@Override
+	public Entidade find(Long id) {
+		return repositorio.findById(id).orElse(null);
 	}
 
-	public List<EntidadeEntity> findAll() {
-		return em.createQuery("SELECT model FROM EntidadeEntity model ORDER BY model.nome", EntidadeEntity.class).getResultList();
+	@Override
+	public List<Entidade> findAll() {
+		return repositorio.findAllOrderByNome();
 	}
 
-	public List<EntidadeEntity> consultar(String texto) {
-		return em.createQuery("SELECT model FROM EntidadeEntity model WHERE lower(model.nome) LIKE :texto ORDER BY model.nome", EntidadeEntity.class)
-				.setParameter("texto", "%"+texto.toLowerCase()+"%")
-				.getResultList();
+	@Override
+	public List<Entidade> consultar(String texto) {
+		return repositorio.findAllLikeNomeLowerCase(texto);
 	}
 
+	@Override
 	public List<SelectValueVO> listSelect() {
-		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
-		em.createQuery("SELECT e FROM EntidadeEntity e ORDER BY e.nome", EntidadeEntity.class)
-			.getResultList()
-			.forEach(x -> retorno.add(new SelectValueVO(x.getId(), x.getNome())));
-		return retorno;
+		return repositorio.findAllToSelectVO();
 	}
-	
-	public boolean entidadeCadastradaPorCampo(Long entidadeId, String campo, String valor) {
-		
-		if ("".equals(valor) || valor == null) {
-			return false;
-		}
-		Long qtd = 0L;
-		try {
-			StringBuilder sb = new StringBuilder();
-			sb.append("SELECT COUNT(*) "); 
-			sb.append("FROM entidade "); 
-			sb.append(String.format("WHERE %s = :%s ",campo,campo)); 
-			sb.append("AND id <> :entidadeId ");
-			
-			Query query = em.createNativeQuery(sb.toString());
-			qtd = ((Number)query.setParameter("entidadeId", entidadeId)
-									.setParameter(campo, valor)
-									.getSingleResult()).longValue();
-		} catch (Exception e) {
-			return false;
-		}
-		
-		return qtd > 0; 
-	}
+
 }

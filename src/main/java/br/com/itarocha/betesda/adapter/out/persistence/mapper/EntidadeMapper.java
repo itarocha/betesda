@@ -4,6 +4,7 @@ import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.EncaminhadorEn
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.EntidadeEntity;
 import br.com.itarocha.betesda.domain.Encaminhador;
 import br.com.itarocha.betesda.domain.Entidade;
+import br.com.itarocha.betesda.domain.SelectValueVO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -63,4 +64,9 @@ public class EntidadeMapper {
                 .encaminhadores(encaminhadores)
                 .build();
     }
+
+    public SelectValueVO toSelectValueVO(Entidade input){
+        return new SelectValueVO(input.getId(), input.getNome());
+    }
+
 }
