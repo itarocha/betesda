@@ -45,7 +45,6 @@ public class EntidadesController {
 	@PostMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> gravar(@RequestBody Entidade model) {
-		validationUtils.validate(model);
 		return ResponseEntity.ok(service.create(model));
 	}
 	

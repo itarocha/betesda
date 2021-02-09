@@ -1,21 +1,16 @@
 package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.EntidadeEntity;
-import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.TipoServicoEntity;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.EntidadeMapper;
-import br.com.itarocha.betesda.adapter.out.persistence.mapper.TipoServicoMapper;
 import br.com.itarocha.betesda.application.out.EntidadeRepository;
-import br.com.itarocha.betesda.application.out.TipoServicoRepository;
 import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
 import br.com.itarocha.betesda.domain.Entidade;
 import br.com.itarocha.betesda.domain.SelectValueVO;
-import br.com.itarocha.betesda.domain.TipoServico;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -24,12 +19,16 @@ import java.util.stream.Collectors;
 public class EntidadeRepositoryAdapter implements EntidadeRepository {
 
     private final EntidadeJpaRepository repository;
+    private final EnderecoJpaRepository enderecoRepository;
     private final EntidadeMapper mapper;
 
     @Override
     public Entidade save(Entidade model) {
         try {
-            return mapper.toModel(repository.save(mapper.toEntity(model)));
+            EntidadeEntity entidadeEntity = mapper.toEntity(model);
+            enderecoRepository.save(entidadeEntity.getEndereco());
+            EntidadeEntity saved = repository.save(entidadeEntity);
+            return mapper.toModel(saved);
         } catch ( DataIntegrityViolationException e) {
             throw new IntegridadeException("Falha de integridade ao tentar gravar Entidade"
                     , e.getMostSpecificCause().getMessage());
@@ -95,40 +94,4 @@ public class EntidadeRepositoryAdapter implements EntidadeRepository {
                 .collect(Collectors.toList());
     }
 
-    /*
-    @Override
-    public void delete(TipoServico model) {
-        try {
-            repository.delete(mapper.toEntity(model));
-        } catch (DataIntegrityViolationException e) {
-            throw new IntegridadeException("Falha de integridade ao tentar excluir Tipo de Serviço"
-                    , e.getMostSpecificCause().getMessage());
-        }
-    }
-
-    @Override
-    public List<TipoServico> findAllOrderByDescricao() {
-        return repository.findAllOrderByDescricao()
-                .stream()
-                .map(mapper::toModel)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<TipoServico> findAllAtivosOrderByDescricao() {
-        return repository.findAllAtivosOrderByDescricao()
-                .stream()
-                .map(mapper::toModel)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<SelectValueVO> findAllToSelectVO() {
-        return repository.findAllAtivosOrderByDescricao()
-                .stream()
-                .map(mapper::toModel)
-                .map(mapper::toSelectValueVO)
-                .collect(Collectors.toList());
-    }
-     */
 }

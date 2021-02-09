@@ -71,6 +71,7 @@ public class PessoaEntity extends UserDateAudit implements Serializable {
 
 	@Valid
 	@ManyToOne()
+	@JoinColumn(name = "endereco_id")
 	@NotNull(message="Endereço deve ser preenchido")
 	private EnderecoEntity endereco = new EnderecoEntity();
 	

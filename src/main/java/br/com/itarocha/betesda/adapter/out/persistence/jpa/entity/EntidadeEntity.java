@@ -38,11 +38,11 @@ public class EntidadeEntity extends UserDateAudit implements Serializable{
 	@Size(min = 14, max = 14, message="CNPJ deve ter 14 caracteres")
 	private String cnpj;
 
-	@Builder.Default
 	@Valid
 	@ManyToOne()
+	@JoinColumn(name = "endereco_id")
 	@NotNull(message="Endereço é obrigatório")
-	private EnderecoEntity endereco = new EnderecoEntity();;
+	private EnderecoEntity endereco = new EnderecoEntity();
 	
 	@Size(max = 16, message="Telefone não pode ter mais que 16 caracteres")
 	private String telefone;

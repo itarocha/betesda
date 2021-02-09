@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -30,6 +31,7 @@ public class Entidade extends UserDateAudit implements Serializable{
 	private String cnpj;
 
 	@Builder.Default
+	@Valid
 	@NotNull(message="Endereço é obrigatório")
 	private Endereco endereco = new Endereco();
 	
@@ -47,5 +49,4 @@ public class Entidade extends UserDateAudit implements Serializable{
 
 	@Builder.Default
 	private List<Encaminhador> encaminhadores = new ArrayList<>();
-
 }
