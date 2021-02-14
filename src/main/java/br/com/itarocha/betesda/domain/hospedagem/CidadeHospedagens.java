@@ -3,8 +3,7 @@ package br.com.itarocha.betesda.domain.hospedagem;
 import java.util.ArrayList;
 import java.util.List;
 
-//Utilize HospedagensPorCidade
-@Deprecated
+//TODO Veja se é melhor utilizar HospedagensPorCidade
 public class CidadeHospedagens {
 
 	private String nome;
@@ -32,6 +31,4 @@ public class CidadeHospedagens {
 	public void setIds(List<String> ids) {
 		this.ids = ids;
 	}
-	
-	
 }

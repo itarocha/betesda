@@ -30,7 +30,6 @@ public class MapaHospedagemService {
     private final QuartoUseCase quartoService;
     private final LeitoRepository leitoRepository;
     private final ClasseCelulaStrategy classeCelulaStrategy;
-
     private final DSLContext create;
 
     private static final int QTD_DIAS = 7;
@@ -49,7 +48,7 @@ public class MapaHospedagemService {
         List<HospedeMapa> listaHospedeLeito = buildHospedeLeito(dIni, dFim);
 
         Map<Long, MicroLeito> _mapLeitos = buildListaLeitos();
-        Map<Long, ArrayList<LinhaHospedagem>>  _mapHospedagens = new HashMap<>();
+        Map<Long, ArrayList<LinhaHospedagem>>  mapaLinhaHospedagem = new HashMap<>();
 
         Integer[] diasPadrao = new Integer[QTD_DIAS];
         Arrays.fill(diasPadrao, 0);
@@ -79,12 +78,12 @@ public class MapaHospedagemService {
             linhaHospedagem.setNome(hospedeMapa.getPessoaNome());
             linhaHospedagem.setTelefone(hospedeMapa.getPessoaTelefone());
 
-            if (_mapHospedagens.containsKey(hospedeMapa.getLeitoId())) {
-                _mapHospedagens.get(hospedeMapa.getLeitoId()).add(linhaHospedagem);
+            if (mapaLinhaHospedagem.containsKey(hospedeMapa.getLeitoId())) {
+                mapaLinhaHospedagem.get(hospedeMapa.getLeitoId()).add(linhaHospedagem);
             } else {
                 ArrayList<LinhaHospedagem> lst = new ArrayList<>();
                 lst.add(linhaHospedagem);
-                _mapHospedagens.put(hospedeMapa.getLeitoId(), lst);
+                mapaLinhaHospedagem.put(hospedeMapa.getLeitoId(), lst);
             }
         });
 
@@ -92,102 +91,27 @@ public class MapaHospedagemService {
                 .stream()
                 .map( m -> {
                         MicroLeito leito = m.getValue();
-                        List<LinhaHospedagem> lst = _mapHospedagens.get(m.getKey());
+                        List<LinhaHospedagem> lst = mapaLinhaHospedagem.get(m.getKey());
                         if (lst != null) {
                             leito.setHospedagens(lst);
                         }
                         return leito;
                     }
                 ).collect(Collectors.toList());
-        retorno.setLinhas(linhas);
 
-        retorno.getLinhas()
-                .sort((a, b) -> String.format("%06d-%06d", a.getQuartoNumero(), a.getLeitoNumero())
-                .compareTo( String.format("%06d-%06d", b.getQuartoNumero(), b.getLeitoNumero()) ) );
+        linhas.sort((a, b) -> String.format("%06d-%06d", a.getQuartoNumero(), a.getLeitoNumero())
+                        .compareTo( String.format("%06d-%06d", b.getQuartoNumero(), b.getLeitoNumero()) ) );
+
+        retorno.setLinhas(linhas);
 
         // 2 - HÓSPEDES
         //TODO Criar estrutura pessoa+hospedagem, detalhes
         listaHospedeLeito.sort(Comparator.comparing(HospedeMapa::getPessoaNome));
         retorno.setHospedes(listaHospedeLeito);
-
-        //INÍCIO
-        Map<String, List<String>> porCidade = new TreeMap<>();
-        retorno.getHospedes().forEach(h -> {
-            if (porCidade.get(h.getPessoaCidadeUfOrigem()) == null ) {
-                List<String> lst = new ArrayList<>();
-                lst.add(h.getIdentificador());
-                porCidade.put(h.getPessoaCidadeUfOrigem(), lst);
-            } else {
-                porCidade.get(h.getPessoaCidadeUfOrigem()).add(h.getIdentificador());
-            }
-        });
-
-        retorno.setCidades(porCidade.entrySet()
-                .stream()
-                .map(e -> new CidadeHospedagens(e.getKey(), porCidade.get(e.getKey())))
-                .collect(Collectors.toList()));
-
-        // DIAS
-        for (LocalDate d = dIni; !d.isAfter(dFim);  d = d.plusDays(1)){
-            retorno.getDias().add(d);
-        }
-
-        //TRATATIVA DO QUADRO
-        Quadro quadro = new Quadro();
-
-        // Busca quartos e leitos do banco
-        List<Quarto> listQuartoEntities = quartoService.findAll();
-
-        // Cria um agrupamento de quartos <quartoNum, leitos.minimum, leitos.maximum>
-        List<QuartoLeitos> listQuartosLeitos = listQuartoEntities
-                .stream()
-                .map(q -> {
-                    Integer  minimum = q.getLeitos().stream().min(Comparator.comparing(Leito::getNumero)).get().getNumero();
-                    Integer  maximum = q.getLeitos().stream().max(Comparator.comparing(Leito::getNumero)).get().getNumero();
-                    QuartoLeitos ql = new QuartoLeitos(q.getId(), q.getNumero(), minimum, maximum);
-                    return ql;
-                }).collect(Collectors.toList());
-
-        Integer minimum = Collections.max(listQuartosLeitos, Comparator.comparing(q -> q.getMinimum())).getMinimum();
-        Integer maximum = Collections.max(listQuartosLeitos, Comparator.comparing(q -> q.getMaximum())).getMaximum();
-
-        Integer[] arrayDiasVazio = new Integer[QTD_DIAS];
-        Arrays.fill(arrayDiasVazio, 0);
-
-        quadro.quartos = listQuartosLeitos
-                            .stream()
-                            .map(q -> {
-                                QuadroQuarto qq = new QuadroQuarto(q.getId(), q.getNumero());
-
-                                IntStream.rangeClosed(minimum, maximum)
-                                        .forEach( qtdLeitos -> qq.getLeitos().add(
-                                                new QuadroLeito(0L, qtdLeitos, arrayDiasVazio)
-                                        ));
-
-                                return qq;
-                            })
-                            .collect(Collectors.toList());
-
-        // Varre mais uma vez os quartos do banco e seta os ids correspondentes. Os ids zerados significa que não existem no banco
-        listQuartoEntities.forEach(q -> {
-            q.getLeitos().forEach(leito -> {
-                quadro.setLeitoIdPorNumero(q.getId(), leito.getNumero(), leito.getId());
-            });
-        });
-
-        // Cada linha corresponde a um leitoId. Pode haver várias hospedagens no mesmo dia. Cada hospedagem possui vários dias
-        // Setar todos os leitos do quadro (se encontrar)
-        retorno.getLinhas().forEach(linha -> {
-            linha.getHospedagens().forEach(lh -> {
-                Long leitoId = linha.getLeitoId();
-                Integer idxDiaIni = lh.getIdxIni();
-                Integer idxDiaFim = lh.getIdxFim();
-                quadro.quartos.forEach(qq -> qq.marcarDias(leitoId, idxDiaIni, idxDiaFim));
-            });
-        });
-
-       retorno.setQuadro(quadro);
-       return retorno;
+        retorno.setCidades(buildPorCidade(retorno.getHospedes()));
+        retorno.setDias(buildDias(dIni, dFim));
+        retorno.setQuadro(buildQuadro(retorno.getLinhas()));
+        return retorno;
     }
 
     public List<HospedeMapa> buildHospedeLeito(LocalDate dataIni, LocalDate dataFim){
@@ -318,6 +242,90 @@ public class MapaHospedagemService {
                         ).fetchInto(HospedeMapa.class);
 
         return lista;
+    }
+
+    private List<CidadeHospedagens> buildPorCidade(List<HospedeMapa> hospedes){
+        Map<String, List<String>> porCidade = new TreeMap<>();
+        hospedes.forEach(h -> {
+            if (porCidade.get(h.getPessoaCidadeUfOrigem()) == null ) {
+                List<String> lst = new ArrayList<>();
+                lst.add(h.getIdentificador());
+                porCidade.put(h.getPessoaCidadeUfOrigem(), lst);
+            } else {
+                porCidade.get(h.getPessoaCidadeUfOrigem()).add(h.getIdentificador());
+            }
+        });
+
+        return porCidade.entrySet()
+                .stream()
+                .map(e -> new CidadeHospedagens(e.getKey(), porCidade.get(e.getKey())))
+                .collect(Collectors.toList());
+    }
+
+    private Quadro buildQuadro(List<MicroLeito> linhas){
+        //TRATATIVA DO QUADRO
+        Quadro quadro = new Quadro();
+
+        // Busca quartos e leitos do banco
+        List<Quarto> listQuartoEntities = quartoService.findAll();
+
+        // Cria um agrupamento de quartos <quartoNum, leitos.minimum, leitos.maximum>
+        List<QuartoLeitos> listQuartosLeitos = listQuartoEntities
+                .stream()
+                .map(q -> {
+                    Integer  minimum = q.getLeitos().stream().min(Comparator.comparing(Leito::getNumero)).get().getNumero();
+                    Integer  maximum = q.getLeitos().stream().max(Comparator.comparing(Leito::getNumero)).get().getNumero();
+                    QuartoLeitos ql = new QuartoLeitos(q.getId(), q.getNumero(), minimum, maximum);
+                    return ql;
+                }).collect(Collectors.toList());
+
+        Integer minimum = Collections.max(listQuartosLeitos, Comparator.comparing(q -> q.getMinimum())).getMinimum();
+        Integer maximum = Collections.max(listQuartosLeitos, Comparator.comparing(q -> q.getMaximum())).getMaximum();
+
+        Integer[] arrayDiasVazio = new Integer[QTD_DIAS];
+        Arrays.fill(arrayDiasVazio, 0);
+
+        quadro.quartos = listQuartosLeitos
+                .stream()
+                .map(q -> {
+                    QuadroQuarto qq = new QuadroQuarto(q.getId(), q.getNumero());
+
+                    IntStream.rangeClosed(minimum, maximum)
+                            .forEach( qtdLeitos -> qq.getLeitos().add(
+                                    new QuadroLeito(0L, qtdLeitos, arrayDiasVazio)
+                            ));
+
+                    return qq;
+                })
+                .collect(Collectors.toList());
+
+        // Varre mais uma vez os quartos do banco e seta os ids correspondentes. Os ids zerados significa que não existem no banco
+        listQuartoEntities.forEach(q -> {
+            q.getLeitos().forEach(leito -> {
+                quadro.setLeitoIdPorNumero(q.getId(), leito.getNumero(), leito.getId());
+            });
+        });
+
+        // Cada linha corresponde a um leitoId. Pode haver várias hospedagens no mesmo dia. Cada hospedagem possui vários dias
+        // Setar todos os leitos do quadro (se encontrar)
+        linhas.forEach(linha -> {
+            linha.getHospedagens().forEach(lh -> {
+                Long leitoId = linha.getLeitoId();
+                Integer idxDiaIni = lh.getIdxIni();
+                Integer idxDiaFim = lh.getIdxFim();
+                quadro.quartos.forEach(qq -> qq.marcarDias(leitoId, idxDiaIni, idxDiaFim));
+            });
+        });
+
+        return quadro;
+    }
+
+    private List<LocalDate> buildDias(LocalDate dIni, LocalDate dFim) {
+        List<LocalDate> retorno = new ArrayList<>();
+        for (LocalDate d = dIni; !d.isAfter(dFim);  d = d.plusDays(1)){
+            retorno.add(d);
+        }
+        return retorno;
     }
 
     private Map<Long, MicroLeito> buildListaLeitos() {
