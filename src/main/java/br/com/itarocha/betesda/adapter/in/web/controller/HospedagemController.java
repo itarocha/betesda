@@ -93,7 +93,7 @@ public class HospedagemController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<List<HospedeMapa>> mapaTeste(@RequestBody PeriodoRequest model)
 	{
-		return ResponseEntity.ok(mapaHospedagemService.buildHospedeLeito(model.dataIni, model.dataFim));
+		return ResponseEntity.ok(mapaHospedagemService.buildListaHospedeMapa(model.dataIni, model.dataFim));
 	}
 
 	/*

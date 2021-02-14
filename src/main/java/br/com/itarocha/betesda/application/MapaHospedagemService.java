@@ -45,24 +45,29 @@ public class MapaHospedagemService {
         retorno.setDataFim(dFim);
 
         //1 - MAPA DE HOSPEDAGENS
-        List<HospedeMapa> listaHospedeLeito = buildHospedeLeito(dIni, dFim);
+        List<HospedeMapa> listaHospedeMapa = buildListaHospedeMapa(dIni, dFim);
 
-        Map<Long, MicroLeito> _mapLeitos = buildListaLeitos();
         Map<Long, ArrayList<LinhaHospedagem>>  mapaLinhaHospedagem = new HashMap<>();
 
         Integer[] diasPadrao = new Integer[QTD_DIAS];
         Arrays.fill(diasPadrao, 0);
 
-        listaHospedeLeito.stream().forEach(hospedeMapa -> {
+        listaHospedeMapa.stream().forEach(hm -> {
             LinhaHospedagem linhaHospedagem = new LinhaHospedagem();
 
-            ClasseInicioEnum classeIni = classeCelulaStrategy.resolveClasseIni(hospedeMapa);
-            ClasseFimEnum classeFim = classeCelulaStrategy.resolveClasseFim(hospedeMapa);
+            linhaHospedagem.setIdentificador(hm.getIdentificador());
+            linhaHospedagem.setHpdId(hm.getHospedagemId());
+            linhaHospedagem.setStatus(hm.getStatusHospedagem().toString());
+            linhaHospedagem.setNome(hm.getPessoaNome());
+            linhaHospedagem.setTelefone(hm.getPessoaTelefone());
+
+            ClasseInicioEnum classeIni = classeCelulaStrategy.resolveClasseIni(hm);
+            ClasseFimEnum classeFim = classeCelulaStrategy.resolveClasseFim(hm);
             linhaHospedagem.setClsIni(classeIni.getDescricao());
             linhaHospedagem.setClsFim(classeFim.getDescricao());
 
-            int iIni = Math.toIntExact(DAYS.between(dIni, hospedeMapa.getDataIniNoPeriodo() ));
-            int iFim = Math.toIntExact(DAYS.between(dIni, hospedeMapa.getDataFimNoPeriodo() ));
+            int iIni = Math.toIntExact(DAYS.between(dIni, hm.getDataIniNoPeriodo() ));
+            int iFim = Math.toIntExact(DAYS.between(dIni, hm.getDataFimNoPeriodo() ));
             Integer[] dias = diasPadrao.clone();
             IntStream.rangeClosed(iIni, iFim).forEach(n -> dias[n] = 1);
             linhaHospedagem.setDias(dias.clone());
@@ -70,24 +75,17 @@ public class MapaHospedagemService {
             linhaHospedagem.setIdxFim(iFim);
             linhaHospedagem.setWidth((iFim - iIni + 1)*100);
 
-            hospedeMapa.setDias(dias);
-
-            linhaHospedagem.setIdentificador(hospedeMapa.getIdentificador());
-            linhaHospedagem.setHpdId(hospedeMapa.getHospedagemId());
-            linhaHospedagem.setStatus(hospedeMapa.getStatusHospedagem().toString());
-            linhaHospedagem.setNome(hospedeMapa.getPessoaNome());
-            linhaHospedagem.setTelefone(hospedeMapa.getPessoaTelefone());
-
-            if (mapaLinhaHospedagem.containsKey(hospedeMapa.getLeitoId())) {
-                mapaLinhaHospedagem.get(hospedeMapa.getLeitoId()).add(linhaHospedagem);
+            if (mapaLinhaHospedagem.containsKey(hm.getLeitoId())) {
+                mapaLinhaHospedagem.get(hm.getLeitoId()).add(linhaHospedagem);
             } else {
                 ArrayList<LinhaHospedagem> lst = new ArrayList<>();
                 lst.add(linhaHospedagem);
-                mapaLinhaHospedagem.put(hospedeMapa.getLeitoId(), lst);
+                mapaLinhaHospedagem.put(hm.getLeitoId(), lst);
             }
         });
 
-        List<MicroLeito> linhas = _mapLeitos.entrySet()
+        Map<Long, MicroLeito> mapaMicroLeitos = buildListaLeitos();
+        List<MicroLeito> linhas = mapaMicroLeitos.entrySet()
                 .stream()
                 .map( m -> {
                         MicroLeito leito = m.getValue();
@@ -106,15 +104,15 @@ public class MapaHospedagemService {
 
         // 2 - HÓSPEDES
         //TODO Criar estrutura pessoa+hospedagem, detalhes
-        listaHospedeLeito.sort(Comparator.comparing(HospedeMapa::getPessoaNome));
-        retorno.setHospedes(listaHospedeLeito);
+        listaHospedeMapa.sort(Comparator.comparing(HospedeMapa::getPessoaNome));
+        retorno.setHospedes(listaHospedeMapa);
         retorno.setCidades(buildPorCidade(retorno.getHospedes()));
         retorno.setDias(buildDias(dIni, dFim));
         retorno.setQuadro(buildQuadro(retorno.getLinhas()));
         return retorno;
     }
 
-    public List<HospedeMapa> buildHospedeLeito(LocalDate dataIni, LocalDate dataFim){
+    public List<HospedeMapa> buildListaHospedeMapa(LocalDate dataIni, LocalDate dataFim){
         // PRIMEIRO SELECT - HÓSPEDES COM LEITO
         br.com.itarocha.betesda.jooq.model.tables.HospedeLeito hl = HOSPEDE_LEITO.as("hl");
         br.com.itarocha.betesda.jooq.model.tables.Leito leito = LEITO.as("leito");

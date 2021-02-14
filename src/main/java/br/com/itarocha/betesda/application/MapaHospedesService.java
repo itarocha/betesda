@@ -28,7 +28,7 @@ public class MapaHospedesService {
         retorno.setDataFim(dFim);
 
         //1 - MAPA DE HOSPEDAGENS
-        List<HospedeMapa> listaHospedeLeito = mapaHospedagemService.buildHospedeLeito(dIni, dFim);
+        List<HospedeMapa> listaHospedeLeito = mapaHospedagemService.buildListaHospedeMapa(dIni, dFim);
 
         // Dias
         LocalDate dtmp = dIni;
