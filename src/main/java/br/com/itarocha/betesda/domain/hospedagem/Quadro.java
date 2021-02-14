@@ -8,11 +8,11 @@ public class Quadro {
 	
 	public void setLeitoIdPorNumero(Long quartoId, Integer leitoNumero, Long leitoId) {
 		this.quartos.stream()
-			.filter(q -> q.id.equals(quartoId))
+			.filter(q -> q.getId().equals(quartoId))
 			.findFirst()
 			.ifPresent(q -> {
 				q.setLeitoIdPorNumero(leitoNumero, leitoId);
 			});
 	}
-	
+
 }

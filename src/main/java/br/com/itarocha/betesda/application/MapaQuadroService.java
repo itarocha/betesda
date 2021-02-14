@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -43,9 +44,13 @@ public class MapaQuadroService {
         });
 
         // Adiciona todos os leitos em todos os quartos. Todos os leitos estão com id zerado
+
+        Integer[] arrayDiasVazio = new Integer[QTD_DIAS];
+        Arrays.fill(arrayDiasVazio, 0);
+
         quadro.quartos.forEach(q -> {
             for (Integer n = atomicMinLeito.get(); n <= atomicMaxLeito.get(); n++) {
-                q.leitos.add(new QuadroLeito(0L, n, QTD_DIAS));
+                q.getLeitos().add(new QuadroLeito(0L, n, arrayDiasVazio));
             }
         });
 

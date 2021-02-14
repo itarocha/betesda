@@ -1,33 +1,34 @@
 package br.com.itarocha.betesda.domain.hospedagem;
 
-import java.time.LocalDate;
+
+import java.util.Arrays;
 
 public class QuadroLeito {
 	public Long id;
 	public Integer numero;
 	private Integer[] dias;
-	private LocalDate[] datas;
 
 	/*
 	public QuadroLeito(Long id, Integer numero, int numeroDias) {
 		this.id = id;
 		this.numero = numero;
-
 		this.dias = new Integer[numeroDias];
-		for (int i = 0; i < numeroDias; i++) {
-			this.dias[i] = 0;
-		}
+		Arrays.fill(dias, 0);
 	}
 	*/
-	
-	public QuadroLeito(Long id, Integer numero, int numeroDias) {
+
+	public QuadroLeito(Long id, Integer numero, Integer[] dias) {
 		this.id = id;
 		this.numero = numero;
+		this.dias = dias.clone();
+	}
 
-		this.dias = new Integer[numeroDias];
-		for (int i = 0; i < numeroDias; i++) {
-			this.dias[i] = 0;
-		}
+	public Long getId(){
+		return this.id;
+	}
+
+	public Integer getNumero(){
+		return this.numero;
 	}
 
 	public Integer[] getDias() {
@@ -38,13 +39,7 @@ public class QuadroLeito {
 		this.dias = dias;
 	}
 
-	public LocalDate[] getDatas() {
-		return datas;
+	public void marcarRangeDias(Integer idxIni, Integer idxFim) {
+		Arrays.fill(this.dias, idxIni, idxFim, 1);
 	}
-
-	public void setDatas(LocalDate[] datas) {
-		this.datas = datas;
-	}
-	
-	
 }

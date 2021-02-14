@@ -1,28 +1,22 @@
 package br.com.itarocha.betesda.application;
 
 import br.com.itarocha.betesda.application.port.in.QuartoUseCase;
+import br.com.itarocha.betesda.domain.Leito;
 import br.com.itarocha.betesda.domain.LeitoDTO;
 import br.com.itarocha.betesda.domain.Quarto;
 import br.com.itarocha.betesda.domain.hospedagem.*;
 import br.com.itarocha.betesda.domain.strategy.ClasseCelulaStrategy;
 import br.com.itarocha.betesda.utils.LocalDateUtils;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.jooq.*;
-import org.springframework.data.domain.Range;
 import org.springframework.stereotype.Service;
 
-import java.io.InputStream;
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ValueRange;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.LongStream;
 
 import static br.com.itarocha.betesda.jooq.model.Tables.*;
 import static br.com.itarocha.betesda.jooq.model.Tables.HOSPEDAGEM;
@@ -38,7 +32,7 @@ public class MapaHospedagemService {
 
     private final DSLContext create;
 
-    private final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    //private final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final int QTD_DIAS = 7;
 
     @Deprecated
@@ -58,7 +52,10 @@ public class MapaHospedagemService {
         Map<Long, MicroLeito> _mapLeitos = buildListaLeitos();
         Map<Long, ArrayList<LinhaHospedagem>>  _mapHospedagens = new HashMap<>();
 
-        listaHospedeLeito.forEach(hospedeMapa -> {
+        Integer[] diasPadrao = new Integer[QTD_DIAS];
+        Arrays.fill(diasPadrao, 0);
+
+        listaHospedeLeito.stream().forEach(hospedeMapa -> {
             LinhaHospedagem linhaHospedagem = new LinhaHospedagem();
 
             ClasseInicioEnum classeIni = classeCelulaStrategy.resolveClasseIni(hospedeMapa);
@@ -69,11 +66,10 @@ public class MapaHospedagemService {
 
             int iIni = Math.toIntExact(DAYS.between(dIni, hospedeMapa.getDataIniNoPeriodo() ));
             int iFim = Math.toIntExact(DAYS.between(dIni, hospedeMapa.getDataFimNoPeriodo() ));
-            Integer[] dias = new Integer[QTD_DIAS];
-            Arrays.fill(dias, 0);
-            IntStream.rangeClosed(iIni, iFim).forEach(n -> dias[n] = 1);
 
-            linhaHospedagem.setDias(dias);
+            Integer[] dias = diasPadrao.clone();
+            IntStream.rangeClosed(iIni, iFim).forEach(n -> dias[n] = 1);
+            linhaHospedagem.setDias(dias.clone());
             linhaHospedagem.setIdxIni(iIni);
             linhaHospedagem.setIdxFim(iFim);
             linhaHospedagem.setWidth((iFim - iIni + 1)*100);
@@ -86,7 +82,6 @@ public class MapaHospedagemService {
             linhaHospedagem.setNome(hospedeMapa.getPessoaNome());
             linhaHospedagem.setTelefone(hospedeMapa.getPessoaTelefone());
 
-
             if (_mapHospedagens.containsKey(hospedeMapa.getLeitoId())) {
                 _mapHospedagens.get(hospedeMapa.getLeitoId()).add(linhaHospedagem);
             } else {
@@ -96,6 +91,7 @@ public class MapaHospedagemService {
             }
         });
 
+        //TODO Resolver Linhas separadamente com map
         _mapLeitos.entrySet().forEach(m -> {
             Long leitoId = m.getKey();
             MicroLeito leito = m.getValue();
@@ -111,9 +107,8 @@ public class MapaHospedagemService {
 
         // 2 - HÓSPEDES
         //TODO Criar estrutura pessoa+hospedagem, detalhes
+        listaHospedeLeito.sort(Comparator.comparing(HospedeMapa::getPessoaNome));
         retorno.setHospedes(listaHospedeLeito);
-        retorno.getHospedes()
-                .sort((a, b) -> a.getPessoaNome().compareTo(b.getPessoaNome()) );
 
         //INÍCIO
         Map<String, List<String>> porCidade = new TreeMap<>();
@@ -123,17 +118,16 @@ public class MapaHospedagemService {
                 lst.add(h.getIdentificador());
                 porCidade.put(h.getPessoaCidadeUfOrigem(), lst);
             } else {
-                List<String> lst = porCidade.get(h.getPessoaCidadeUfOrigem());
-                lst.add(h.getIdentificador());
+                porCidade.get(h.getPessoaCidadeUfOrigem()).add(h.getIdentificador());
             }
         });
 
-        List<CidadeHospedagens> cidades = new ArrayList<>();
-        porCidade.keySet().forEach(k -> {
-            cidades.add(new CidadeHospedagens(k, porCidade.get(k)));
-        });
-        retorno.setCidades(cidades);
+        retorno.setCidades(porCidade.entrySet()
+                .stream()
+                .map(e -> new CidadeHospedagens(e.getKey(), porCidade.get(e.getKey())))
+                .collect(Collectors.toList()));
 
+        //TODO Comparação de datas
         // Dias
         LocalDate dtmp = dIni;
         // Qualquer índice abaixo de indiceDataPassada é data inferior a hoje
@@ -147,34 +141,40 @@ public class MapaHospedagemService {
         }
 
         //TRATATIVA DO QUADRO
-
         Quadro quadro = new Quadro();
 
         // Busca quartos e leitos do banco
         List<Quarto> listQuartoEntities = quartoService.findAll();
-        // Cria os quartos e verifica minimo e maximo dos leitos
-        AtomicInteger atomicMinLeito = new AtomicInteger(Integer.MAX_VALUE);
-        AtomicInteger atomicMaxLeito = new AtomicInteger(Integer.MIN_VALUE);
-        quadro.quartos = listQuartoEntities
+
+        // Cria um agrupamento de quartos <quartoNum, leitos.minimum, leitos.maximum>
+        List<QuartoLeitos> listQuartosLeitos = listQuartoEntities
+                .stream()
+                .map(q -> {
+                    Integer  minimum = q.getLeitos().stream().min(Comparator.comparing(Leito::getNumero)).get().getNumero();
+                    Integer  maximum = q.getLeitos().stream().max(Comparator.comparing(Leito::getNumero)).get().getNumero();
+                    QuartoLeitos ql = new QuartoLeitos(q.getId(), q.getNumero(), minimum, maximum);
+                    return ql;
+                }).collect(Collectors.toList());
+
+        Integer minimum = Collections.max(listQuartosLeitos, Comparator.comparing(q -> q.getMinimum())).getMinimum();
+        Integer maximum = Collections.max(listQuartosLeitos, Comparator.comparing(q -> q.getMaximum())).getMaximum();
+
+        Integer[] arrayDiasVazio = new Integer[QTD_DIAS];
+        Arrays.fill(arrayDiasVazio, 0);
+
+        quadro.quartos = listQuartosLeitos
                             .stream()
                             .map(q -> {
-                                        q.getLeitos().forEach(l -> {
-                                            if (l.getNumero() < atomicMinLeito.get()) {
-                                                atomicMinLeito.set(l.getNumero());
-                                            } else if (l.getNumero() > atomicMaxLeito.get() ) {
-                                                atomicMaxLeito.set(l.getNumero());
-                                            }
-                                        });
-                                        return new QuadroQuarto( q.getId(), q.getNumero() );
-                                    })
-                            .collect(Collectors.toList());
+                                QuadroQuarto qq = new QuadroQuarto(q.getId(), q.getNumero());
 
-        // Adiciona todos os leitos em todos os quartos. Todos os leitos estão com id zerado
-        quadro.quartos.forEach(q -> {
-            IntStream.rangeClosed(atomicMinLeito.get(), atomicMaxLeito.get()).forEach(
-                    n -> q.leitos.add(new QuadroLeito(0L, n, QTD_DIAS))
-            );
-        });
+                                IntStream.rangeClosed(minimum, maximum)
+                                        .forEach( qtdLeitos -> qq.getLeitos().add(
+                                                new QuadroLeito(0L, qtdLeitos, arrayDiasVazio)
+                                        ));
+
+                                return qq;
+                            })
+                            .collect(Collectors.toList());
 
         // Varre mais uma vez os quartos do banco e seta os ids correspondentes. Os ids zerados significa que não existem no banco
         listQuartoEntities.forEach(q -> {
@@ -183,31 +183,39 @@ public class MapaHospedagemService {
             });
         });
 
-        quadro.quartos.forEach(q -> {
-            q.leitos.forEach(leito -> {
-                if (!leito.id.equals(0)) {
-                    // Busca o array de linhas de hospedagens.
-                    // Cada quarto contém um array
-                    Long leitoId = leito.id;
-
-                    retorno.getLinhas()
-                            .stream()
-                            .filter(_leito -> _leito.getLeitoId().equals( leitoId )) // theLeito.getId().equals
-                            .findFirst()
-                            .ifPresent(theLeito -> {
-                                theLeito.getHospedagens().forEach(linhaHpd -> {
-                                    // Quando um índice maior que zero, significa que há hospedagem nesse dia da semana
-                                    for (int i = 0; i < QTD_DIAS; i++) {
-                                        boolean marcar = linhaHpd.getDias()[i] > 0;
-                                        if ( marcar ) {
-                                            leito.getDias()[i] = 1;
-                                        }
-                                    }
-                                });
-                            });
-                }
+        // Cada linha corresponde a um leitoId. Pode haver várias hospedagens no mesmo dia. Cada hospedagem possui vários dias
+        // Setar todos os leitos do quadro (se encontrar)
+        retorno.getLinhas().forEach(linha -> {
+            linha.getHospedagens().forEach(lh -> {
+                Long leitoId = linha.getLeitoId();
+                Integer idxDiaIni = lh.getIdxIni();
+                Integer idxDiaFim = lh.getIdxFim();
+                quadro.quartos.forEach(qq -> qq.marcarDias(leitoId, idxDiaIni, idxDiaFim));
             });
         });
+
+        /*
+        // APROVADO. Tentar melhorar. Veja acima
+        // Marca os dias de cada leito em direção quartos -> leitos
+        quadro.quartos.forEach(q -> {
+            q.getLeitos()
+                    .stream()
+                    .filter(l -> !l.getId().equals(0))
+                    .forEach( leito -> {
+                        retorno.getLinhas()
+                                .stream()
+                                // Busca a primeira linha de hóspede que contenha esse leito
+                                .filter(leitoLinha -> leitoLinha.getLeitoId().equals( leito.getId() ))
+                                .findFirst()
+                                .ifPresent(leitoEncontrado -> {
+                                    leitoEncontrado.getHospedagens()
+                                            .forEach(linhaHpd -> {
+                                                leito.marcarRangeDias(linhaHpd.getIdxIni(), linhaHpd.getIdxFim());
+                                            });
+                                });
+                    });
+        });
+        */
 
         retorno.setQuadro(quadro);
 
@@ -250,7 +258,6 @@ public class MapaHospedagemService {
                         .innerJoin(quarto).on(quarto.ID.eq(leito.QUARTO_ID))
                         .where(condicaoA)
                         .groupBy(hl.HOSPEDE_ID, hl.ID, quarto.ID, quarto.NUMERO, leito.ID, leito.NUMERO, hl.DATA_ENTRADA, hl.DATA_SAIDA);
-
 
         // SEGUNDO SQL - HÓSPEDES SEM LEITO
         br.com.itarocha.betesda.jooq.model.tables.Hospedagem hpd = HOSPEDAGEM.as("hpd");
@@ -446,5 +453,50 @@ public class MapaHospedagemService {
                 .orderBy(QUARTO.NUMERO, LEITO.NUMERO)
                 .fetch()
                 .map(r -> new LeitoDTO(r.get(LEITO.ID),r.get(LEITO.NUMERO),r.get(QUARTO.ID),r.get(QUARTO.NUMERO)));
+    }
+
+    static class MinMax {
+        private Integer minimum;
+        private Integer maximum;
+
+        public MinMax(Integer minimum, Integer maximum){
+            this.minimum = minimum;
+            this.maximum = maximum;
+        }
+        public Integer getMinimum() {
+            return minimum;
+        }
+
+        public Integer getMaximum() {
+            return maximum;
+        }
+    }
+
+    static class QuartoLeitos {
+        private Long id;
+        private Integer numero;
+        private MinMax rangeLeitos;
+
+        public QuartoLeitos(Long id, Integer numero, Integer leitoMin, Integer leitoMax) {
+            this.id = id;
+            this.numero = numero;
+            this.rangeLeitos = new MinMax(leitoMin, leitoMax);
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public Integer getNumero() {
+            return numero;
+        }
+
+        public Integer getMinimum() {
+            return rangeLeitos.getMinimum();
+        }
+
+        public Integer getMaximum() {
+            return rangeLeitos.getMaximum();
+        }
     }
 }
