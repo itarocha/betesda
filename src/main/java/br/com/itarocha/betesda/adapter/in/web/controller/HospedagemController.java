@@ -96,6 +96,7 @@ public class HospedagemController {
 		return ResponseEntity.ok(mapaHospedagemService.buildHospedeLeito(model.dataIni, model.dataFim));
 	}
 
+	/*
 	@PostMapping("/mapa/linhas")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public MapaLinhas mapaLinhas(@RequestBody MapaHospedagemRequest model)
@@ -103,6 +104,7 @@ public class HospedagemController {
 		MapaLinhas retorno = mapaHospedagemService.buildMapaLinhas(model.data);
 		return retorno;
 	}
+	*/
 
 	@PostMapping("/mapa/hospedes")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")

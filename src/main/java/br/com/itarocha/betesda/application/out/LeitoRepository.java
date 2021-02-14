@@ -1,6 +1,7 @@
 package br.com.itarocha.betesda.application.out;
 
 import br.com.itarocha.betesda.domain.Leito;
+import br.com.itarocha.betesda.domain.LeitoDTO;
 import br.com.itarocha.betesda.domain.enums.LogicoEnum;
 
 import java.util.Collection;
@@ -26,4 +27,6 @@ public interface LeitoRepository {
     Collection<Leito> existeOutroLeitoComEsseNumero(Long leitoId, Long quartoId, Integer leitoNumero);
 
     Collection<Leito> existeOutroLeitoComEsseNumero(Long quartoId, Integer leitoNumero);
+
+    List<LeitoDTO> getListaCabecalhosLeitos();
 }
