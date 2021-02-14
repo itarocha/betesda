@@ -84,26 +84,7 @@ public class MapaHospedagemService {
             }
         });
 
-        Map<Long, MicroLeito> mapaMicroLeitos = buildListaLeitos();
-        List<MicroLeito> linhas = mapaMicroLeitos.entrySet()
-                .stream()
-                .map( m -> {
-                        MicroLeito leito = m.getValue();
-                        List<LinhaHospedagem> lst = mapaLinhaHospedagem.get(m.getKey());
-                        if (lst != null) {
-                            leito.setHospedagens(lst);
-                        }
-                        return leito;
-                    }
-                ).collect(Collectors.toList());
-
-        linhas.sort((a, b) -> String.format("%06d-%06d", a.getQuartoNumero(), a.getLeitoNumero())
-                        .compareTo( String.format("%06d-%06d", b.getQuartoNumero(), b.getLeitoNumero()) ) );
-
-        retorno.setLinhas(linhas);
-
-        // 2 - HÓSPEDES
-        //TODO Criar estrutura pessoa+hospedagem, detalhes
+        retorno.setLinhas(buildListaMicroLeitos(mapaLinhaHospedagem));
         listaHospedeMapa.sort(Comparator.comparing(HospedeMapa::getPessoaNome));
         retorno.setHospedes(listaHospedeMapa);
         retorno.setCidades(buildPorCidade(retorno.getHospedes()));
@@ -326,15 +307,35 @@ public class MapaHospedagemService {
         return retorno;
     }
 
+    private List<MicroLeito> buildListaMicroLeitos(Map<Long, ArrayList<LinhaHospedagem>> mapaLinhaHospedagem) {
+        Map<Long, MicroLeito> mapaMicroLeitos = buildListaLeitos();
+        List<MicroLeito> listaMicroLeitos = mapaMicroLeitos.entrySet()
+                .stream()
+                .map( m -> {
+                            MicroLeito leito = m.getValue();
+                            List<LinhaHospedagem> lst = mapaLinhaHospedagem.get(m.getKey());
+                            if (lst != null) {
+                                leito.setHospedagens(lst);
+                            }
+                            return leito;
+                        }
+                ).collect(Collectors.toList());
+
+        listaMicroLeitos.sort((a, b) -> String.format("%06d-%06d", a.getQuartoNumero(), a.getLeitoNumero())
+                .compareTo( String.format("%06d-%06d", b.getQuartoNumero(), b.getLeitoNumero()) ) );
+        return listaMicroLeitos;
+    }
+
     private Map<Long, MicroLeito> buildListaLeitos() {
         Map<Long, MicroLeito> _mapLeitos = leitoRepository.getListaCabecalhosLeitos()
                 .stream()
                 .collect(Collectors.toMap(  LeitoDTO::getId,
-                                            leito -> new MicroLeito(   leito.getId(),
-                                                                        leito.getNumero(),
-                                                                        leito.getQuartoId(),
-                                                                        leito.getQuartoNumero() )) );
+                        leito -> new MicroLeito(   leito.getId(),
+                                leito.getNumero(),
+                                leito.getQuartoId(),
+                                leito.getQuartoNumero() )) );
         _mapLeitos.put(99999L, new MicroLeito(9999L, 9999, 9999L, 9999));
         return _mapLeitos;
     }
+
 }
