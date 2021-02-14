@@ -1,6 +1,7 @@
 package br.com.itarocha.betesda.application;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.EncaminhadorEntity;
+import br.com.itarocha.betesda.application.port.in.EncaminhadorUseCase;
 import br.com.itarocha.betesda.domain.SelectValueVO;
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.EncaminhadorJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,17 +13,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class EncaminhadorService {
+public class EncaminhadorService implements EncaminhadorUseCase {
 
 	@Autowired
 	private EntityManager em;
 
 	@Autowired
 	private EncaminhadorJpaRepository repositorio;
-
-	
-	public EncaminhadorService() {
-	}
 
 	public EncaminhadorEntity create(EncaminhadorEntity model) {
 		try{

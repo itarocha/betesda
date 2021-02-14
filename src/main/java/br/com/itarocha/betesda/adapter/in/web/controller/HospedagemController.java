@@ -1,17 +1,14 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
+import br.com.itarocha.betesda.application.*;
+import br.com.itarocha.betesda.application.port.in.HospedagemUseCase;
 import br.com.itarocha.betesda.domain.hospedagem.*;
-import br.com.itarocha.betesda.exception.ObsoleteValidationException;
 import br.com.itarocha.betesda.domain.HospedagemFullVO;
 import br.com.itarocha.betesda.domain.HospedagemVO;
 import br.com.itarocha.betesda.domain.HospedeVO;
 import br.com.itarocha.betesda.report.RelatorioAtendimentos;
-import br.com.itarocha.betesda.application.HospedagemService;
-import br.com.itarocha.betesda.application.PlanilhaGeralService;
-import br.com.itarocha.betesda.application.RelatorioGeralService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
-import br.com.itarocha.betesda.util.validation.EntityValidationError;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -27,14 +24,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/app/hospedagem")
+@RequiredArgsConstructor
 public class HospedagemController {
 
-	@Autowired
-	private HospedagemService service;
-	
-	@Autowired
-	private RelatorioGeralService relatorioService;
-	
+	private final HospedagemUseCase hospedagemService;
+	private final RelatorioGeralService relatorioService;
+	private final MapaHospedagemService mapaHospedagemService;
+	private final MapaHospedesService mapaHospedesService;
+	private final MapaCidadesService mapaCidadesService;
+	private final MapaQuadroService mapaQuadroService;
+
 	@PostMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> gravar(@RequestBody HospedagemVO model) {
@@ -63,7 +62,7 @@ public class HospedagemController {
 					Integer leitoNumero = h.getAcomodacao().getLeitoNumero();
 					Integer quartoNumero = h.getAcomodacao().getQuartoNumero();
 					
-					if (!service.leitoLivreNoPeriodo(leitoId, dataIni, dataFim)) {
+					if (!hospedagemService.leitoLivreNoPeriodo(leitoId, dataIni, dataFim)) {
 						v.addError("id", String.format("Quarto %s Leito %s está ocupado no perído", quartoNumero, leitoNumero ));
 					}
 				}
@@ -75,28 +74,33 @@ public class HospedagemController {
 		}
 		
 		try {
-			service.create(model);
+			hospedagemService.create(model);
 		    return new ResponseEntity<HospedagemVO>(model, HttpStatus.OK);
-		} catch (ObsoleteValidationException e) {
-			return new ResponseEntity<EntityValidationError>(e.getRe(), HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@PostMapping("/mapa")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public MapaRetorno mapa(@RequestBody MapaHospedagemRequest model)
 	{
-		MapaRetorno retorno = service.buildMapaRetorno(model.data);
+		MapaRetorno retorno = mapaHospedagemService.buildMapaRetorno(model.data);
 		return retorno;
+	}
+
+	@PostMapping("/mapa/teste")
+	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
+	public ResponseEntity<List<HospedeMapa>> mapaTeste(@RequestBody PeriodoRequest model)
+	{
+		return ResponseEntity.ok(mapaHospedagemService.buildHospedeLeito(model.dataIni, model.dataFim));
 	}
 
 	@PostMapping("/mapa/linhas")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public MapaLinhas mapaLinhas(@RequestBody MapaHospedagemRequest model)
 	{
-		MapaLinhas retorno = service.buildMapaLinhas(model.data);
+		MapaLinhas retorno = mapaHospedagemService.buildMapaLinhas(model.data);
 		return retorno;
 	}
 
@@ -104,7 +108,7 @@ public class HospedagemController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public MapaHospedes mapaHospedes(@RequestBody MapaHospedagemRequest model)
 	{
-		MapaHospedes retorno = service.buildMapaHospedes(model.data);
+		MapaHospedes retorno = mapaHospedesService.buildMapaHospedes(model.data);
 		return retorno;
 	}
 
@@ -112,7 +116,7 @@ public class HospedagemController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public MapaCidades mapaCidades(@RequestBody MapaHospedagemRequest model)
 	{
-		MapaCidades retorno = service.buildMapaCidades(model.data);
+		MapaCidades retorno = mapaCidadesService.buildMapaCidades(model.data);
 		return retorno;
 	}
 
@@ -120,7 +124,7 @@ public class HospedagemController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public MapaQuadro mapaQuadro(@RequestBody MapaHospedagemRequest model)
 	{
-		MapaQuadro retorno = service.buildMapaQuadro(model.data);
+		MapaQuadro retorno = mapaQuadroService.buildMapaQuadro(model.data);
 		return retorno;
 	}
 
@@ -207,7 +211,7 @@ public class HospedagemController {
 	public ResponseEntity<?> leitosOcupados(@RequestBody HospedagemPeriodoRequest model)
 	{
 		try {
-			List<OcupacaoLeito> retorno = service.getLeitosOcupadosNoPeriodo(model.hospedagemId, model.dataIni, model.dataFim);
+			List<OcupacaoLeito> retorno = hospedagemService.getLeitosOcupadosNoPeriodo(model.hospedagemId, model.dataIni, model.dataFim);
 			
 			//List<Long> retorno = service.getLeitosOcupadosNoPeriodo(model.hospedagemId, model.dataIni, model.dataFim);
 			return new ResponseEntity<List<OcupacaoLeito>>(retorno, HttpStatus.OK);
@@ -220,91 +224,63 @@ public class HospedagemController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> alterarHospede(@RequestBody AlteracaoHospedeRequest model)
 	{
-		try {
-			service.alterarTipoHospede(model.hospedeId, model.tipoHospedeId);
-			return new ResponseEntity<String>("ok", HttpStatus.OK);
-		} catch(ObsoleteValidationException e) {
-			return new ResponseEntity<EntityValidationError>(e.getRe(), HttpStatus.BAD_REQUEST);
-		}
+		hospedagemService.alterarTipoHospede(model.hospedeId, model.tipoHospedeId);
+		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
 	
 	@PostMapping("/mapa/encerramento")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> encerramento(@RequestBody OperacoesRequest model)
 	{
-		try {
-			service.encerrarHospedagem(model.hospedagemId, model.data);
-			return new ResponseEntity<String>("ok", HttpStatus.OK);
-		} catch(ObsoleteValidationException e) {
-			return new ResponseEntity<EntityValidationError>(e.getRe(), HttpStatus.BAD_REQUEST);
-		}
+		hospedagemService.encerrarHospedagem(model.hospedagemId, model.data);
+		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
 	
 	@PostMapping("/mapa/renovacao")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> renovacao(@RequestBody OperacoesRequest model)
 	{
-		try {
-			service.renovarHospedagem(model.hospedagemId, model.data);
-			return new ResponseEntity<String>("ok", HttpStatus.OK);
-		} catch(ObsoleteValidationException e) {
-			return new ResponseEntity<EntityValidationError>(e.getRe(), HttpStatus.BAD_REQUEST);
-		}
+		hospedagemService.renovarHospedagem(model.hospedagemId, model.data);
+		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
 	
 	@PostMapping("/remover_hospede")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> removerHospede(@RequestBody RemoverHospedeRequest model)
 	{
-		try {
-			service.removerHospede(model.hospedagemId, model.hospedeId);
-			return new ResponseEntity<String>("ok", HttpStatus.OK); 
-		} catch(ObsoleteValidationException e) {
-			return new ResponseEntity<EntityValidationError>(e.getRe(), HttpStatus.BAD_REQUEST);
-		}
+		hospedagemService.removerHospede(model.hospedagemId, model.hospedeId);
+		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
 	
 	@PostMapping(value="/mapa/baixar")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> baixar(@RequestBody BaixaRequest model)
 	{
-		try {
-			service.baixarHospede(model.hospedeId, model.data);
-			return new ResponseEntity<String>("ok", HttpStatus.OK); 
-		} catch(ObsoleteValidationException e) {
-			return new ResponseEntity<EntityValidationError>(e.getRe(), HttpStatus.BAD_REQUEST);
-		}
+		hospedagemService.baixarHospede(model.hospedeId, model.data);
+		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
 	
 	@PostMapping("/mapa/transferir")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> transferir(@RequestBody TransferenciaRequest model)
 	{
-		try {
-			service.transferirHospede(model.hospedeId, model.leitoId, model.data);
-			return new ResponseEntity<String>("ok", HttpStatus.OK); 
-		} catch(ObsoleteValidationException e) {
-			return new ResponseEntity<EntityValidationError>(e.getRe(), HttpStatus.BAD_REQUEST);
-		}
+		hospedagemService.transferirHospede(model.hospedeId, model.leitoId, model.data);
+		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
 	
 	@PostMapping("/mapa/adicionar")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> adicionarHospede(@RequestBody AdicionarHospedeRequest model)
 	{
-		try {
-			service.adicionarHospede(model.hospedagemId, model.pessoaId, model.tipoHospedeId, model.leitoId, model.data);
-			return new ResponseEntity<String>("ok", HttpStatus.OK); 
-		} catch(ObsoleteValidationException e) {
-			return new ResponseEntity<EntityValidationError>(e.getRe(), HttpStatus.BAD_REQUEST);
-		}
+		hospedagemService.adicionarHospede(model.hospedagemId, model.pessoaId, model.tipoHospedeId, model.leitoId, model.data);
+		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
 	
 	@PostMapping("/mapa/hospedagem_info")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public HospedagemFullVO getHospedagemInfo(@RequestBody HospdeagemInfoRequest model)
 	{
-		HospedagemFullVO h = service.getHospedagemPorHospedeLeitoId(model.hospedagemId);
+		HospedagemFullVO h = hospedagemService.getHospedagemPorHospedeLeitoId(model.hospedagemId);
 		return h;
 	}
 
@@ -312,7 +288,7 @@ public class HospedagemController {
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
 		try {
-			service.excluirHospedagem(id);
+			hospedagemService.excluirHospedagem(id);
 		    return new ResponseEntity<String>("sucesso", HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);

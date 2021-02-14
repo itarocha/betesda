@@ -25,7 +25,7 @@ public class MapaRetorno {
 
 	private List<MicroLeito> leitos = new ArrayList<>();
 	
-	private List<HospedeLeitoMapa> hospedes = new ArrayList<>();
+	private List<HospedeMapa> hospedes = new ArrayList<>();
 	
 	public LocalDate getDataIni() {
 		return dataIni;
@@ -75,11 +75,11 @@ public class MapaRetorno {
 		this.leitos = leitos;
 	}
 
-	public List<HospedeLeitoMapa> getHospedes() {
+	public List<HospedeMapa> getHospedes() {
 		return hospedes;
 	}
 
-	public void setHospedes(List<HospedeLeitoMapa> hospedes) {
+	public void setHospedes(List<HospedeMapa> hospedes) {
 		this.hospedes = hospedes;
 	}
 
