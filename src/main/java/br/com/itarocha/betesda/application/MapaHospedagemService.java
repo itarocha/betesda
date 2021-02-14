@@ -155,17 +155,19 @@ public class MapaHospedagemService {
         // Cria os quartos e verifica minimo e maximo dos leitos
         AtomicInteger atomicMinLeito = new AtomicInteger(Integer.MAX_VALUE);
         AtomicInteger atomicMaxLeito = new AtomicInteger(Integer.MIN_VALUE);
-        listQuartoEntities.forEach(q -> {
-            quadro.quartos.add(new QuadroQuarto( q.getId(), q.getNumero()));
-
-            q.getLeitos().forEach(l -> {
-                if (l.getNumero() < atomicMinLeito.get()) {
-                    atomicMinLeito.set(l.getNumero());
-                } else if (l.getNumero() > atomicMaxLeito.get() ) {
-                    atomicMaxLeito.set(l.getNumero());
-                }
-            });
-        });
+        quadro.quartos = listQuartoEntities
+                            .stream()
+                            .map(q -> {
+                                        q.getLeitos().forEach(l -> {
+                                            if (l.getNumero() < atomicMinLeito.get()) {
+                                                atomicMinLeito.set(l.getNumero());
+                                            } else if (l.getNumero() > atomicMaxLeito.get() ) {
+                                                atomicMaxLeito.set(l.getNumero());
+                                            }
+                                        });
+                                        return new QuadroQuarto( q.getId(), q.getNumero() );
+                                    })
+                            .collect(Collectors.toList());
 
         // Adiciona todos os leitos em todos os quartos. Todos os leitos estão com id zerado
         quadro.quartos.forEach(q -> {
@@ -344,16 +346,13 @@ public class MapaHospedagemService {
     }
 
     private Map<Long, MicroLeito> buildListaLeitos() {
-        Map<Long, MicroLeito> _mapLeitos = new TreeMap<>();
-        listCabecalhosLeitos().stream()
-                .forEach(
-                        record -> _mapLeitos.put(   record.getId(),
-                                                    new MicroLeito(record.getId(),
-                                                            record.getNumero(),
-                                                            record.getQuartoId(),
-                                                            record.getQuartoNumero() )
-                                                )
-                );
+        Map<Long, MicroLeito> _mapLeitos = listCabecalhosLeitos()
+                .stream()
+                .collect(Collectors.toMap(  LeitoDTO::getId,
+                                            leito -> new MicroLeito(   leito.getId(),
+                                                                        leito.getNumero(),
+                                                                        leito.getQuartoId(),
+                                                                        leito.getQuartoNumero() )) );
         _mapLeitos.put(99999L, new MicroLeito(9999L, 9999, 9999L, 9999));
         return _mapLeitos;
     }
