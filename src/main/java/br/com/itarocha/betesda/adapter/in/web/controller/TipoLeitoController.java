@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
-import br.com.itarocha.betesda.application.TipoLeitoService;
+import br.com.itarocha.betesda.application.port.in.TipoLeitoUseCase;
 import br.com.itarocha.betesda.domain.TipoLeito;
 import br.com.itarocha.betesda.util.validacoes.ValidatorUtil;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class TipoLeitoController {
 
-	private final TipoLeitoService service;
+	private final TipoLeitoUseCase service;
 	private final ValidatorUtil validationUtils;
 
 	@GetMapping

@@ -1,14 +1,10 @@
 package br.com.itarocha.betesda.adapter.out.persistence.mapper;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.EncaminhadorEntity;
-import br.com.itarocha.betesda.domain.DestinacaoHospedagem;
 import br.com.itarocha.betesda.domain.Encaminhador;
+import br.com.itarocha.betesda.domain.SelectValueVO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 
@@ -43,4 +39,9 @@ public class EncaminhadorMapper {
                 .ativo(model.getAtivo())
                 .build();
     }
+
+    public SelectValueVO toSelectValueVO(Encaminhador input){
+        return new SelectValueVO(input.getId(), input.getNome());
+    }
+
 }

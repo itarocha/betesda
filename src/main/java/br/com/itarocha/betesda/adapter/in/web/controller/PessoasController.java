@@ -1,6 +1,7 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
 import br.com.itarocha.betesda.adapter.dto.ApiError;
+import br.com.itarocha.betesda.application.port.in.PessoaUseCase;
 import br.com.itarocha.betesda.domain.Pessoa;
 import br.com.itarocha.betesda.domain.SearchRequest;
 import br.com.itarocha.betesda.application.PessoaService;
@@ -19,7 +20,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PessoasController {
 
-	private final PessoaService service;
+	private final PessoaUseCase service;
 	private final ValidatorUtil validationUtils;
 
 	@GetMapping("{id}")

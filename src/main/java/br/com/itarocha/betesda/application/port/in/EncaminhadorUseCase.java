@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.application.port.in;
 
-import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.EncaminhadorEntity;
+import br.com.itarocha.betesda.domain.Encaminhador;
 import br.com.itarocha.betesda.domain.SelectValueVO;
 
 import java.util.List;
@@ -8,16 +8,16 @@ import java.util.Optional;
 
 public interface EncaminhadorUseCase {
 
-	EncaminhadorEntity create(EncaminhadorEntity model);
+	Encaminhador create(Encaminhador model);
 
 	void remove(Long id);
 
-	EncaminhadorEntity update(EncaminhadorEntity model);
+	Encaminhador update(Encaminhador model);
 
-	Optional<EncaminhadorEntity> find(Long id);
+	Optional<Encaminhador> find(Long id);
 
-	List<EncaminhadorEntity> findAll(Long entidadeId);
+	List<Encaminhador> findAllByEntidadeId(Long entidadeId);
 
-	List<SelectValueVO> listSelect(Long entidadeId);
+	List<SelectValueVO> listSelectByEntidadeId(Long entidadeId);
 	
 }
