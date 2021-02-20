@@ -11,27 +11,7 @@ import java.util.List;
 
 public interface HospedeLeitoJpaRepository extends JpaRepository<HospedeLeitoEntity, Long> {
 
-	/* funciona
-	select   hl.* 
-	from     hospede_leito hl
-	where    hl.hospede_id in (select hpd.id from hospede hpd where hpd.hospedagem_id = 30)
-	and      hl.data_entrada = (select max(outro.data_entrada) from hospede_leito outro where outro.hospede_id = hl.hospede_id)
-	order by hl.data_entrada desc;
-	*/
-	/*
-	 @Query(value = "SELECT hospedeLeito " + 
-	 		"FROM  HospedeLeito hospedeLeito " + 
-	 		"INNER JOIN  hospedeLeito.hospede hospede " + 
-	 		"INNER JOIN  hospede.hospedagem hospedagem " + 
-	 		"WHERE (hospedagem.id = :hospedagemId) " + 
-	 		"AND (hospedeLeito.dataEntrada = (SELECT MAX(outro.dataEntrada) " + 
-	 		"                                 FROM HospedeLeito outro " + 
-	 		"                                 WHERE (outro.hospede.id = hospede.id) " + 
-	 		"                                 ) " + 
-	 		"    ) " + 
-	 		"ORDER BY hospedeLeito.id DESC")
-	*/ 
-	@Query(value = "SELECT   hl.* " + 
+	@Query(value = "SELECT   hl.* " +
 			"FROM     hospede_leito hl " + 
 			"WHERE    hl.hospede_id IN (SELECT hpd.id FROM hospede hpd WHERE hpd.hospedagem_id = :hospedagemId) " + 
 			"AND      hl.data_entrada = (SELECT MAX(outro.data_entrada) FROM hospede_leito outro WHERE outro.hospede_id = hl.hospede_id) " + 
@@ -46,7 +26,7 @@ public interface HospedeLeitoJpaRepository extends JpaRepository<HospedeLeitoEnt
 	"ORDER BY hl.data_entrada ", nativeQuery = true)
 	List<HospedeLeitoEntity> findUltimoByHospedeId(@Param("hospedeId") Long hospedeId);
 	
-	
+
 	// Retorna se existe alguma hospedagem no leito no período
 	@Query(value = "SELECT hl.* " +
 	"FROM   hospede_leito hl "+

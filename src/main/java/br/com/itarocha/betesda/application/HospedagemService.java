@@ -3,6 +3,9 @@ package br.com.itarocha.betesda.application;
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.*;
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.*;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.*;
+import br.com.itarocha.betesda.application.out.EntidadeRepository;
+import br.com.itarocha.betesda.application.out.HospedeLeitoRepository;
+import br.com.itarocha.betesda.application.out.TipoServicoRepository;
 import br.com.itarocha.betesda.application.port.in.HospedagemUseCase;
 import br.com.itarocha.betesda.domain.*;
 import br.com.itarocha.betesda.domain.enums.LogicoEnum;
@@ -39,10 +42,10 @@ public class HospedagemService implements HospedagemUseCase {
 	private final TipoHospedeJpaRepository tipoHospedeRepo;
 	private final QuartoJpaRepository quartoRepo;
 	private final LeitoJpaRepository leitoRepo;
-	private final HospedeLeitoJpaRepository hospedeLeitoRepo;
+	private final HospedeLeitoRepository hospedeLeitoRepo;
 	private final HospedeJpaRepository hospedeRepo;
-	private final TipoServicoJpaRepository tipoServicoRepo;
-	private final EntidadeJpaRepository entidadeRepo;
+	private final TipoServicoRepository tipoServicoRepo;
+	private final EntidadeRepository entidadeRepo;
 	private final EncaminhadorJpaRepository encaminhadorRepo;
 	private final HospedagemTipoServicoJpaRepository hospedagemTipoServicoRepo;
 	private final DSLContext create;
@@ -52,47 +55,29 @@ public class HospedagemService implements HospedagemUseCase {
 	private final EncaminhadorMapper encaminhadorMapper;
 	private final DestinacaoHospedagemMapper destinacaoHospedagemMapper;
 	private final HospedeMapper hospedeMapper;
+	private final HospedeLeitoMapper hospedeLeitoMapper;
 	private final TipoServicoMapper tipoServicoMapper;
+	private final QuartoMapper quartoMapper;
+	private final LeitoMapper leitoMapper;
 
 	//private static final int QTD_DIAS = 7;
 	private final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 	//CRUD
 	public HospedagemEntity create(HospedagemVO model) {
-		HospedagemEntity hospedagemEntity = null;
-
-		LocalDate hoje = LocalDate.now();
-
-		Set<Violation> violations = new HashSet<>();
-
-		if (model.getDataEntrada().isAfter(hoje)) {
-			violations.add(new Violation("*",
-					String.format("Data de Entrada não pode ser superior a data atual (%s)",
-							fmt.format(hoje))));
-		}
-
-		if (model.getDataPrevistaSaida().isBefore(model.getDataEntrada())) {
-			violations.add(new Violation("*",
-					String.format("Data Prevista de Saída não pode ser inferior a Data de Entrada (%s)",
-					fmt.format(model.getDataEntrada()))));
-		}
-
-		for (HospedeVO h : model.getHospedes()) {
-			if (!pessoaLivreNoPeriodo(h.getPessoaId(), model.getDataEntrada(), model.getDataPrevistaSaida())) {
-				violations.add(new Violation("*",
-						String.format("[%s] está em outra hospedagem nesse período", h.getPessoaNome() )));
-			}
-		}
-
+		Set<Violation> violations = validateCreateHospedagem(model);
 		if (!violations.isEmpty()){
 			throw new EntityValidationException(violations);
 		}
 
-		hospedagemEntity = HospedagemEntity.builder().build();
+		HospedagemEntity hospedagemEntity = HospedagemEntity.builder().build();
 
-		Optional<EntidadeEntity> entidade = entidadeRepo.findById(model.getEntidadeId());
-		hospedagemEntity.setEntidade(entidade.get());
-		model.setEntidade(entidade.get());
+		Optional<Entidade> entidade = entidadeRepo.findById(model.getEntidadeId());
+		if (entidade.isPresent()){
+			EntidadeEntity ee = entidadeMapper.toEntity(entidade.get());
+			hospedagemEntity.setEntidade(ee);
+			model.setEntidade(ee);
+		}
 
 		Optional<EncaminhadorEntity> encaminhador = encaminhadorRepo.findById(model.getEncaminhadorId());
 		hospedagemEntity.setEncaminhador(encaminhador.get());
@@ -149,7 +134,7 @@ public class HospedagemService implements HospedagemUseCase {
 					hvo.getAcomodacao().setLeitoNumero(leito.get().getNumero());
 					hl.setLeito(leito.get());
 
-					hospedeLeitoRepo.save(hl);
+					hospedeLeitoRepo.save(hospedeLeitoMapper.toModel(hl) );
 					hvo.getAcomodacao().setId(hl.getId());
 
 					h.getLeitos().add(hl);
@@ -158,10 +143,10 @@ public class HospedagemService implements HospedagemUseCase {
 		}
 		if ((model.getServicos().length > 0) && (TipoUtilizacaoHospedagemEnum.P.equals(hospedagemEntity.getTipoUtilizacao())) ) {
 			for (Long tipoServicoId : model.getServicos()) {
-				Optional<TipoServicoEntity> ts = tipoServicoRepo.findById(tipoServicoId);
+				Optional<TipoServico> ts = tipoServicoRepo.findById(tipoServicoId);
 				if (ts.isPresent()) {
 					HospedagemTipoServicoEntity servico = HospedagemTipoServicoEntity.builder().build();
-					servico.setTipoServico(ts.get());
+					servico.setTipoServico(tipoServicoMapper.toEntity(ts.get()));
 					servico.setHospedagem(hospedagemEntity);
 					hospedagemTipoServicoRepo.save(servico);
 					hospedagemEntity.getServicos().add(servico);
@@ -169,6 +154,32 @@ public class HospedagemService implements HospedagemUseCase {
 			}
 		}
 		return hospedagemEntity;
+	}
+
+	private Set<Violation> validateCreateHospedagem(HospedagemVO model) {
+		LocalDate hoje = LocalDate.now();
+
+		Set<Violation> violations = new HashSet<>();
+
+		if (model.getDataEntrada().isAfter(hoje)) {
+			violations.add(new Violation("*",
+					String.format("Data de Entrada não pode ser superior a data atual (%s)",
+							fmt.format(hoje))));
+		}
+
+		if (model.getDataPrevistaSaida().isBefore(model.getDataEntrada())) {
+			violations.add(new Violation("*",
+					String.format("Data Prevista de Saída não pode ser inferior a Data de Entrada (%s)",
+							fmt.format(model.getDataEntrada()))));
+		}
+
+		for (HospedeVO h : model.getHospedes()) {
+			if (!pessoaLivreNoPeriodo(h.getPessoaId(), model.getDataEntrada(), model.getDataPrevistaSaida())) {
+				violations.add(new Violation("*",
+						String.format("[%s] está em outra hospedagem nesse período", h.getPessoaNome() )));
+			}
+		}
+		return violations;
 	}
 
 
@@ -285,14 +296,14 @@ public class HospedagemService implements HospedagemUseCase {
 				throw new EntityValidationException(violations);
 			}
 
-			List<HospedeLeitoEntity> hlToSave = new ArrayList<HospedeLeitoEntity>();
+			List<HospedeLeito> hlToSave = new ArrayList<>();
 			
 			if (TipoUtilizacaoHospedagemEnum.T.equals(h.getTipoUtilizacao())) {
 				List<HospedeEntity> hospedeEntities = h.getHospedes();
 				for (HospedeEntity hpd : hospedeEntities) {
-					List<HospedeLeitoEntity> listaHospedeLeitoEntity = hospedeLeitoRepo.findUltimoByHospedeId(hpd.getId());
+					List<HospedeLeito> listaHospedeLeitoEntity = hospedeLeitoRepo.findUltimoByHospedeId(hpd.getId());
 
-					for (HospedeLeitoEntity hl : listaHospedeLeitoEntity) {
+					for (HospedeLeito hl : listaHospedeLeitoEntity) {
 						if (LogicoEnum.N.equals(hpd.getBaixado())) {
 							hlToSave.add(hl);
 						}
@@ -300,7 +311,7 @@ public class HospedagemService implements HospedagemUseCase {
 				}
 			}
 
-			for (HospedeLeitoEntity hl : hlToSave) {
+			for (HospedeLeito hl : hlToSave) {
 				hl.setDataSaida(dataEncerramento);
 				hospedeLeitoRepo.save(hl);
 			}	
@@ -338,8 +349,8 @@ public class HospedagemService implements HospedagemUseCase {
 					violations.add( new Violation("*", "Data de encerramento deve ser superior a data de entrada"));
 				}
 				
-				List<HospedeLeitoEntity> listaHospedeLeitoEntity = hospedeLeitoRepo.findUltimoByHospedeId(hospedeId);
-				for (HospedeLeitoEntity hl : listaHospedeLeitoEntity) {
+				List<HospedeLeito> listaHospedeLeitoEntity = hospedeLeitoRepo.findUltimoByHospedeId(hospedeId);
+				for (HospedeLeito hl : listaHospedeLeitoEntity) {
 					if (hl.getDataEntrada().isAfter(dataBaixa)) {
 						violations.add( new Violation("*", "Existe movimentação com data ANTERIOR a data da baixa"));
 					}
@@ -441,8 +452,8 @@ public class HospedagemService implements HospedagemUseCase {
 							String.format("Data de Transferência deve ser igual ou superior a Data de Entrada da última movimentação (%s)",fmt.format(dataMinima)));
 				}
 				
-				List<HospedeLeitoEntity> listaHospedeLeitoEntity = hospedeLeitoRepo.findUltimoByHospedeId(hospedeId);
-				for (HospedeLeitoEntity hl : listaHospedeLeitoEntity) {
+				List<HospedeLeito> listaHospedeLeitoEntity = hospedeLeitoRepo.findUltimoByHospedeId(hospedeId);
+				for (HospedeLeito hl : listaHospedeLeitoEntity) {
 					if (hl.getDataEntrada().isAfter(dataTransferencia)) {
 						throw new EntityValidationException("*", "Existe movimentação com data ANTERIOR a data da transferência");
 					}
@@ -463,7 +474,7 @@ public class HospedagemService implements HospedagemUseCase {
 					hl.setDataSaida(h.getDataPrevistaSaida());
 					hl.setQuarto(q);
 					hl.setLeito(leitoEntity);
-					hospedeLeitoRepo.save(hl);
+					hospedeLeitoRepo.save(hospedeLeitoMapper.toModel(hl));
 				});
 			}
 		}
@@ -532,12 +543,12 @@ public class HospedagemService implements HospedagemUseCase {
 				.build();
 		hospedeEntity = hospedeRepo.save(hospedeEntity);
 		
-		HospedeLeitoEntity hl = HospedeLeitoEntity.builder()
-				.hospede(hospedeEntity)
+		HospedeLeito hl = HospedeLeito.builder()
+				.hospede(hospedeMapper.toModel(hospedeEntity))
 				.dataEntrada(dataEntrada)
 				.dataSaida(hospedagemEntity.getDataPrevistaSaida())
-				.quarto(q)
-				.leito(leitoOpt.get())
+				.quarto(quartoMapper.toModel(q))
+				.leito(leitoMapper.toModel(leitoOpt.get()))
 				.build();
 
 		hospedeLeitoRepo.save(hl);
@@ -574,7 +585,7 @@ public class HospedagemService implements HospedagemUseCase {
 
 			// Para cada leito (caso seja Total), verificar se ele está sendo utilizado no período (dataPrevistaSaida ~ dataRenovacao)
 			
-			List<HospedeLeitoEntity> hlToSave = new ArrayList<HospedeLeitoEntity>();
+			List<HospedeLeito> hlToSave = new ArrayList<>();
 
 			// Para cada pessoa, verificar se ele está em outra hospedagem no período entre h.getDataPrevistaSaida() e dataRenovacao 
 			if (TipoUtilizacaoHospedagemEnum.T.equals(h.getTipoUtilizacao())) {
@@ -586,9 +597,9 @@ public class HospedagemService implements HospedagemUseCase {
 						throw new EntityValidationException("*", String.format("[%s] está em outra hospedagem nesse novo período", hpd.getPessoa().getNome() ));
 					}
 
-					List<HospedeLeitoEntity> listaHospedeLeitoEntity = hospedeLeitoRepo.findUltimoByHospedeId(hpd.getId());
+					List<HospedeLeito> listaHospedeLeitoEntity = hospedeLeitoRepo.findUltimoByHospedeId(hpd.getId());
 					
-					for (HospedeLeitoEntity hl : listaHospedeLeitoEntity) {
+					for (HospedeLeito hl : listaHospedeLeitoEntity) {
 						if (LogicoEnum.N.equals(hpd.getBaixado())) {
 							Long leitoId = hl.getLeito().getId();
 							//System.out.println(hpd.getPessoa().getNome() + " - " + hl.getDataSaida() + " - " + hl.getQuarto().getNumero() + " - " + hl.getLeito().getNumero() +  " - Baixado? " + hpd.getBaixado());
@@ -610,7 +621,7 @@ public class HospedagemService implements HospedagemUseCase {
 				}
 			}
 
-			for (HospedeLeitoEntity hl : hlToSave) {
+			for (HospedeLeito hl : hlToSave) {
 				hl.setDataSaida(dataRenovacao);
 				hospedeLeitoRepo.save(hl);
 			}	
