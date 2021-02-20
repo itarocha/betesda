@@ -1,7 +1,6 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
-import br.com.itarocha.betesda.adapter.dto.ApiError;
-import br.com.itarocha.betesda.application.TipoHospedeService;
+import br.com.itarocha.betesda.application.port.in.TipoHospedeUseCase;
 import br.com.itarocha.betesda.domain.TipoHospede;
 import br.com.itarocha.betesda.util.validacoes.ValidatorUtil;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class TipoHospedeController {
 
-	private final TipoHospedeService service;
+	private final TipoHospedeUseCase service;
 	private final ValidatorUtil validationUtils;
 
 	@GetMapping

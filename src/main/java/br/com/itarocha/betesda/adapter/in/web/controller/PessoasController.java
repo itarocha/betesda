@@ -4,7 +4,6 @@ import br.com.itarocha.betesda.adapter.dto.ApiError;
 import br.com.itarocha.betesda.application.port.in.PessoaUseCase;
 import br.com.itarocha.betesda.domain.Pessoa;
 import br.com.itarocha.betesda.domain.SearchRequest;
-import br.com.itarocha.betesda.application.PessoaService;
 import br.com.itarocha.betesda.util.validacoes.ValidatorUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

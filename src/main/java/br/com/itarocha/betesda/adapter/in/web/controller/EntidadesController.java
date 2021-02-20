@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
 import br.com.itarocha.betesda.adapter.dto.ApiError;
+import br.com.itarocha.betesda.application.port.in.EntidadeUseCase;
 import br.com.itarocha.betesda.domain.Entidade;
-import br.com.itarocha.betesda.application.EntidadeService;
 import br.com.itarocha.betesda.util.validacoes.ValidatorUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EntidadesController {
 
-	private final EntidadeService service;
+	private final EntidadeUseCase service;
 	private final ValidatorUtil validationUtils;
 	
 	@GetMapping("{id}")
