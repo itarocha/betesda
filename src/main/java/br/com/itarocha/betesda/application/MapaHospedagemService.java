@@ -34,7 +34,6 @@ public class MapaHospedagemService {
 
     private static final int QTD_DIAS = 7;
 
-    @Deprecated
     public MapaRetorno buildMapaRetorno(LocalDate dataBase) {
         MapaRetorno retorno = new MapaRetorno();
 

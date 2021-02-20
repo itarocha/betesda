@@ -2,6 +2,7 @@ package br.com.itarocha.betesda.application;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.*;
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.*;
+import br.com.itarocha.betesda.adapter.out.persistence.mapper.*;
 import br.com.itarocha.betesda.application.port.in.HospedagemUseCase;
 import br.com.itarocha.betesda.domain.*;
 import br.com.itarocha.betesda.domain.enums.LogicoEnum;
@@ -10,10 +11,7 @@ import br.com.itarocha.betesda.domain.hospedagem.*;
 import br.com.itarocha.betesda.util.validacoes.EntityValidationException;
 import br.com.itarocha.betesda.util.validacoes.Violation;
 import lombok.RequiredArgsConstructor;
-import org.jooq.Condition;
 import org.jooq.DSLContext;
-import org.jooq.Field;
-import org.jooq.conf.ParamType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,10 +21,9 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static br.com.itarocha.betesda.jooq.model.Tables.*;
-import static org.jooq.impl.DSL.coalesce;
-import static org.jooq.impl.DSL.val;
 
 //TODO Tinha mais de 1300 linhas. Deveria ter no máximo 400. Quebrar em diversas classes
 
@@ -49,6 +46,13 @@ public class HospedagemService implements HospedagemUseCase {
 	private final EncaminhadorJpaRepository encaminhadorRepo;
 	private final HospedagemTipoServicoJpaRepository hospedagemTipoServicoRepo;
 	private final DSLContext create;
+
+	// TODO esses mappers devem ser movidos para o HospedagemMapper
+	private final EntidadeMapper entidadeMapper;
+	private final EncaminhadorMapper encaminhadorMapper;
+	private final DestinacaoHospedagemMapper destinacaoHospedagemMapper;
+	private final HospedeMapper hospedeMapper;
+	private final TipoServicoMapper tipoServicoMapper;
 
 	//private static final int QTD_DIAS = 7;
 	private final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -189,27 +193,32 @@ public class HospedagemService implements HospedagemUseCase {
 	
 	public HospedagemFullVO getHospedagemPorHospedeLeitoId(Long hospedagemId) {
 		HospedagemEntity h = hospedagemRepo.findHospedagemByHospedagemId(hospedagemId);
-		HospedagemFullVO retorno = new HospedagemFullVO();
+		HospedagemFullVO retorno = HospedagemFullVO.builder().build();
 		
 		if (h == null) {
 			return retorno;
 		}
-		
-		for (HospedagemTipoServicoEntity hts: h.getServicos()) {
-			TipoServicoEntity servico = hts.getTipoServico();
-			retorno.getServicos().add(servico);
-		}
-		
+
+		h.getServicos()
+				.stream()
+				.forEach(ts -> retorno.getServicos().add(tipoServicoMapper.toModel(ts.getTipoServico()) ));
+
 		retorno.setId(h.getId());
-		retorno.setEntidade(h.getEntidade());
-		retorno.setEncaminhador(h.getEncaminhador());
-		retorno.setDestinacaoHospedagem(h.getDestinacaoHospedagem());
+		retorno.setEntidade(entidadeMapper.toModel(h.getEntidade()));
+		retorno.setEncaminhador(encaminhadorMapper.toModel(h.getEncaminhador()));
+		retorno.setDestinacaoHospedagem(destinacaoHospedagemMapper.toModel(h.getDestinacaoHospedagem()));
 		retorno.setDataEntrada(h.getDataEntrada());
 		retorno.setDataPrevistaSaida(h.getDataPrevistaSaida());
 		retorno.setDataEfetivaSaida(h.getDataEfetivaSaida());
 		retorno.setTipoUtilizacao(h.getTipoUtilizacao());
 		retorno.setObservacoes(h.getObservacoes());
-		retorno.setHospedes(h.getHospedes());
+
+		List<Hospede> hospedes = h.getHospedes()
+				.stream()
+				.map(hospedeMapper::toModel)
+				.collect(Collectors.toList());
+
+		retorno.setHospedes(hospedes);
 
 		CellStatusHospedagem status = MapaHospedagemUtil.resolveStatusHospedagemNew(LocalDate.now(), h.getDataPrevistaSaida(), h.getDataEfetivaSaida());
 		retorno.setStatus(status);
@@ -446,20 +455,16 @@ public class HospedagemService implements HospedagemUseCase {
 		    	//Optional<Quarto> quarto = quartoRepo.findById(hvo.getAcomodacao().getQuartoId());
 		    	Optional<LeitoEntity> leito = leitoRepo.findById(leitoId);
 
-		    	if (leito.isPresent()) {
-		    		QuartoEntity q = leito.get().getQuarto();
-		    		
-		    		HospedeLeitoEntity hl = HospedeLeitoEntity.builder().build();
-		    		hl.setHospede(hospedeEntity);
-		    		hl.setDataEntrada(dataTransferencia);
-		    		hl.setDataSaida(h.getDataPrevistaSaida());
-
-		    		hl.setQuarto(q);
-
-		    		hl.setLeito(leito.get());
-
-		    		hospedeLeitoRepo.save(hl);
-		    	}
+				leito.ifPresent(leitoEntity -> {
+					QuartoEntity q = leitoEntity.getQuarto();
+					HospedeLeitoEntity hl = HospedeLeitoEntity.builder().build();
+					hl.setHospede(hospedeEntity);
+					hl.setDataEntrada(dataTransferencia);
+					hl.setDataSaida(h.getDataPrevistaSaida());
+					hl.setQuarto(q);
+					hl.setLeito(leitoEntity);
+					hospedeLeitoRepo.save(hl);
+				});
 			}
 		}
 	}

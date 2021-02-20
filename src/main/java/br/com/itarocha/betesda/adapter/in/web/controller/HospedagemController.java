@@ -8,6 +8,7 @@ import br.com.itarocha.betesda.domain.HospedagemFullVO;
 import br.com.itarocha.betesda.domain.HospedagemVO;
 import br.com.itarocha.betesda.domain.HospedeVO;
 import br.com.itarocha.betesda.report.RelatorioAtendimentos;
+import br.com.itarocha.betesda.util.validacoes.ValidatorUtil;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
@@ -34,13 +35,14 @@ public class HospedagemController {
 	private final MapaHospedesService mapaHospedesService;
 	private final MapaCidadesService mapaCidadesService;
 	private final MapaQuadroService mapaQuadroService;
+	private final ValidatorUtil validationUtils;
 
 	@PostMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> gravar(@RequestBody HospedagemVO model) {
 		ItaValidator<HospedagemVO> v = new ItaValidator<HospedagemVO>(model);
 		v.validate();
-		
+
 		if (model.getHospedes().size() == 0) {
 			v.addError("id", "É necessário pelo menos um hóspede");
 		} else {
@@ -97,68 +99,33 @@ public class HospedagemController {
 		return ResponseEntity.ok(mapaHospedagemService.buildListaHospedeMapa(model.getDataIni(), model.getDataFim()));
 	}
 
-	/*
-	@PostMapping("/mapa/linhas")
-	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public MapaLinhas mapaLinhas(@RequestBody MapaHospedagemRequest model)
-	{
-		MapaLinhas retorno = mapaHospedagemService.buildMapaLinhas(model.data);
-		return retorno;
-	}
-	*/
-
 	@PostMapping("/mapa/hospedes")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public MapaHospedes mapaHospedes(@RequestBody MapaHospedagemRequest model)
+	public ResponseEntity<MapaHospedes> mapaHospedes(@RequestBody MapaHospedagemRequest model)
 	{
-		MapaHospedes retorno = mapaHospedesService.buildMapaHospedes(model.getData());
-		return retorno;
+		return ResponseEntity.ok(mapaHospedesService.buildMapaHospedes(model.getData()));
 	}
 
 	@PostMapping("/mapa/cidades")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public MapaCidades mapaCidades(@RequestBody MapaHospedagemRequest model)
+	public ResponseEntity<MapaCidades> mapaCidades(@RequestBody MapaHospedagemRequest model)
 	{
-		MapaCidades retorno = mapaCidadesService.buildMapaCidades(model.getData());
-		return retorno;
+		return ResponseEntity.ok(mapaCidadesService.buildMapaCidades(model.getData()));
 	}
 
 	@PostMapping("/mapa/quadro")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public MapaQuadro mapaQuadro(@RequestBody MapaHospedagemRequest model)
+	public ResponseEntity<MapaQuadro> mapaQuadro(@RequestBody MapaHospedagemRequest model)
 	{
-		MapaQuadro retorno = mapaQuadroService.buildMapaQuadro(model.getData());
-		return retorno;
+		return ResponseEntity.ok(mapaQuadroService.buildMapaQuadro(model.getData()));
 	}
 
 	@PostMapping("/planilha_geral")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<?> planilhaGeral(@RequestBody PeriodoRequest model)
+	public ResponseEntity<RelatorioAtendimentos> planilhaGeral(@RequestBody PeriodoRequest model)
 	{
-		ItaValidator<PeriodoRequest> v = new ItaValidator<PeriodoRequest>(model);
-		v.validate();
-		
-		if (model.getDataIni() == null) {
-			v.addError("dataIni", "Data Inicial deve ser preenchida");
-		}
-		if (model.getDataFim() == null) {
-			v.addError("dataFim", "Data Final deve ser preenchida");
-		}
-		
-		if (!v.hasErrors() ) {
-			return new ResponseEntity<>(v.getValidationResult(), HttpStatus.BAD_REQUEST);
-		}
-
-		//relatorioService.teste(model.dataIni,  model.dataFim);
-		
-		try {
-			//RelatorioAtendimentos retorno = relatorioService.buildPlanilhaGeral(model.dataIni, model.dataFim);
-			RelatorioAtendimentos retorno = relatorioService.buildNovaPlanilha(model.getDataIni(), model.getDataFim());
-			return new ResponseEntity<RelatorioAtendimentos>(retorno, HttpStatus.OK);
-		} catch(Exception e) {
-			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
+		validationUtils.validate(model);
+		return ResponseEntity.ok(relatorioService.buildNovaPlanilha(model.getDataIni(), model.getDataFim()));
 	}
 	
 	//https://grokonez.com/spring-framework/spring-boot/excel-file-download-from-springboot-restapi-apache-poi-mysql
@@ -166,19 +133,7 @@ public class HospedagemController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	@PostMapping("/planilha_geral_arquivo")
 	public ResponseEntity<?>planilhaGeralExcel(@RequestBody PeriodoRequest model) throws IOException {
-		ItaValidator<PeriodoRequest> v = new ItaValidator<PeriodoRequest>(model);
-		v.validate();
-		
-		if (model.getDataIni() == null) {
-			v.addError("dataIni", "Data Inicial deve ser preenchida");
-		}
-		if (model.getDataFim() == null) {
-			v.addError("dataFim", "Data Final deve ser preenchida");
-		}
-		
-		if (!v.hasErrors() ) {
-			return new ResponseEntity<>(v.getValidationResult(), HttpStatus.BAD_REQUEST);
-		}
+		validationUtils.validate(model);
 		
 		RelatorioAtendimentos retorno = null;
 		try {
@@ -211,94 +166,82 @@ public class HospedagemController {
 	
 	@PostMapping("/leitos_ocupados")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<?> leitosOcupados(@RequestBody HospedagemPeriodoRequest model)
+	public ResponseEntity<List<OcupacaoLeito>> leitosOcupados(@RequestBody HospedagemPeriodoRequest model)
 	{
-		try {
-			List<OcupacaoLeito> retorno = hospedagemService.getLeitosOcupadosNoPeriodo(model.getHospedagemId(), model.getDataIni(), model.getDataFim());
-			
-			//List<Long> retorno = service.getLeitosOcupadosNoPeriodo(model.hospedagemId, model.dataIni, model.dataFim);
-			return new ResponseEntity<List<OcupacaoLeito>>(retorno, HttpStatus.OK);
-		} catch(Exception e) {
-			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		return ResponseEntity.ok(hospedagemService.getLeitosOcupadosNoPeriodo(model.getHospedagemId(), model.getDataIni(), model.getDataFim()));
 	}
 
 	@PostMapping("/mapa/alterar_hospede")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<?> alterarHospede(@RequestBody AlteracaoHospedeRequest model)
+	public ResponseEntity alterarHospede(@RequestBody AlteracaoHospedeRequest model)
 	{
 		hospedagemService.alterarTipoHospede(model.getHospedeId(), model.getTipoHospedeId());
-		return new ResponseEntity<String>("ok", HttpStatus.OK);
+		return ResponseEntity.ok().build();
 	}
 	
 	@PostMapping("/mapa/encerramento")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<?> encerramento(@RequestBody OperacoesRequest model)
+	public ResponseEntity encerramento(@RequestBody OperacoesRequest model)
 	{
 		hospedagemService.encerrarHospedagem(model.hospedagemId, model.data);
-		return new ResponseEntity<String>("ok", HttpStatus.OK);
+		return ResponseEntity.ok().build();
 	}
 	
 	@PostMapping("/mapa/renovacao")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<?> renovacao(@RequestBody OperacoesRequest model)
+	public ResponseEntity renovacao(@RequestBody OperacoesRequest model)
 	{
 		hospedagemService.renovarHospedagem(model.hospedagemId, model.data);
-		return new ResponseEntity<String>("ok", HttpStatus.OK);
+		return ResponseEntity.ok().build();
 	}
 	
 	@PostMapping("/remover_hospede")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<?> removerHospede(@RequestBody RemoverHospedeRequest model)
+	public ResponseEntity removerHospede(@RequestBody RemoverHospedeRequest model)
 	{
 		hospedagemService.removerHospede(model.getHospedagemId(), model.getHospedeId());
-		return new ResponseEntity<String>("ok", HttpStatus.OK);
+		return ResponseEntity.ok().build();
 	}
 	
 	@PostMapping(value="/mapa/baixar")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<?> baixar(@RequestBody BaixaRequest model)
+	public ResponseEntity baixar(@RequestBody BaixaRequest model)
 	{
 		hospedagemService.baixarHospede(model.getHospedeId(), model.getData());
-		return new ResponseEntity<String>("ok", HttpStatus.OK);
+		return ResponseEntity.ok().build();
 	}
 	
 	@PostMapping("/mapa/transferir")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<?> transferir(@RequestBody TransferenciaRequest model)
+	public ResponseEntity transferir(@RequestBody TransferenciaRequest model)
 	{
 		hospedagemService.transferirHospede(model.getHospedeId(), model.getLeitoId(), model.getData());
-		return new ResponseEntity<String>("ok", HttpStatus.OK);
+		return ResponseEntity.ok().build();
 	}
 	
 	@PostMapping("/mapa/adicionar")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<?> adicionarHospede(@RequestBody AdicionarHospedeRequest model)
+	public ResponseEntity adicionarHospede(@RequestBody AdicionarHospedeRequest model)
 	{
 		hospedagemService.adicionarHospede(	model.getHospedagemId(),
 											model.getPessoaId(),
 											model.getTipoHospedeId(),
 											model.getLeitoId(),
 											model.getData());
-		return new ResponseEntity<String>("ok", HttpStatus.OK);
+		return ResponseEntity.ok().build();
 	}
 	
 	@PostMapping("/mapa/hospedagem_info")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public HospedagemFullVO getHospedagemInfo(@RequestBody HospdeagemInfoRequest model)
+	public ResponseEntity<HospedagemFullVO> getHospedagemInfo(@RequestBody HospdeagemInfoRequest model)
 	{
-		HospedagemFullVO h = hospedagemService.getHospedagemPorHospedeLeitoId(model.getHospedagemId());
-		return h;
+		return ResponseEntity.ok(hospedagemService.getHospedagemPorHospedeLeitoId(model.getHospedagemId()));
 	}
 
 	@DeleteMapping("{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
-		try {
-			hospedagemService.excluirHospedagem(id);
-		    return new ResponseEntity<String>("sucesso", HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	 }
+	public ResponseEntity excluir(@PathVariable("id") Long id) {
+		hospedagemService.excluirHospedagem(id);
+		return ResponseEntity.noContent().build();
+	}
 }
