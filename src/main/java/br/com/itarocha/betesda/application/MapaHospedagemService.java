@@ -268,12 +268,10 @@ public class MapaHospedagemService {
                 .stream()
                 .map(q -> {
                     QuadroQuarto qq = new QuadroQuarto(q.getId(), q.getNumero());
-
                     IntStream.rangeClosed(minimum, maximum)
                             .forEach( qtdLeitos -> qq.getLeitos().add(
                                     new QuadroLeito(0L, qtdLeitos, arrayDiasVazio)
                             ));
-
                     return qq;
                 })
                 .collect(Collectors.toList());
@@ -321,8 +319,8 @@ public class MapaHospedagemService {
                         }
                 ).collect(Collectors.toList());
 
-        listaMicroLeitos.sort((a, b) -> String.format("%06d-%06d", a.getQuartoNumero(), a.getLeitoNumero())
-                .compareTo( String.format("%06d-%06d", b.getQuartoNumero(), b.getLeitoNumero()) ) );
+        Collections.sort(listaMicroLeitos, Comparator.comparing(MicroLeito::getQuartoNumero)
+                                                        .thenComparing(Comparator.comparing(MicroLeito::getLeitoNumero)));
         return listaMicroLeitos;
     }
 
@@ -337,5 +335,4 @@ public class MapaHospedagemService {
         _mapLeitos.put(99999L, new MicroLeito(9999L, 9999, 9999L, 9999));
         return _mapLeitos;
     }
-
 }

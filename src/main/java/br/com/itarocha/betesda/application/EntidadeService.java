@@ -18,16 +18,17 @@ import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class EntidadeService implements EntidadeUseCase {
 
 	private final EntidadeRepository repositorio;
 	private final ValidatorUtil validationUtils;
 
-	@Transactional
 	@Override
 	public Entidade create(Entidade model) {
 		Set<Violation> violations = new HashSet<>();
 
+		// TODO - Não entrarão mais valores com máscara. Remover esses replaces
 		if (model.getCnpj() != null) {
 			model.setCnpj(model.getCnpj().replaceAll("\\.", "").replaceAll("\\-", "").replaceAll("\\/", ""));
 		}
