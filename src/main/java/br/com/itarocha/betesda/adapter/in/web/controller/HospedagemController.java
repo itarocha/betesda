@@ -1,5 +1,6 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
+import br.com.itarocha.betesda.adapter.in.web.dto.*;
 import br.com.itarocha.betesda.application.*;
 import br.com.itarocha.betesda.application.port.in.HospedagemUseCase;
 import br.com.itarocha.betesda.domain.hospedagem.*;
@@ -85,7 +86,7 @@ public class HospedagemController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public MapaRetorno mapa(@RequestBody MapaHospedagemRequest model)
 	{
-		MapaRetorno retorno = mapaHospedagemService.buildMapaRetorno(model.data);
+		MapaRetorno retorno = mapaHospedagemService.buildMapaRetorno(model.getData());
 		return retorno;
 	}
 
@@ -93,7 +94,7 @@ public class HospedagemController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<List<HospedeMapa>> mapaTeste(@RequestBody PeriodoRequest model)
 	{
-		return ResponseEntity.ok(mapaHospedagemService.buildListaHospedeMapa(model.dataIni, model.dataFim));
+		return ResponseEntity.ok(mapaHospedagemService.buildListaHospedeMapa(model.getDataIni(), model.getDataFim()));
 	}
 
 	/*
@@ -110,7 +111,7 @@ public class HospedagemController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public MapaHospedes mapaHospedes(@RequestBody MapaHospedagemRequest model)
 	{
-		MapaHospedes retorno = mapaHospedesService.buildMapaHospedes(model.data);
+		MapaHospedes retorno = mapaHospedesService.buildMapaHospedes(model.getData());
 		return retorno;
 	}
 
@@ -118,7 +119,7 @@ public class HospedagemController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public MapaCidades mapaCidades(@RequestBody MapaHospedagemRequest model)
 	{
-		MapaCidades retorno = mapaCidadesService.buildMapaCidades(model.data);
+		MapaCidades retorno = mapaCidadesService.buildMapaCidades(model.getData());
 		return retorno;
 	}
 
@@ -126,7 +127,7 @@ public class HospedagemController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public MapaQuadro mapaQuadro(@RequestBody MapaHospedagemRequest model)
 	{
-		MapaQuadro retorno = mapaQuadroService.buildMapaQuadro(model.data);
+		MapaQuadro retorno = mapaQuadroService.buildMapaQuadro(model.getData());
 		return retorno;
 	}
 
@@ -137,10 +138,10 @@ public class HospedagemController {
 		ItaValidator<PeriodoRequest> v = new ItaValidator<PeriodoRequest>(model);
 		v.validate();
 		
-		if (model.dataIni == null) {
+		if (model.getDataIni() == null) {
 			v.addError("dataIni", "Data Inicial deve ser preenchida");
 		}
-		if (model.dataIni == null) {
+		if (model.getDataFim() == null) {
 			v.addError("dataFim", "Data Final deve ser preenchida");
 		}
 		
@@ -152,7 +153,7 @@ public class HospedagemController {
 		
 		try {
 			//RelatorioAtendimentos retorno = relatorioService.buildPlanilhaGeral(model.dataIni, model.dataFim);
-			RelatorioAtendimentos retorno = relatorioService.buildNovaPlanilha(model.dataIni, model.dataFim);
+			RelatorioAtendimentos retorno = relatorioService.buildNovaPlanilha(model.getDataIni(), model.getDataFim());
 			return new ResponseEntity<RelatorioAtendimentos>(retorno, HttpStatus.OK);
 		} catch(Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -168,10 +169,10 @@ public class HospedagemController {
 		ItaValidator<PeriodoRequest> v = new ItaValidator<PeriodoRequest>(model);
 		v.validate();
 		
-		if (model.dataIni == null) {
+		if (model.getDataIni() == null) {
 			v.addError("dataIni", "Data Inicial deve ser preenchida");
 		}
-		if (model.dataIni == null) {
+		if (model.getDataFim() == null) {
 			v.addError("dataFim", "Data Final deve ser preenchida");
 		}
 		
@@ -183,7 +184,7 @@ public class HospedagemController {
 		try {
 			//System.out.println(String.format("Iniciando geração do relatório - %s", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)));
 			//retorno = relatorioService.buildPlanilhaGeral(model.dataIni, model.dataFim);
-			retorno = relatorioService.buildNovaPlanilha(model.dataIni, model.dataFim);
+			retorno = relatorioService.buildNovaPlanilha(model.getDataIni(), model.getDataFim());
 			//System.out.println(String.format("Finalizando geração do relatório - %s", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)));
 			// Gerar planilha
 		} catch(Exception e) {
@@ -213,7 +214,7 @@ public class HospedagemController {
 	public ResponseEntity<?> leitosOcupados(@RequestBody HospedagemPeriodoRequest model)
 	{
 		try {
-			List<OcupacaoLeito> retorno = hospedagemService.getLeitosOcupadosNoPeriodo(model.hospedagemId, model.dataIni, model.dataFim);
+			List<OcupacaoLeito> retorno = hospedagemService.getLeitosOcupadosNoPeriodo(model.getHospedagemId(), model.getDataIni(), model.getDataFim());
 			
 			//List<Long> retorno = service.getLeitosOcupadosNoPeriodo(model.hospedagemId, model.dataIni, model.dataFim);
 			return new ResponseEntity<List<OcupacaoLeito>>(retorno, HttpStatus.OK);
@@ -226,7 +227,7 @@ public class HospedagemController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> alterarHospede(@RequestBody AlteracaoHospedeRequest model)
 	{
-		hospedagemService.alterarTipoHospede(model.hospedeId, model.tipoHospedeId);
+		hospedagemService.alterarTipoHospede(model.getHospedeId(), model.getTipoHospedeId());
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
 	
@@ -250,7 +251,7 @@ public class HospedagemController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> removerHospede(@RequestBody RemoverHospedeRequest model)
 	{
-		hospedagemService.removerHospede(model.hospedagemId, model.hospedeId);
+		hospedagemService.removerHospede(model.getHospedagemId(), model.getHospedeId());
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
 	
@@ -258,7 +259,7 @@ public class HospedagemController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> baixar(@RequestBody BaixaRequest model)
 	{
-		hospedagemService.baixarHospede(model.hospedeId, model.data);
+		hospedagemService.baixarHospede(model.getHospedeId(), model.getData());
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
 	
@@ -266,7 +267,7 @@ public class HospedagemController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> transferir(@RequestBody TransferenciaRequest model)
 	{
-		hospedagemService.transferirHospede(model.hospedeId, model.leitoId, model.data);
+		hospedagemService.transferirHospede(model.getHospedeId(), model.getLeitoId(), model.getData());
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
 	
@@ -274,7 +275,11 @@ public class HospedagemController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> adicionarHospede(@RequestBody AdicionarHospedeRequest model)
 	{
-		hospedagemService.adicionarHospede(model.hospedagemId, model.pessoaId, model.tipoHospedeId, model.leitoId, model.data);
+		hospedagemService.adicionarHospede(	model.getHospedagemId(),
+											model.getPessoaId(),
+											model.getTipoHospedeId(),
+											model.getLeitoId(),
+											model.getData());
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
 	
@@ -282,7 +287,7 @@ public class HospedagemController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public HospedagemFullVO getHospedagemInfo(@RequestBody HospdeagemInfoRequest model)
 	{
-		HospedagemFullVO h = hospedagemService.getHospedagemPorHospedeLeitoId(model.hospedagemId);
+		HospedagemFullVO h = hospedagemService.getHospedagemPorHospedeLeitoId(model.getHospedagemId());
 		return h;
 	}
 
@@ -296,57 +301,4 @@ public class HospedagemController {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	 }
-	
-	private static class MapaHospedagemRequest{
-		public LocalDate data;
-	}
-
-	private static class HospedagemPeriodoRequest{
-		public Long hospedagemId;
-		public LocalDate dataIni;
-		public LocalDate dataFim;
-	}
-	
-	private static class PeriodoRequest{
-		public LocalDate dataIni;
-		public LocalDate dataFim;
-	}
-
-	private static class BaixaRequest{
-		public LocalDate data;
-		public Long hospedeId;
-	}
-	
-	private static class TransferenciaRequest{
-		public LocalDate data;
-		public Long hospedeId;
-		public Long leitoId;
-	}
-	
-	private static class AlteracaoHospedeRequest {
-		public Long hospedeId;
-		public Long tipoHospedeId;
-	}
-	
-	private static class AdicionarHospedeRequest{
-		public Long hospedagemId;
-		public Long pessoaId;
-		public Long tipoHospedeId;
-		public LocalDate data;
-		public Long leitoId;
-	}
-
-	private static class RemoverHospedeRequest{
-		public Long hospedagemId;
-		public Long hospedeId;
-	}
-	
-	private static class OperacoesRequest{
-		public LocalDate data;
-		public Long hospedagemId;
-	}
-
-	private static class HospdeagemInfoRequest{
-		public Long hospedagemId;
-	}
 }
