@@ -5,16 +5,23 @@ import br.com.itarocha.betesda.adapter.out.persistence.mapper.HospedeLeitoMapper
 import br.com.itarocha.betesda.application.out.HospedeLeitoRepository;
 import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
 import br.com.itarocha.betesda.domain.HospedeLeito;
+import br.com.itarocha.betesda.domain.LeitoDTO;
 import lombok.RequiredArgsConstructor;
+import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.Query;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static br.com.itarocha.betesda.jooq.model.Tables.*;
+import static br.com.itarocha.betesda.jooq.model.Tables.QUARTO;
+import static org.jooq.impl.DSL.count;
 
 @Service
 @RequiredArgsConstructor
@@ -100,4 +107,50 @@ public class HospedeLeitoRepositoryAdapter implements HospedeLeitoRepository {
 	public List<BigInteger> leitosNoPeriodoPorHospedagem(Long hospedagemId, LocalDate dataIni, LocalDate dataFim){
 		return repository.leitosNoPeriodoPorHospedagem(hospedagemId, dataIni, dataFim);
 	}
+
+	@Override
+	public LeitoDTO findLeitoByHospedeLeitoId(Long hospedeLeitoId){
+		// Substituindo _OBSOLETO_leito_by_hospede_leito_id.sql
+		LeitoDTO retorno =
+				create.select(LEITO.ID, LEITO.NUMERO, QUARTO.ID, QUARTO.NUMERO)
+						.from(HOSPEDE_LEITO)
+						.innerJoin(LEITO).on(HOSPEDE_LEITO.LEITO_ID.eq(LEITO.ID))
+						.innerJoin(QUARTO).on(HOSPEDE_LEITO.QUARTO_ID.eq(QUARTO.ID))
+						.where(HOSPEDE_LEITO.ID.eq(hospedeLeitoId))
+						.fetchOne()
+						.map(r -> new LeitoDTO(r.get(LEITO.ID),r.get(LEITO.NUMERO),r.get(QUARTO.ID),r.get(QUARTO.NUMERO)));
+		return retorno;
+	}
+
+	public List<Long> hospedagensNoPeriodo(Long leitoId, LocalDate dataIni, LocalDate dataFim) {
+		Condition a1 = HOSPEDE_LEITO.DATA_ENTRADA.between(dataIni, dataFim)
+				.or(HOSPEDE_LEITO.DATA_SAIDA.between(dataIni, dataFim));
+		Condition a2 = HOSPEDE_LEITO.DATA_ENTRADA.le(dataIni).and(HOSPEDE_LEITO.DATA_SAIDA.ge(dataFim));
+		Condition condicao = a1.or(a2);
+
+		List<Long> lista =
+		create.select(HOSPEDE.HOSPEDAGEM_ID)
+				.from(HOSPEDE_LEITO)
+				.innerJoin(HOSPEDE).on(HOSPEDE.ID.eq(HOSPEDE_LEITO.HOSPEDE_ID))
+				.where(HOSPEDE_LEITO.ID.eq(leitoId))
+				.and(condicao)
+				.fetch().getValues(HOSPEDE.HOSPEDAGEM_ID);
+		return lista;
+	}
+
+	public boolean leitoLivreNoPeriodo(Long leitoId, LocalDate dataIni, LocalDate dataFim) {
+		Condition a1 = HOSPEDE_LEITO.DATA_ENTRADA.between(dataIni, dataFim)
+				.or(HOSPEDE_LEITO.DATA_SAIDA.between(dataIni, dataFim));
+		Condition a2 = HOSPEDE_LEITO.DATA_ENTRADA.le(dataIni).and(HOSPEDE_LEITO.DATA_SAIDA.ge(dataFim));
+		Condition condicao = a1.or(a2);
+
+		Integer qtd =
+				create.select(count())
+						.from(HOSPEDE_LEITO)
+						.where(HOSPEDE_LEITO.ID.eq(leitoId))
+						.and(condicao)
+						.fetchOne(0, Integer.class);
+		return qtd <= 0;
+	}
+
 }

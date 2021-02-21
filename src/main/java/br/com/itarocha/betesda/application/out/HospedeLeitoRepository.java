@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.application.out;
 
 import br.com.itarocha.betesda.domain.HospedeLeito;
-import br.com.itarocha.betesda.domain.Leito;
+import br.com.itarocha.betesda.domain.LeitoDTO;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigInteger;
@@ -19,11 +19,10 @@ public interface HospedeLeitoRepository{
 
 	void deleteById(Long id);
 
-	//List<Leito> findByQuartoId(Long id);
-
 	List<HospedeLeito> findUltimoByHospedagemId(@Param("hospedagemId") Long hospedagemId);
 	
 	List<HospedeLeito> findUltimoByHospedeId(@Param("hospedeId") Long hospedeId);
+
 	List<HospedeLeito> findByLeitoNoPeriodo(@Param("leitoId") Long leitoId, @Param("dataIni") LocalDate dataIni, @Param("dataFim") LocalDate dataFim);
 
 	Long countHospedesNaoBaixadosByHospedagemId(@Param("hospedagemId") Long hospedagemId);
@@ -35,4 +34,11 @@ public interface HospedeLeitoRepository{
 	List<BigInteger> leitosNoPeriodo(@Param("dataIni") LocalDate dataIni, @Param("dataFim") LocalDate dataFim);
 	
 	List<BigInteger> leitosNoPeriodoPorHospedagem(@Param("hospedagemId")Long hospedagemId, @Param("dataIni") LocalDate dataIni, @Param("dataFim") LocalDate dataFim);
+
+	LeitoDTO findLeitoByHospedeLeitoId(Long hospedeLeitoId);
+
+	List<Long> hospedagensNoPeriodo(Long leitoId, LocalDate dataIni, LocalDate dataFim);
+
+	boolean leitoLivreNoPeriodo(Long leitoId, LocalDate dataIni, LocalDate dataFim);
+
 }
