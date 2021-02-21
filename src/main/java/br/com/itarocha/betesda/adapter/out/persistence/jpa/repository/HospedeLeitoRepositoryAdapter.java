@@ -12,7 +12,6 @@ import org.jooq.DSLContext;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.Query;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
@@ -21,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static br.com.itarocha.betesda.jooq.model.Tables.*;
 import static br.com.itarocha.betesda.jooq.model.Tables.QUARTO;
+import static org.jooq.impl.DSL.coalesce;
 import static org.jooq.impl.DSL.count;
 
 @Service
@@ -151,6 +151,41 @@ public class HospedeLeitoRepositoryAdapter implements HospedeLeitoRepository {
 						.and(condicao)
 						.fetchOne(0, Integer.class);
 		return qtd <= 0;
+	}
+
+	public List<Long> hospedagensDePessoaNoPeriodo(Long pessoaId, LocalDate dataIni, LocalDate dataFim) {
+		Condition a1 = HOSPEDE_LEITO.DATA_ENTRADA.between(dataIni, dataFim)
+				.or(HOSPEDE_LEITO.DATA_SAIDA.between(dataIni, dataFim));
+		Condition a2 = HOSPEDE_LEITO.DATA_ENTRADA.le(dataIni).and(HOSPEDE_LEITO.DATA_SAIDA.ge(dataFim));
+		Condition condicao = a1.or(a2);
+
+		List<Long> lista =
+				create.select(HOSPEDE.HOSPEDAGEM_ID)
+						.from(HOSPEDE_LEITO)
+						.innerJoin(HOSPEDE).on(HOSPEDE.ID.eq(HOSPEDE_LEITO.HOSPEDE_ID))
+						.where(HOSPEDE.PESSOA_ID.eq(pessoaId))
+						.and(condicao)
+						.fetch().getValues(HOSPEDE.HOSPEDAGEM_ID);
+		return lista;
+	}
+
+	public Integer countOfHospedagensParciaisDePessoaNoPeriodo(Long pessoaId, LocalDate dataIni, LocalDate dataFim) {
+		Condition a1 = HOSPEDAGEM.DATA_ENTRADA.between(dataIni, dataFim)
+				.or(coalesce(HOSPEDAGEM.DATA_EFETIVA_SAIDA, HOSPEDAGEM.DATA_PREVISTA_SAIDA)
+						.between(dataIni, dataFim));
+		Condition a2 = HOSPEDAGEM.DATA_ENTRADA.le(dataIni)
+				.and(coalesce(HOSPEDAGEM.DATA_EFETIVA_SAIDA, HOSPEDAGEM.DATA_PREVISTA_SAIDA).ge(dataFim));
+		Condition a3 = HOSPEDAGEM.TIPO_UTILIZACAO.eq("P");
+		Condition condicao = a1.or(a2).and(a3);
+
+		Integer qtd =
+				create.select(count())
+						.from(HOSPEDAGEM)
+						.innerJoin(HOSPEDE).on(HOSPEDE.HOSPEDAGEM_ID.eq(HOSPEDAGEM.ID))
+						.where(HOSPEDE.PESSOA_ID.eq(pessoaId))
+						.and(condicao)
+						.fetchOne(0, Integer.class);
+		return qtd;
 	}
 
 }

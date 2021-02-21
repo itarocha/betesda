@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class AcomodacaoVO {
+public class AcomodacaoNew {
 	private Long id;
 	private Long quartoId;
 	private Integer quartoNumero;

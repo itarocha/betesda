@@ -7,12 +7,12 @@ import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
-public class HospedeVO {
+public class HospedeNew {
 	private Long id;
 	private Long pessoaId;
 	private String pessoaNome;
 	private LocalDate pessoaDataNascimento;
 	private Long tipoHospedeId;
-	private String tipoHospedeDescricao;
-	private AcomodacaoVO acomodacao;
+	//private String tipoHospedeDescricao;
+	private AcomodacaoNew acomodacao;
 }

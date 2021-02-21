@@ -1,6 +1,5 @@
 package br.com.itarocha.betesda.application.port.in;
 
-import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.*;
 import br.com.itarocha.betesda.domain.*;
 import br.com.itarocha.betesda.domain.hospedagem.*;
 
@@ -9,11 +8,11 @@ import java.util.*;
 
 public interface HospedagemUseCase {
 
-	HospedagemEntity create(HospedagemVO model);
+	Hospedagem create(HospedagemNew model);
 
 	List<OcupacaoLeito> getLeitosOcupadosNoPeriodo(Long hospedagemId, LocalDate dataIni, LocalDate dataFim);
 
-	HospedagemFullVO getHospedagemPorHospedeLeitoId(Long hospedagemId);
+	Hospedagem getHospedagemPorHospedeLeitoId(Long hospedagemId);
 
 	void encerrarHospedagem(Long hospedagemId, LocalDate dataEncerramento);
 

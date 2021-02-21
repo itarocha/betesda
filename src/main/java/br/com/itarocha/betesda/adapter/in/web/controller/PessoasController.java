@@ -37,7 +37,7 @@ public class PessoasController {
 	@PostMapping("/filtrar")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<List<Pessoa>> listarComCriterio(@RequestBody SearchRequest search) {
-		
+		//TODO implementar busca por campo....
 		List<Pessoa> lista = new ArrayList<>();
 		if (search.getValue().length() >= 3) {
 			//lista = service.findByFieldNameAndValue(search.getFieldName(), "%"+search.getValue()+"%");

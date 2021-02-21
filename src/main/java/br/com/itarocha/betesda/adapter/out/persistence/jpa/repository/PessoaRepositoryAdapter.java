@@ -72,7 +72,7 @@ public class PessoaRepositoryAdapter implements PessoaRepository {
 
     @Override
     public List<Pessoa> findAllLikeNomeLowerCase(String texto) {
-        return repository.findAllLikeNomeLowerCase("%"+texto.toLowerCase()+"/%")
+        return repository.findAllLikeNomeLowerCase("%"+texto.toLowerCase()+"%")
                 .stream()
                 .map(mapper::toModel)
                 .collect(Collectors.toList());

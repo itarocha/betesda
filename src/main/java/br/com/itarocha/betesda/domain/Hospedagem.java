@@ -1,9 +1,7 @@
 package br.com.itarocha.betesda.domain;
 
-import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.*;
 import br.com.itarocha.betesda.domain.enums.TipoUtilizacaoHospedagemEnum;
 import br.com.itarocha.betesda.domain.hospedagem.CellStatusHospedagem;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,12 +11,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class HospedagemFullVO {
+public class Hospedagem {
 	private Long id;
 	private Entidade entidade;
 	private Encaminhador encaminhador;

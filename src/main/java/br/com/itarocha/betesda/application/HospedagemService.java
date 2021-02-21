@@ -3,10 +3,7 @@ package br.com.itarocha.betesda.application;
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.*;
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.*;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.*;
-import br.com.itarocha.betesda.application.out.DestinacaoHospedagemRepository;
-import br.com.itarocha.betesda.application.out.EntidadeRepository;
-import br.com.itarocha.betesda.application.out.HospedeLeitoRepository;
-import br.com.itarocha.betesda.application.out.TipoServicoRepository;
+import br.com.itarocha.betesda.application.out.*;
 import br.com.itarocha.betesda.application.port.in.HospedagemUseCase;
 import br.com.itarocha.betesda.domain.*;
 import br.com.itarocha.betesda.domain.enums.LogicoEnum;
@@ -20,14 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static br.com.itarocha.betesda.jooq.model.Tables.*;
 
 //TODO Tinha mais de 1300 linhas. Deveria ter no máximo 400. Quebrar em diversas classes
 
@@ -36,19 +30,14 @@ import static br.com.itarocha.betesda.jooq.model.Tables.*;
 @RequiredArgsConstructor
 public class HospedagemService implements HospedagemUseCase {
 
-	private final EntityManager em;
-	private final DestinacaoHospedagemRepository destinacaoHospedagemRepo;
 	private final HospedagemJpaRepository hospedagemRepo;
+	private final HospedagemRepositoryAdapter hospedagemRepositoryNew;
 	private final PessoaJpaRepository pessoaRepo;
 	private final TipoHospedeJpaRepository tipoHospedeRepo;
 	private final QuartoJpaRepository quartoRepo;
 	private final LeitoJpaRepository leitoRepo;
 	private final HospedeLeitoRepository hospedeLeitoRepo;
 	private final HospedeJpaRepository hospedeRepo;
-	private final TipoServicoRepository tipoServicoRepo;
-	private final EntidadeRepository entidadeRepo;
-	private final EncaminhadorJpaRepository encaminhadorRepo;
-	private final HospedagemTipoServicoJpaRepository hospedagemTipoServicoRepo;
 	private final DSLContext create;
 
 	// TODO esses mappers devem ser movidos para o HospedagemMapper
@@ -61,106 +50,17 @@ public class HospedagemService implements HospedagemUseCase {
 	private final QuartoMapper quartoMapper;
 	private final LeitoMapper leitoMapper;
 
-	//private static final int QTD_DIAS = 7;
 	private final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-	//CRUD
-	public HospedagemEntity create(HospedagemVO model) {
+	public Hospedagem create(HospedagemNew model) {
 		Set<Violation> violations = validateCreateHospedagem(model);
 		if (!violations.isEmpty()){
 			throw new EntityValidationException(violations);
 		}
-
-		HospedagemEntity hospedagemEntity = HospedagemEntity.builder().build();
-
-		Optional<Entidade> entidade = entidadeRepo.findById(model.getEntidadeId());
-		if (entidade.isPresent()){
-			EntidadeEntity ee = entidadeMapper.toEntity(entidade.get());
-			hospedagemEntity.setEntidade(ee);
-			model.setEntidade(ee);
-		}
-
-		Optional<EncaminhadorEntity> encaminhador = encaminhadorRepo.findById(model.getEncaminhadorId());
-		hospedagemEntity.setEncaminhador(encaminhador.get());
-		model.setEncaminhador(encaminhador.get());
-
-		hospedagemEntity.setDataEntrada(model.getDataEntrada());
-		hospedagemEntity.setDataPrevistaSaida(model.getDataPrevistaSaida());
-
-		Optional<DestinacaoHospedagem> dest = destinacaoHospedagemRepo.findById(model.getDestinacaoHospedagemId());
-		if (dest.isPresent()){
-			DestinacaoHospedagem dh = dest.get();
-			hospedagemEntity.setDestinacaoHospedagem(destinacaoHospedagemMapper.toEntity(dh));
-			model.setDestinacaoHospedagemDescricao(dh.getDescricao());
-		}
-
-		TipoUtilizacaoHospedagemEnum tu = TipoUtilizacaoHospedagemEnum.valueOf(model.getTipoUtilizacao());
-		hospedagemEntity.setTipoUtilizacao(tu);
-		hospedagemEntity.setObservacoes(model.getObservacoes());
-
-		hospedagemEntity = hospedagemRepo.save(hospedagemEntity);
-
-		model.setId(hospedagemEntity.getId());
-
-		for (HospedeVO hvo: model.getHospedes()) {
-			HospedeEntity h = HospedeEntity.builder().build();
-			h.setHospedagem(hospedagemEntity);
-
-			Optional<PessoaEntity> p = pessoaRepo.findById(hvo.getPessoaId());
-			// se p == null throw
-			h.setPessoa(p.get());
-			hvo.setPessoaId(p.get().getId());
-			hvo.setPessoaNome(p.get().getNome());
-			hvo.setPessoaDataNascimento(p.get().getDataNascimento());
-
-			Optional<TipoHospedeEntity> th = tipoHospedeRepo.findById(hvo.getTipoHospedeId());
-			h.setTipoHospede(th.get());
-			hvo.setTipoHospedeDescricao(th.get().getDescricao());
-			h = hospedeRepo.save(h);
-			hvo.setId(h.getId());
-
-			hospedagemEntity.getHospedes().add(h);
-
-			if ((hvo.getAcomodacao() != null) && (TipoUtilizacaoHospedagemEnum.T.equals(hospedagemEntity.getTipoUtilizacao())) ) {
-				//TODO: Tem um código igual no transferir. Refatorar criar método
-				Optional<QuartoEntity> quarto = quartoRepo.findById(hvo.getAcomodacao().getQuartoId());
-				Optional<LeitoEntity> leito = leitoRepo.findById(hvo.getAcomodacao().getLeitoId());
-
-				if (quarto.isPresent() && leito.isPresent()) {
-					HospedeLeitoEntity hl = HospedeLeitoEntity.builder().build();
-					hl.setHospede(h);
-					hl.setDataEntrada(hospedagemEntity.getDataEntrada());
-					hl.setDataSaida(hospedagemEntity.getDataPrevistaSaida());
-
-					hvo.getAcomodacao().setQuartoNumero(quarto.get().getNumero());
-					hl.setQuarto(quarto.get());
-
-					hvo.getAcomodacao().setLeitoNumero(leito.get().getNumero());
-					hl.setLeito(leito.get());
-
-					hospedeLeitoRepo.save(hospedeLeitoMapper.toModel(hl) );
-					hvo.getAcomodacao().setId(hl.getId());
-
-					h.getLeitos().add(hl);
-				}
-			}
-		}
-		if ((model.getServicos().length > 0) && (TipoUtilizacaoHospedagemEnum.P.equals(hospedagemEntity.getTipoUtilizacao())) ) {
-			for (Long tipoServicoId : model.getServicos()) {
-				Optional<TipoServico> ts = tipoServicoRepo.findById(tipoServicoId);
-				if (ts.isPresent()) {
-					HospedagemTipoServicoEntity servico = HospedagemTipoServicoEntity.builder().build();
-					servico.setTipoServico(tipoServicoMapper.toEntity(ts.get()));
-					servico.setHospedagem(hospedagemEntity);
-					hospedagemTipoServicoRepo.save(servico);
-					hospedagemEntity.getServicos().add(servico);
-				}
-			}
-		}
-		return hospedagemEntity;
+		return hospedagemRepositoryNew.save(model);
 	}
 
-	private Set<Violation> validateCreateHospedagem(HospedagemVO model) {
+	private Set<Violation> validateCreateHospedagem(HospedagemNew model) {
 		LocalDate hoje = LocalDate.now();
 
 		Set<Violation> violations = new HashSet<>();
@@ -177,18 +77,47 @@ public class HospedagemService implements HospedagemUseCase {
 							fmt.format(model.getDataEntrada()))));
 		}
 
-		for (HospedeVO h : model.getHospedes()) {
+		for (HospedeNew h : model.getHospedes()) {
 			if (!pessoaLivreNoPeriodo(h.getPessoaId(), model.getDataEntrada(), model.getDataPrevistaSaida())) {
 				violations.add(new Violation("*",
 						String.format("[%s] está em outra hospedagem nesse período", h.getPessoaNome() )));
 			}
 		}
+
+		if (model.getHospedes().size() == 0) {
+			violations.add(new Violation("id", "É necessário pelo menos um hóspede"));
+		} else {
+			for (HospedeNew h : model.getHospedes()) {
+				if ("T".equals(model.getTipoUtilizacao()) && (h.getAcomodacao() == null)) {
+					violations.add(new Violation("id", String.format("É necessário informar o Leito para o Hóspede [%s]", h.getPessoaNome())));
+				}
+				/*
+				if (!service.pessoaLivre(h.getPessoaId())) {
+					v.addError("id", String.format("[%s] está utilizando uma Hospedagem ainda pendente", h.getPessoaNome()));
+				}
+				*/
+				if ("T".equals(model.getTipoUtilizacao()) && (h.getAcomodacao() != null) &&
+						(h.getAcomodacao().getLeitoId() != null) &&
+						(model.getDataEntrada() != null) && (model.getDataPrevistaSaida() != null) )
+				{
+					Long leitoId = h.getAcomodacao().getLeitoId();
+					LocalDate dataIni = model.getDataEntrada();
+					LocalDate dataFim = model.getDataPrevistaSaida();
+					Integer leitoNumero = h.getAcomodacao().getLeitoNumero();
+					Integer quartoNumero = h.getAcomodacao().getQuartoNumero();
+
+					if (!this.leitoLivreNoPeriodo(leitoId, dataIni, dataFim)) {
+						violations.add(new Violation("id", String.format("Quarto %s Leito %s está ocupado no perído", quartoNumero, leitoNumero )));
+					}
+				}
+			}
+		}
+
 		return violations;
 	}
 
 
 	public List<OcupacaoLeito> getLeitosOcupadosNoPeriodo(Long hospedagemId, LocalDate dataIni, LocalDate dataFim){
-		
 		List<BigInteger> todosLeitosNoPeriodo = hospedeLeitoRepo.leitosNoPeriodo(dataIni, dataFim);
 		List<BigInteger> hospedagemLeitosNoPeriodo = hospedeLeitoRepo.leitosNoPeriodoPorHospedagem(hospedagemId, dataIni, dataFim);
 		
@@ -206,9 +135,9 @@ public class HospedagemService implements HospedagemUseCase {
 		return lista;
 	}
 	
-	public HospedagemFullVO getHospedagemPorHospedeLeitoId(Long hospedagemId) {
+	public Hospedagem getHospedagemPorHospedeLeitoId(Long hospedagemId) {
 		HospedagemEntity h = hospedagemRepo.findHospedagemByHospedagemId(hospedagemId);
-		HospedagemFullVO retorno = HospedagemFullVO.builder().build();
+		Hospedagem retorno = Hospedagem.builder().build();
 		
 		if (h == null) {
 			return retorno;
@@ -649,44 +578,10 @@ public class HospedagemService implements HospedagemUseCase {
 		
 	}
 
-	//CRUD
 	public boolean pessoaLivreNoPeriodo(Long pessoaId, LocalDate dataIni, LocalDate dataFim) {
-		StringBuilder sb = new StringBuilder();
-		
-		// Verificação em Hospedagem total (possui leito)
-		sb.append("SELECT     count(*) "); 
-		sb.append("FROM       hospede h ");
-		sb.append("INNER JOIN hospede_leito hl ");
-		sb.append("ON         hl.hospede_id = h.id ");
-		sb.append("WHERE      h.pessoa_id = :pessoaId  "); 
-		sb.append("AND        (((hl.data_entrada BETWEEN :dataIni AND :dataFim) OR (hl.data_saida BETWEEN :dataIni AND :dataFim))  "); 
-		sb.append("OR         ((hl.data_entrada <= :dataIni) AND (hl.data_saida >= :dataFim)))  ");
-		
-		Query query = em.createNativeQuery(sb.toString());
-		Long qtd = ((Number)query.setParameter("pessoaId", pessoaId)
-								 .setParameter("dataIni", dataIni)
-								 .setParameter("dataFim", dataFim)
-								 .getSingleResult()).longValue();
-		
-		StringBuilder sbP = new StringBuilder();
-		sbP.append("SELECT     count(*) "); 
-		sbP.append("FROM       hospedagem hpd "); 
-		sbP.append("INNER JOIN hospede h "); 
-		sbP.append("ON         h.hospedagem_id = hpd.id "); 
-		sbP.append("WHERE      h.pessoa_id = :pessoaId "); 
-		sbP.append("AND        hpd.tipo_utilizacao = :tipoUtilizacao "); 
-		sbP.append("AND        (((hpd.data_entrada BETWEEN :dataIni AND :dataFim) OR (COALESCE(hpd.data_efetiva_saida,hpd.data_prevista_saida) BETWEEN :dataIni AND :dataFim)) "); 
-		sbP.append("OR          ((hpd.data_entrada <= :dataIni) AND (COALESCE(hpd.data_efetiva_saida,hpd.data_prevista_saida) >= :dataFim))) "); 
-		
-		Query queryP = em.createNativeQuery(sbP.toString());
-		Long qtdP = ((Number)queryP.setParameter("pessoaId", pessoaId)
-				 				 .setParameter("tipoUtilizacao", "P")
-				 				 .setParameter("dataIni", dataIni)
-								 .setParameter("dataFim", dataFim)
-								 .getSingleResult()).longValue();
-		
-		
-		return ((qtd <= 0) && (qtdP <= 0)); 
+		Long qtd = hospedeLeitoRepo.hospedagensDePessoaNoPeriodo(pessoaId, dataIni, dataFim).stream().count();
+		Integer qtdP = hospedeLeitoRepo.countOfHospedagensParciaisDePessoaNoPeriodo(pessoaId, dataIni, dataFim);
+		return ((qtd <= 0) && (qtdP <= 0));
 	}
 
 	@Override

@@ -68,9 +68,9 @@ public class HospedagemEntity extends UserDateAudit implements Serializable {
 
 	@Builder.Default
 	@OneToMany(mappedBy = "hospedagem",fetch=FetchType.LAZY)
-	private List<HospedeEntity> hospedes = new ArrayList<HospedeEntity>();
+	private List<HospedeEntity> hospedes = new ArrayList<>();
 
 	@Builder.Default
 	@OneToMany(mappedBy = "hospedagem",fetch=FetchType.LAZY)
-	private List<HospedagemTipoServicoEntity> servicos = new ArrayList<HospedagemTipoServicoEntity>();
+	private List<HospedagemTipoServicoEntity> servicos = new ArrayList<>();
 }

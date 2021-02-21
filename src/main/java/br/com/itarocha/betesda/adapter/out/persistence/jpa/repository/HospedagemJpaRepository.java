@@ -17,10 +17,10 @@ public interface HospedagemJpaRepository extends JpaRepository<HospedagemEntity,
 			"				WHERE       hpd.id = hospedagem.id " +
 			"				AND         hospedeLeito.id = :hospedeLeitoId " +
 			") ")
-	public HospedagemEntity findHospedagemByHospedeLeitoId(@Param("hospedeLeitoId") Long hospedeLeitoId);
+	HospedagemEntity findHospedagemByHospedeLeitoId(@Param("hospedeLeitoId") Long hospedeLeitoId);
 	
 	@Query("SELECT  hospedagem " + 
 			"FROM   HospedagemEntity hospedagem FETCH ALL PROPERTIES " +
 			"WHERE  hospedagem.id = :hospedagemId")
-	public HospedagemEntity findHospedagemByHospedagemId(@Param("hospedagemId") Long hospedagemId);
+	HospedagemEntity findHospedagemByHospedagemId(@Param("hospedagemId") Long hospedagemId);
 }

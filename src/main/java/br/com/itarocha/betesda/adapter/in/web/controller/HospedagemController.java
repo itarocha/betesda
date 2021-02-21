@@ -4,12 +4,10 @@ import br.com.itarocha.betesda.adapter.in.web.dto.*;
 import br.com.itarocha.betesda.application.*;
 import br.com.itarocha.betesda.application.port.in.HospedagemUseCase;
 import br.com.itarocha.betesda.domain.hospedagem.*;
-import br.com.itarocha.betesda.domain.HospedagemFullVO;
-import br.com.itarocha.betesda.domain.HospedagemVO;
-import br.com.itarocha.betesda.domain.HospedeVO;
+import br.com.itarocha.betesda.domain.Hospedagem;
+import br.com.itarocha.betesda.domain.HospedagemNew;
 import br.com.itarocha.betesda.report.RelatorioAtendimentos;
 import br.com.itarocha.betesda.util.validacoes.ValidatorUtil;
-import br.com.itarocha.betesda.util.validation.ItaValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -39,48 +36,13 @@ public class HospedagemController {
 
 	@PostMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody HospedagemVO model) {
-		ItaValidator<HospedagemVO> v = new ItaValidator<HospedagemVO>(model);
-		v.validate();
+	public ResponseEntity<Hospedagem> gravar(@RequestBody HospedagemNew model) {
+		validationUtils.validate(model);
 
-		if (model.getHospedes().size() == 0) {
-			v.addError("id", "É necessário pelo menos um hóspede");
-		} else {
-			for (HospedeVO h : model.getHospedes()) {
-				if ("T".equals(model.getTipoUtilizacao()) && (h.getAcomodacao() == null)) {
-					v.addError("id", String.format("É necessário informar o Leito para o Hóspede [%s]", h.getPessoaNome()));
-				}
-				/*
-				if (!service.pessoaLivre(h.getPessoaId())) {
-					v.addError("id", String.format("[%s] está utilizando uma Hospedagem ainda pendente", h.getPessoaNome()));
-				}
-				*/
-				if ("T".equals(model.getTipoUtilizacao()) && (h.getAcomodacao() != null) && 
-					(h.getAcomodacao().getLeitoId() != null) && 
-					(model.getDataEntrada() != null) && (model.getDataPrevistaSaida() != null) )
-				{
-					Long leitoId = h.getAcomodacao().getLeitoId();
-					LocalDate dataIni = model.getDataEntrada();
-					LocalDate dataFim = model.getDataPrevistaSaida();
-					Integer leitoNumero = h.getAcomodacao().getLeitoNumero();
-					Integer quartoNumero = h.getAcomodacao().getQuartoNumero();
-					
-					if (!hospedagemService.leitoLivreNoPeriodo(leitoId, dataIni, dataFim)) {
-						v.addError("id", String.format("Quarto %s Leito %s está ocupado no perído", quartoNumero, leitoNumero ));
-					}
-				}
-			}
-		}
-		
-		if (!v.hasErrors() ) {
-			return new ResponseEntity<>(v.getValidationResult(), HttpStatus.BAD_REQUEST);
-		}
-		
 		try {
-			hospedagemService.create(model);
-		    return new ResponseEntity<HospedagemVO>(model, HttpStatus.OK);
+		    return ResponseEntity.ok(hospedagemService.create(model));
 		} catch (Exception e) {
-			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -233,7 +195,7 @@ public class HospedagemController {
 	
 	@PostMapping("/mapa/hospedagem_info")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<HospedagemFullVO> getHospedagemInfo(@RequestBody HospdeagemInfoRequest model)
+	public ResponseEntity<Hospedagem> getHospedagemInfo(@RequestBody HospdeagemInfoRequest model)
 	{
 		return ResponseEntity.ok(hospedagemService.getHospedagemPorHospedeLeitoId(model.getHospedagemId()));
 	}
