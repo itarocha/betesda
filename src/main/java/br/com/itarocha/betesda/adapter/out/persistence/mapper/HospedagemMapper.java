@@ -1,16 +1,12 @@
 package br.com.itarocha.betesda.adapter.out.persistence.mapper;
 
-import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.DestinacaoHospedagemEntity;
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.HospedagemEntity;
-import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.QuartoEntity;
 import br.com.itarocha.betesda.domain.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
