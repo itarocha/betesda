@@ -42,12 +42,12 @@ FROM    (
 ) AS tb
 INNER JOIN hospede hospede
 ON         hospede.id = tb.hospede_id
+INNER JOIN hospedagem hospedagem
+ON         hospedagem.id = hospede.hospedagem_id
 INNER JOIN pessoa pessoa
 ON         pessoa.id = hospede.pessoa_id
 INNER JOIN tipo_hospede tipo_hospede
 ON         tipo_hospede.id = hospede.tipo_hospede_id
-INNER JOIN hospedagem hospedagem
-ON         hospedagem.id = hospede.hospedagem_id
 INNER JOIN entidade etd
 ON         etd.id = hospedagem.entidade_id
 LEFT JOIN  endereco e

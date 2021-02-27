@@ -1,13 +1,19 @@
 package br.com.itarocha.betesda.report;
 
-import java.math.BigInteger;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import java.time.LocalDate;
 
+@Data
+@NoArgsConstructor
+@ToString
 public class ResumoHospedagem {
 	
-	private BigInteger hospedagemId;
-	private BigInteger hospedeId;
-	private BigInteger leitoId;
+	private Long hospedagemId;
+	private Long hospedeId;
+	private Long leitoId;
 	private LocalDate dataIni;
 	private LocalDate dataFim;
 	private Integer dias;
@@ -15,11 +21,12 @@ public class ResumoHospedagem {
 	
 	private PessoaAtendida pessoa;
 
-	private BigInteger tipoHospedeId;
+	private Long tipoHospedeId;
 	private String tipoHospedeDescricao;
-	private BigInteger entidadeId;
+	private Long entidadeId;
 	private String entidadeNome;
 	
+/*
 	public ResumoHospedagem() {
 	}
 
@@ -118,6 +125,6 @@ public class ResumoHospedagem {
 	public void setPessoa(PessoaAtendida pessoa) {
 		this.pessoa = pessoa;
 	}
-
+*/
 	
 }

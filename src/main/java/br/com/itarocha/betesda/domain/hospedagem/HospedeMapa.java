@@ -71,5 +71,3 @@ public class HospedeMapa {
         return MapaHospedagemUtil.resolveStatusHospedagemNew(LocalDate.now(), this.getDataPrevistaSaida(), this.getDataEfetivaSaida());
     }
 }
-
-

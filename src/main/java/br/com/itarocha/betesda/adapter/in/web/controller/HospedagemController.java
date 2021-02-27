@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -99,18 +101,15 @@ public class HospedagemController {
 		
 		RelatorioAtendimentos retorno = null;
 		try {
-			//System.out.println(String.format("Iniciando geração do relatório - %s", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)));
-			//retorno = relatorioService.buildPlanilhaGeral(model.dataIni, model.dataFim);
+			System.out.println(String.format("%s - Gerando dados", LocalDateTime.now()));
 			retorno = relatorioService.buildNovaPlanilha(model.getDataIni(), model.getDataFim());
-			//System.out.println(String.format("Finalizando geração do relatório - %s", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)));
-			// Gerar planilha
 		} catch(Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		//System.out.println(String.format("Gerando planilha - %s", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)));
+		System.out.println(String.format("%s - Gerando planilha", LocalDateTime.now()));
 		ByteArrayInputStream in = PlanilhaGeralService.toExcel(retorno);
-		//System.out.println(String.format("Planilha gerada - %s", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)));
+		System.out.println(String.format("%s - Planilha gerada", LocalDateTime.now()));
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Disposition", "attachment; filename=planilha.xlsx");

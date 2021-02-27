@@ -1,11 +1,10 @@
 package br.com.itarocha.betesda.report;
 
-import java.math.BigInteger;
 import java.time.LocalDate;
 
 public class PessoaAtendida {
 
-	private BigInteger id;
+	private Long id;
 	private String nome;
 	private LocalDate dataNascimento;
 	private int idade;
@@ -17,11 +16,11 @@ public class PessoaAtendida {
 		
 	}
 	
-	public BigInteger getId() {
+	public Long getId() {
 		return id;
 	}
 	
-	public void setId(BigInteger id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	
