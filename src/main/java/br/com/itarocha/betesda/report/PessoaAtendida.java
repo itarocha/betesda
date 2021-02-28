@@ -11,7 +11,8 @@ public class PessoaAtendida {
 	private String faixaEtaria;
 	private String cidade;
 	private String uf;
-	
+	private String cidadeOrigem;
+
 	public PessoaAtendida() {
 		
 	}
@@ -81,5 +82,12 @@ public class PessoaAtendida {
 	public void setUf(String uf) {
 		this.uf = uf;
 	}
-	
+
+	public String getCidadeOrigem() {
+		return cidadeOrigem;
+	}
+
+	public void setCidadeOrigem(String cidadeOrigem) {
+		this.cidadeOrigem = cidadeOrigem;
+	}
 }

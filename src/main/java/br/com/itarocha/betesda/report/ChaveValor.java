@@ -3,9 +3,9 @@ package br.com.itarocha.betesda.report;
 public class ChaveValor {
 
 	private String nome;
-	private Integer quantidade;
+	private Long quantidade;
 	
-	public ChaveValor(String nome, Integer quantidade) {
+	public ChaveValor(String nome, Long quantidade) {
 		super();
 		this.nome = nome;
 		this.quantidade = quantidade;
@@ -19,11 +19,11 @@ public class ChaveValor {
 		this.nome = nome;
 	}
 
-	public Integer getQuantidade() {
+	public Long getQuantidade() {
 		return quantidade;
 	}
 
-	public void setQuantidade(Integer quantidade) {
+	public void setQuantidade(Long quantidade) {
 		this.quantidade = quantidade;
 	}
 	

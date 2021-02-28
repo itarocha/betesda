@@ -18,6 +18,7 @@ public class ResumoHospedagem {
 	private LocalDate dataFim;
 	private Integer dias;
 	private String tipoUtilizacao;
+	private String tipoUtilizacaoDescricao;
 	private Long pessoaId;
 	
 	private PessoaAtendida pessoa;

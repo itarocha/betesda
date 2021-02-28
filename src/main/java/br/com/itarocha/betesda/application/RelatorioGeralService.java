@@ -7,11 +7,11 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.*;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
 import java.util.Comparator;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static br.com.itarocha.betesda.jooq.model.Tables.*;
@@ -33,96 +33,56 @@ public class RelatorioGeralService {
 		// Quantidade de dias por tipo de utilização: tipo_utilizacao, sum(dias)
 		// *** Atendimentos Realizados: Somatório de dias
 		// *** Atendimentos Total/Parcial: TipoUtilização e soma de dias
-		//List<ResumoHospedagem> lstResumoHospedagens = buildListaResumoHospedagem(dataIni, dataFim);
 
 		List<RelatorioGeral> listaRelatorioGeral = buildSelectRelatorioGeral(dataIni, dataFim);
 		this.mapPessoaAtendida = buildMapaPessoas(listaRelatorioGeral, dataIni);
 		this.listResumoHospedagem = buildListaResumoHospedagem(listaRelatorioGeral, dataIni);
 
-		AtomicInteger atomicQtdAtendimentosRealizados = new AtomicInteger(0);
+		Map<String, Long> mapPessoasAtendimento = new HashMap<>();
 
-		//Integer[] qtdAtendimentosRealizados = {0};
-		Map<String, Integer> mapCidadeAtendimento = new TreeMap<>();
-		Map<String, Integer> mapTipoUtilizacaoAtendimento = new HashMap<>(); // Total e Parcial
-		Map<String, Integer> mapPessoasAtendimento = new HashMap<>();
-		Map<String, Integer> mapEntidadeAtendimento = new TreeMap<>();
+		Map<String, Long> mapEntidadeAtendimento =
+				listResumoHospedagem.stream()
+						.collect(Collectors.groupingBy(ResumoHospedagem::getEntidadeNome,
+								Collectors.summingLong(ResumoHospedagem::getDias)  ));
 
-		this.listResumoHospedagem.forEach(o -> {
-			atomicQtdAtendimentosRealizados.set(atomicQtdAtendimentosRealizados.get() + o.getDias());
+		Map<String, Long> mapTipoUtilizacaoAtendimento =
+				listResumoHospedagem.stream()
+						.collect(Collectors.groupingBy(ResumoHospedagem::getTipoUtilizacaoDescricao ,
+								Collectors.summingLong(ResumoHospedagem::getDias)  ));
 
-			String tipoUtilizacao = "T".equals(o.getTipoUtilizacao()) ? "Total" : "Parcial";
-			
-			if (mapTipoUtilizacaoAtendimento.containsKey(tipoUtilizacao)) {
-				Integer dias = mapTipoUtilizacaoAtendimento.get(tipoUtilizacao);
-				mapTipoUtilizacaoAtendimento.put(tipoUtilizacao, o.getDias() + dias );
-			} else {
-				mapTipoUtilizacaoAtendimento.put(tipoUtilizacao, o.getDias());
-			}
+		Map<String, Long> mapCidadeAtendimento =
+				listResumoHospedagem.stream()
+						.collect(Collectors.groupingBy(rh -> rh.getPessoa().getCidadeOrigem(),
+								Collectors.summingLong(ResumoHospedagem::getDias)  ));
 
-			String cidade = o.getPessoa().getCidade().trim().concat(" - ").concat(o.getPessoa().getUf());
-			if (mapCidadeAtendimento.containsKey(cidade)) {
-				Integer dias = mapCidadeAtendimento.get(cidade);
-				mapCidadeAtendimento.put(cidade, o.getDias() + dias );
-			} else {
-				mapCidadeAtendimento.put(cidade, o.getDias());
-			}
-		
-			if (mapEntidadeAtendimento.containsKey(o.getEntidadeNome())) {
-				Integer dias = mapEntidadeAtendimento.get(o.getEntidadeNome());
-				mapEntidadeAtendimento.put(o.getEntidadeNome(), o.getDias() + dias );
-			} else {
-				mapEntidadeAtendimento.put(o.getEntidadeNome(), o.getDias());
-			}
+		Integer qtdAtendimentosRealizados = listResumoHospedagem.stream()
+				.reduce(0, (parcial, rh) -> parcial + rh.getDias(), Integer::sum );
 
-		});
-		mapPessoasAtendimento.put("Atendimentos Realizados", atomicQtdAtendimentosRealizados.get());
-		
-		// Quantidade de dias por tipo de utilização: tipo_utilizacao, sum(dias)
-		// *** Encaminhamentos
-		// *** Pessoas atendidas por faixa etária
-		// *** Tipos de Hóspedes
-		// *** Cidade de Origem
-		//List<PessoaEncaminhamento> lstPessoasEncaminhadas = buildListaPessoaEncaminhamento(dataIni, dataFim);
+		mapPessoasAtendimento.put("Atendimentos Realizados", BigDecimal.valueOf(qtdAtendimentosRealizados).longValue());
+
 		List<PessoaEncaminhamento> lstPessoasEncaminhadas = buildListaPessoaEncaminhamento(dataIni, dataFim);
-		Map<String, Integer> mapEncaminhamentos = new TreeMap<>();
-		Map<String, Integer> mapPessoaFaixaEtaria = new TreeMap<>();
-		Map<String, Integer> mapTipoHospedeAtendimento = new TreeMap<>();
-		Map<String, Integer> mapCidadeOrigem = new TreeMap<>();
 
-		lstPessoasEncaminhadas.forEach(o -> {
-			if (mapEncaminhamentos.containsKey(o.getEntidadeNome())) {
-				Integer qtd = mapEncaminhamentos.get(o.getEntidadeNome());
-				mapEncaminhamentos.put(o.getEntidadeNome(), ++qtd);
-			} else {
-				mapEncaminhamentos.put(o.getEntidadeNome(), 1);
-			}
+		Map<String, Long> mapEncaminhamentos =
+		lstPessoasEncaminhadas.stream()
+				.collect(Collectors.groupingBy(PessoaEncaminhamento::getEntidadeNome, Collectors.counting() ));
 
-			String faixaEtaria = o.getPessoa() != null ? o.getPessoa().getFaixaEtaria() : "";
-			if (mapPessoaFaixaEtaria.containsKey(faixaEtaria)) {
-				Integer qtd = mapPessoaFaixaEtaria.get(faixaEtaria);
-				mapPessoaFaixaEtaria.put(faixaEtaria, ++qtd);
-			} else {
-				mapPessoaFaixaEtaria.put(faixaEtaria, 1);
-			}
-			
-			// Paciente, Acompanhante, Dependente...
-			if (mapTipoHospedeAtendimento.containsKey(o.getTipoHospedeDescricao())) {
-				Integer dias = mapTipoHospedeAtendimento.get(o.getTipoHospedeDescricao());
-				mapTipoHospedeAtendimento.put(o.getTipoHospedeDescricao(), ++dias );
-			} else {
-				mapTipoHospedeAtendimento.put(o.getTipoHospedeDescricao(), 1);
-			}
-			
-			String cidadeOrigem = (o.getPessoa() != null) ? o.getPessoa().getCidade().trim().concat(" - ").concat(o.getPessoa().getUf()) : "???";
-			if (mapCidadeOrigem.containsKey(cidadeOrigem)) {
-				Integer qtd = mapCidadeOrigem.get(cidadeOrigem);
-				mapCidadeOrigem.put(cidadeOrigem, ++qtd);
-			} else {
-				mapCidadeOrigem.put(cidadeOrigem, 1);
-			}
-			
-		});
-		mapPessoasAtendimento.put("Pessoas Encaminhadas", lstPessoasEncaminhadas.size());
+		Map<String, Long> mapPessoaFaixaEtaria =
+				lstPessoasEncaminhadas.stream()
+						.collect(	Collectors.groupingBy(pe -> pe.getPessoa().getFaixaEtaria(),
+									Collectors.counting() ));
+
+		Map<String, Long> mapTipoHospedeAtendimento =
+				lstPessoasEncaminhadas.stream()
+				.collect(Collectors.groupingBy(PessoaEncaminhamento::getTipoHospedeDescricao,
+						Collectors.counting() ));
+
+		Map<String, Long> mapCidadeOrigem =
+				lstPessoasEncaminhadas.stream()
+						.collect(Collectors.groupingBy(pe -> pe.getPessoa().getCidadeOrigem(),
+								LinkedHashMap::new,
+								Collectors.counting() ));
+
+		mapPessoasAtendimento.put("Pessoas Encaminhadas", BigDecimal.valueOf(lstPessoasEncaminhadas.size()).longValue() );
 
 		RelatorioAtendimentos relatorio = new RelatorioAtendimentos();
 		relatorio.addAtividadeHospedagem("PESSOAS E ATENDIMENTOS", 			this.transforToListOrderedByNome(mapPessoasAtendimento));
@@ -130,13 +90,14 @@ public class RelatorioGeralService {
 		relatorio.addAtividadeHospedagem("TIPOS DE ATENDIMENTOS",				this.transforToListOrderedByNome(mapTipoHospedeAtendimento));
 		relatorio.addAtividadeHospedagem("PESSOAS ATENDIDAS POR FAIXA ETÁRIA",this.transforToListOrderedByValue(mapPessoaFaixaEtaria));
 		relatorio.addAtividadeHospedagem("ENCAMINHAMENTOS",					this.transforToListOrderedByValue(mapEncaminhamentos));
-		relatorio.addAtividadeHospedagem("CIDADE DE ORIGEM",					this.transforToListOrderedByNome(mapCidadeOrigem));
+		relatorio.addAtividadeHospedagem("CIDADE DE ORIGEM",					this.transforToListOrderedByValue(mapCidadeOrigem));
 		relatorio.setResumoHospedagens(this.listResumoHospedagem);
 		relatorio.addPlanilha("Ranking de Encaminhadores", "Encaminhador", this.transforToListOrderedByValue(mapEntidadeAtendimento));
 		relatorio.addPlanilha("Ranking de Cidades", "Cidade", this.transforToListOrderedByValue(mapCidadeAtendimento));
 		return relatorio;
 	}
 
+	// TODO: Mover select para repositório de estatísticas
 	private List<PessoaEncaminhada> buildSelectPessoasEncaminhadas(LocalDate dataIni, LocalDate dataFim){
 		br.com.itarocha.betesda.jooq.model.tables.HospedeLeito hl = HOSPEDE_LEITO.as("hl");
 		Field<String> tipoUtilizacaoT = val("T");
@@ -242,6 +203,7 @@ public class RelatorioGeralService {
 		return pe;
 	}
 
+	// TODO: Mover select para repositório de estatísticas
 	private List<RelatorioGeral> buildSelectRelatorioGeral(LocalDate dataIni, LocalDate dataFim){
 		br.com.itarocha.betesda.jooq.model.tables.HospedeLeito hl = HOSPEDE_LEITO.as("hl");
 		Field<String> tipoUtilizacaoT = val("T");
@@ -344,6 +306,7 @@ public class RelatorioGeralService {
 		pessoa.setIdade(idade);
 		pessoa.setCidade(rg.getCidade());
 		pessoa.setUf(rg.getUf());
+		pessoa.setCidadeOrigem(rg.getCidade().trim().concat(" - ").concat(rg.getUf()));
 		return pessoa;
 	}
 
@@ -356,6 +319,7 @@ public class RelatorioGeralService {
 		resumo.setDataFim(model.getDataFim());
 		resumo.setDias(model.getDias());
 		resumo.setTipoUtilizacao(model.getTipoUtilizacao());
+		resumo.setTipoUtilizacaoDescricao("T".equals(model.getTipoUtilizacao()) ? "Total" : "Parcial");
 		resumo.setTipoHospedeId(model.getTipoHospedeId());
 		resumo.setTipoHospedeDescricao(model.getTipoHospedeDescricao());
 		resumo.setEntidadeId(model.getEntidadeId());
@@ -364,7 +328,7 @@ public class RelatorioGeralService {
 		return resumo;
 	}
 	
-	private List<ChaveValor> transforToList(Map<String, Integer> map){
+	private List<ChaveValor> transforToList(Map<String, Long> map){
 		List<ChaveValor> listaRetorno = map.entrySet()
 				.stream()
 				.map(temp -> new ChaveValor(temp.getKey(), temp.getValue() ))
@@ -372,15 +336,16 @@ public class RelatorioGeralService {
 		return listaRetorno;
 	}
 
-	private List<ChaveValor> transforToListOrderedByNome(Map<String, Integer> map){
+	private List<ChaveValor> transforToListOrderedByNome(Map<String, Long> map){
 		List<ChaveValor> listaRetorno = transforToList(map);
 		Collections.sort(listaRetorno, Comparator.comparing(ChaveValor::getNome));
 		return listaRetorno;
 	}
 
-	private List<ChaveValor> transforToListOrderedByValue(Map<String, Integer> map){
+	private List<ChaveValor> transforToListOrderedByValue(Map<String, Long> map){
 		List<ChaveValor> listaRetorno = transforToList(map);
-		Collections.sort(listaRetorno, Comparator.comparing(ChaveValor::getQuantidade).reversed());
+		Collections.sort(listaRetorno, Comparator.comparing(ChaveValor::getQuantidade).reversed()
+				.thenComparing(Comparator.comparing(ChaveValor::getNome))) ;
 		return listaRetorno;
 	}
 

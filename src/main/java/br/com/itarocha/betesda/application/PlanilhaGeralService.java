@@ -81,8 +81,8 @@ public class PlanilhaGeralService {
 			dados.getResumoHospedagens().forEach(h -> {
 				Row row = sheetPlanilhaGeral.createRow(rowIdx[0]++);
 
-				row.createCell(0).setCellValue(h.getHospedagemId().intValue());
-				row.createCell(1).setCellValue(h.getPessoa().getId().intValue());
+				row.createCell(0).setCellValue(h.getHospedagemId());
+				row.createCell(1).setCellValue(h.getPessoa().getId());
 				row.createCell(2).setCellValue(h.getPessoa().getNome());
 
 				Cell dateCell = row.createCell(3);
