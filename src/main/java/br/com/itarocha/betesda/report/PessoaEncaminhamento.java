@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PessoaEncaminhamento {
 	private Long hospedagemId;
+	private Long pessoaId;
     private PessoaAtendida pessoa;
 	private String tipoUtilizacao;
 	private Long destinacaoHospedagemId;

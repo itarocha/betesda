@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
+import java.util.Comparator;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static br.com.itarocha.betesda.jooq.model.Tables.*;
@@ -27,28 +29,26 @@ public class RelatorioGeralService {
 
 
 	//PlanilhaGeral
-	public RelatorioAtendimentos buildNovaPlanilha(LocalDate dataIni, LocalDate dataFim) {
-		
-		this.listResumoHospedagem.clear();
-		this.mapPessoaAtendida.clear();
-		
-		RelatorioAtendimentos relatorio = new RelatorioAtendimentos();
-
+	public RelatorioAtendimentos buildPlanilha(LocalDate dataIni, LocalDate dataFim) {
 		// Quantidade de dias por tipo de utilização: tipo_utilizacao, sum(dias)
 		// *** Atendimentos Realizados: Somatório de dias
 		// *** Atendimentos Total/Parcial: TipoUtilização e soma de dias
 		//List<ResumoHospedagem> lstResumoHospedagens = buildListaResumoHospedagem(dataIni, dataFim);
-		buildListaResumoHospedagem(dataIni, dataFim);
-		 
-		
-		Integer[] qtdAtendimentosRealizados = {0};
+
+		List<RelatorioGeral> listaRelatorioGeral = buildSelectRelatorioGeral(dataIni, dataFim);
+		this.mapPessoaAtendida = buildMapaPessoas(listaRelatorioGeral, dataIni);
+		this.listResumoHospedagem = buildListaResumoHospedagem(listaRelatorioGeral, dataIni);
+
+		AtomicInteger atomicQtdAtendimentosRealizados = new AtomicInteger(0);
+
+		//Integer[] qtdAtendimentosRealizados = {0};
 		Map<String, Integer> mapCidadeAtendimento = new TreeMap<>();
 		Map<String, Integer> mapTipoUtilizacaoAtendimento = new HashMap<>(); // Total e Parcial
 		Map<String, Integer> mapPessoasAtendimento = new HashMap<>();
 		Map<String, Integer> mapEntidadeAtendimento = new TreeMap<>();
 
 		this.listResumoHospedagem.forEach(o -> {
-			qtdAtendimentosRealizados[0] += o.getDias();
+			atomicQtdAtendimentosRealizados.set(atomicQtdAtendimentosRealizados.get() + o.getDias());
 
 			String tipoUtilizacao = "T".equals(o.getTipoUtilizacao()) ? "Total" : "Parcial";
 			
@@ -75,7 +75,7 @@ public class RelatorioGeralService {
 			}
 
 		});
-		mapPessoasAtendimento.put("Atendimentos Realizados", qtdAtendimentosRealizados[0]);
+		mapPessoasAtendimento.put("Atendimentos Realizados", atomicQtdAtendimentosRealizados.get());
 		
 		// Quantidade de dias por tipo de utilização: tipo_utilizacao, sum(dias)
 		// *** Encaminhamentos
@@ -123,19 +123,17 @@ public class RelatorioGeralService {
 			
 		});
 		mapPessoasAtendimento.put("Pessoas Encaminhadas", lstPessoasEncaminhadas.size());
-		
-		relatorio.addAtividadeHospedagem("PESSOAS E ATENDIMENTOS", 			this.transforToList(mapPessoasAtendimento, true));
-		relatorio.addAtividadeHospedagem("ATENDIMENTOS", 						this.transforToList(mapTipoUtilizacaoAtendimento, true));
-		relatorio.addAtividadeHospedagem("TIPOS DE ATENDIMENTOS",				this.transforToList(mapTipoHospedeAtendimento, true));
-		relatorio.addAtividadeHospedagem("PESSOAS ATENDIDAS POR FAIXA ETÁRIA",this.transforToList(mapPessoaFaixaEtaria, true));
-		relatorio.addAtividadeHospedagem("ENCAMINHAMENTOS",					this.transforToList(mapEncaminhamentos, true));
-		relatorio.addAtividadeHospedagem("CIDADE DE ORIGEM",					this.transforToList(mapCidadeOrigem, true));
-		
+
+		RelatorioAtendimentos relatorio = new RelatorioAtendimentos();
+		relatorio.addAtividadeHospedagem("PESSOAS E ATENDIMENTOS", 			this.transforToListOrderedByNome(mapPessoasAtendimento));
+		relatorio.addAtividadeHospedagem("ATENDIMENTOS", 						this.transforToListOrderedByNome(mapTipoUtilizacaoAtendimento));
+		relatorio.addAtividadeHospedagem("TIPOS DE ATENDIMENTOS",				this.transforToListOrderedByNome(mapTipoHospedeAtendimento));
+		relatorio.addAtividadeHospedagem("PESSOAS ATENDIDAS POR FAIXA ETÁRIA",this.transforToListOrderedByValue(mapPessoaFaixaEtaria));
+		relatorio.addAtividadeHospedagem("ENCAMINHAMENTOS",					this.transforToListOrderedByValue(mapEncaminhamentos));
+		relatorio.addAtividadeHospedagem("CIDADE DE ORIGEM",					this.transforToListOrderedByNome(mapCidadeOrigem));
 		relatorio.setResumoHospedagens(this.listResumoHospedagem);
-		
-		relatorio.addPlanilha("Ranking de Encaminhadores", "Encaminhador", this.transforToList(mapEntidadeAtendimento, true));
-		relatorio.addPlanilha("Ranking de Cidades", "Cidade", this.transforToList(mapCidadeAtendimento, true));
-		
+		relatorio.addPlanilha("Ranking de Encaminhadores", "Encaminhador", this.transforToListOrderedByValue(mapEntidadeAtendimento));
+		relatorio.addPlanilha("Ranking de Cidades", "Cidade", this.transforToListOrderedByValue(mapCidadeAtendimento));
 		return relatorio;
 	}
 
@@ -221,24 +219,27 @@ public class RelatorioGeralService {
 		// Uma pessoa pode ter sido encaminhada por várias entidades
 		List<PessoaEncaminhada> listaPessoasEncaminhadas = buildSelectPessoasEncaminhadas(dataIni, dataFim);
 
-		List<PessoaEncaminhamento> lstPessoasEncaminhadas =
-		listaPessoasEncaminhadas.stream().map(record -> {
-			PessoaEncaminhamento pe = new PessoaEncaminhamento();
-			pe.setHospedagemId(record.getHospedagemId());
-			PessoaAtendida p =  this.mapPessoaAtendida.get(record.getPessoaId());
-			pe.setPessoa(p);
+		List<PessoaEncaminhamento> lstPessoasEncaminhamentos = listaPessoasEncaminhadas.stream()
+															.map(record -> convertEncaminhamento(record))
+															.collect(Collectors.toList());
 
-			pe.setTipoHospedeId(record.getTipoHospedeId());
-			pe.setTipoHospedeDescricao(record.getTipoHospedeDescricao());
-			pe.setTipoUtilizacao(record.getTipoUtilizacao());
-			pe.setDestinacaoHospedagemId(record.getDestinacaoHospedagemId());
-			pe.setDestinacaoHospedagemDescricao(record.getDestinacaoHospedagemDescricao());
-			pe.setEntidadeId(record.getEntidadeId());
-			pe.setEntidadeNome(record.getEntidadeNome());
-			return pe;
-		}).collect(Collectors.toList());
+		lstPessoasEncaminhamentos.stream().forEach(pe -> pe.setPessoa(this.mapPessoaAtendida.get(pe.getPessoaId())));
 
-		return lstPessoasEncaminhadas;
+		return lstPessoasEncaminhamentos;
+	}
+
+	private static PessoaEncaminhamento convertEncaminhamento(PessoaEncaminhada entrada){
+		PessoaEncaminhamento pe = new PessoaEncaminhamento();
+		pe.setHospedagemId(entrada.getHospedagemId());
+		pe.setPessoaId(entrada.getPessoaId());
+		pe.setTipoHospedeId(entrada.getTipoHospedeId());
+		pe.setTipoHospedeDescricao(entrada.getTipoHospedeDescricao());
+		pe.setTipoUtilizacao(entrada.getTipoUtilizacao());
+		pe.setDestinacaoHospedagemId(entrada.getDestinacaoHospedagemId());
+		pe.setDestinacaoHospedagemDescricao(entrada.getDestinacaoHospedagemDescricao());
+		pe.setEntidadeId(entrada.getEntidadeId());
+		pe.setEntidadeNome(entrada.getEntidadeNome());
+		return pe;
 	}
 
 	private List<RelatorioGeral> buildSelectRelatorioGeral(LocalDate dataIni, LocalDate dataFim){
@@ -294,7 +295,6 @@ public class RelatorioGeralService {
 					, s3.field("data_ini", LocalDate.class).as("dataIni")
 					, s3.field("data_fim", LocalDate.class).as("dataFim")
 					, localDateDiff(s3.field("data_fim", LocalDate.class), s3.field("data_ini", LocalDate.class)).add(1).as("dias")
-					//, DATEDIFF(tb.data_fim, tb.data_ini)+1 dias
 					, s3.field("tipo_utilizacao", String.class).as("tipoUtilizacao")
 					, HOSPEDE.PESSOA_ID.as("pessoaId")
 					, PESSOA.NOME.as("pessoaNome")
@@ -320,59 +320,68 @@ public class RelatorioGeralService {
 		return lista;
 	}
 
-	private void buildListaResumoHospedagem(LocalDate dataIni, LocalDate dataFim) {
-		List<RelatorioGeral> listaRelatorioGeral = buildSelectRelatorioGeral(dataIni, dataFim);
+	private Map<Long, PessoaAtendida> buildMapaPessoas(List<RelatorioGeral> listaRelatorioGeral, LocalDate dataIni) {
+		return listaRelatorioGeral.stream()
+				.collect(Collectors.toMap(rg -> rg.getPessoaId(), rg -> convertToPessoaAtendida(rg, dataIni), (p1, p2) -> p1) );
+	}
 
-		List<ResumoHospedagem> lista =
-				listaRelatorioGeral.stream().map(r -> {
-					ResumoHospedagem hr = new ResumoHospedagem();
+	private List<ResumoHospedagem> buildListaResumoHospedagem(List<RelatorioGeral> listaRelatorioGeral, LocalDate dataIni) {
+		List<ResumoHospedagem> lista = listaRelatorioGeral.stream()
+				.map(r -> convertRelatorioGeral(r, dataIni))
+				.collect(Collectors.toList());
 
-					hr.setHospedagemId(r.getHospedagemId());
-					hr.setHospedeId(r.getHospedeId());
-					hr.setLeitoId(r.getLeitoId());
-					hr.setDataIni(r.getDataIni());
-					hr.setDataFim(r.getDataFim());
-					hr.setDias(r.getDias());
-					hr.setTipoUtilizacao(r.getTipoUtilizacao());
+		lista.stream().forEach(rh -> rh.setPessoa(mapPessoaAtendida.get(rh.getPessoaId())));
 
-					PessoaAtendida pessoa = this.mapPessoaAtendida.get(r.getPessoaId());
-					if (pessoa == null) {
-						pessoa = new PessoaAtendida();
-						pessoa.setId(r.getPessoaId());
-						pessoa.setNome(r.getPessoaNome());
-						pessoa.setDataNascimento(r.getPessoaDataNascimento());
-						int idade = Period.between(r.getPessoaDataNascimento(), dataIni).getYears();
-						pessoa.setIdade(idade);
-						pessoa.setCidade(r.getCidade());
-						pessoa.setUf(r.getUf());
-						this.mapPessoaAtendida.put(r.getPessoaId(), pessoa);
-					}
+		return lista;
+	}
 
-					hr.setPessoa(pessoa);
-					hr.setTipoHospedeId(r.getTipoHospedeId());
-					hr.setTipoHospedeDescricao(r.getTipoHospedeDescricao());
-					hr.setEntidadeId(r.getEntidadeId());
-					hr.setEntidadeNome(r.getEntidadeNome());
+	private PessoaAtendida convertToPessoaAtendida(RelatorioGeral rg, LocalDate dataInicial) {
+		PessoaAtendida pessoa = new PessoaAtendida();
+		pessoa.setId(rg.getPessoaId());
+		pessoa.setNome(rg.getPessoaNome());
+		pessoa.setDataNascimento(rg.getPessoaDataNascimento());
+		int idade = Period.between(rg.getPessoaDataNascimento(), dataInicial).getYears();
+		pessoa.setIdade(idade);
+		pessoa.setCidade(rg.getCidade());
+		pessoa.setUf(rg.getUf());
+		return pessoa;
+	}
 
-					return hr;
-				}).collect(Collectors.toList());
-
-		this.listResumoHospedagem = lista;
+	private static ResumoHospedagem convertRelatorioGeral(RelatorioGeral model, LocalDate dataInicial/*, Map<Long, PessoaAtendida> mapPessoas*/){
+		ResumoHospedagem resumo = new ResumoHospedagem();
+		resumo.setHospedagemId(model.getHospedagemId());
+		resumo.setHospedeId(model.getHospedeId());
+		resumo.setLeitoId(model.getLeitoId());
+		resumo.setDataIni(model.getDataIni());
+		resumo.setDataFim(model.getDataFim());
+		resumo.setDias(model.getDias());
+		resumo.setTipoUtilizacao(model.getTipoUtilizacao());
+		resumo.setTipoHospedeId(model.getTipoHospedeId());
+		resumo.setTipoHospedeDescricao(model.getTipoHospedeDescricao());
+		resumo.setEntidadeId(model.getEntidadeId());
+		resumo.setEntidadeNome(model.getEntidadeNome());
+		resumo.setPessoaId(model.getPessoaId());
+		return resumo;
 	}
 	
-	private List<ChaveValor> transforToList(Map<String, Integer> map, boolean byValue){
-		List<ChaveValor> lst = map.entrySet().stream().map(temp -> {
-			return new ChaveValor(temp.getKey(), temp.getValue() );
-		}).collect(Collectors.toList());
-		
-		// Ordena inicialmente por chave
-		lst.sort((a, b) -> a.getNome().compareTo(b.getNome()));
-		
-		if (byValue) {
-			lst.sort((a, b) -> b.getQuantidade().compareTo(a.getQuantidade()));
-		}
-		
-		return lst;
+	private List<ChaveValor> transforToList(Map<String, Integer> map){
+		List<ChaveValor> listaRetorno = map.entrySet()
+				.stream()
+				.map(temp -> new ChaveValor(temp.getKey(), temp.getValue() ))
+				.collect(Collectors.toList());
+		return listaRetorno;
 	}
-	
+
+	private List<ChaveValor> transforToListOrderedByNome(Map<String, Integer> map){
+		List<ChaveValor> listaRetorno = transforToList(map);
+		Collections.sort(listaRetorno, Comparator.comparing(ChaveValor::getNome));
+		return listaRetorno;
+	}
+
+	private List<ChaveValor> transforToListOrderedByValue(Map<String, Integer> map){
+		List<ChaveValor> listaRetorno = transforToList(map);
+		Collections.sort(listaRetorno, Comparator.comparing(ChaveValor::getQuantidade).reversed());
+		return listaRetorno;
+	}
+
 }

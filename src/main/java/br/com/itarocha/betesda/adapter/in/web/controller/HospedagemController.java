@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -89,7 +87,7 @@ public class HospedagemController {
 	public ResponseEntity<RelatorioAtendimentos> planilhaGeral(@RequestBody PeriodoRequest model)
 	{
 		validationUtils.validate(model);
-		return ResponseEntity.ok(relatorioService.buildNovaPlanilha(model.getDataIni(), model.getDataFim()));
+		return ResponseEntity.ok(relatorioService.buildPlanilha(model.getDataIni(), model.getDataFim()));
 	}
 	
 	//https://grokonez.com/spring-framework/spring-boot/excel-file-download-from-springboot-restapi-apache-poi-mysql
@@ -101,15 +99,15 @@ public class HospedagemController {
 		
 		RelatorioAtendimentos retorno = null;
 		try {
-			System.out.println(String.format("%s - Gerando dados", LocalDateTime.now()));
-			retorno = relatorioService.buildNovaPlanilha(model.getDataIni(), model.getDataFim());
+			//System.out.println(String.format("%s - Gerando dados", LocalDateTime.now()));
+			retorno = relatorioService.buildPlanilha(model.getDataIni(), model.getDataFim());
 		} catch(Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		System.out.println(String.format("%s - Gerando planilha", LocalDateTime.now()));
+		//System.out.println(String.format("%s - Gerando planilha", LocalDateTime.now()));
 		ByteArrayInputStream in = PlanilhaGeralService.toExcel(retorno);
-		System.out.println(String.format("%s - Planilha gerada", LocalDateTime.now()));
+		//System.out.println(String.format("%s - Planilha gerada", LocalDateTime.now()));
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Disposition", "attachment; filename=planilha.xlsx");
