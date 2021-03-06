@@ -110,7 +110,6 @@ public class HospedeLeitoRepositoryAdapter implements HospedeLeitoRepository {
 
 	@Override
 	public LeitoDTO findLeitoByHospedeLeitoId(Long hospedeLeitoId){
-		// Substituindo _OBSOLETO_leito_by_hospede_leito_id.sql
 		LeitoDTO retorno =
 				create.select(LEITO.ID, LEITO.NUMERO, QUARTO.ID, QUARTO.NUMERO)
 						.from(HOSPEDE_LEITO)

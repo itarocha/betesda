@@ -1,6 +1,7 @@
 package br.com.itarocha.betesda.application;
 
 import br.com.itarocha.betesda.adapter.dto.RedefinicaoSenha;
+import br.com.itarocha.betesda.adapter.out.email.EmailService;
 import br.com.itarocha.betesda.application.out.RoleRepository;
 import br.com.itarocha.betesda.application.out.UserRepository;
 import br.com.itarocha.betesda.application.out.UserTokenRepository;

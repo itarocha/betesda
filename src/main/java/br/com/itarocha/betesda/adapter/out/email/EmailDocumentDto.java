@@ -1,11 +1,11 @@
-package br.com.itarocha.betesda.domain;
+package br.com.itarocha.betesda.adapter.out.email;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-public class EmailDocument {
+public class EmailDocumentDto {
 	
 	private String from;
 
@@ -19,12 +19,12 @@ public class EmailDocument {
 	
 	private boolean isHtml;
 
-	public EmailDocument() {
+	public EmailDocumentDto() {
 		this.to = new ArrayList<>();
 		this.cc = new ArrayList<>();
 	}
 
-	public EmailDocument(String from, String toList, String subject, String message) {
+	public EmailDocumentDto(String from, String toList, String subject, String message) {
 		this();
 		this.from = from;
 		this.subject = subject;
@@ -32,7 +32,7 @@ public class EmailDocument {
 		this.to.addAll(Arrays.asList(splitByComma(toList)));
 	}
 
-	public EmailDocument(String from, String toList, String ccList, String subject, String message) {
+	public EmailDocumentDto(String from, String toList, String ccList, String subject, String message) {
 		this();
 		this.from = from;
 		this.subject = subject;

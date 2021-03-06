@@ -1,4 +1,4 @@
-package br.com.itarocha.betesda.application;
+package br.com.itarocha.betesda.adapter.out.email.template;
 
 import br.com.itarocha.betesda.utils.StrUtil;
 
