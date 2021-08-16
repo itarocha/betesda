@@ -187,7 +187,6 @@ public class PlanilhaGeralService {
 
 			// Finalmente...
 			workbook.write(out);
-
 			return new ByteArrayInputStream(out.toByteArray());
 		}
 	}

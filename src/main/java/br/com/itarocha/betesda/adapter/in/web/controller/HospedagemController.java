@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -91,9 +93,9 @@ public class HospedagemController {
 	}
 	
 	//https://grokonez.com/spring-framework/spring-boot/excel-file-download-from-springboot-restapi-apache-poi-mysql
-	//@GetMapping(value = "/planilha_geral_arquivo")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	@PostMapping("/planilha_geral_arquivo")
+	//ResponseEntity<ByteArrayResource>
 	public ResponseEntity<?>planilhaGeralExcel(@RequestBody PeriodoRequest model) throws IOException {
 		validationUtils.validate(model);
 		
@@ -110,19 +112,23 @@ public class HospedagemController {
 		//System.out.println(String.format("%s - Planilha gerada", LocalDateTime.now()));
 		
 		HttpHeaders headers = new HttpHeaders();
-		headers.add("Content-Disposition", "attachment; filename=planilha.xlsx");
-		headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-	    headers.add("Pragma", "no-cache");
-	    headers.add("Expires", "0");
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm");
+		String dateTimeFormatted = LocalDateTime.now().format(formatter);
+
+		headers.add(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=PlanilhaGeral-%s.xlsx",dateTimeFormatted));
+		//headers.setContentType(new MediaType("application", "force-download"));
+		headers.add("Cache-Control", "no-cache, no-store, must-revalidate"); //OPT
+	    headers.add("Pragma", "no-cache"); // OPT
+	    headers.add("Expires", "0"); // OPT
 		
 		return ResponseEntity
 				.ok()
 				.contentType(MediaType.APPLICATION_OCTET_STREAM)
-				//.contentLength(file.length())
 				.headers(headers)
 				.body(new InputStreamResource(in));
 	}
-	
+
 	@PostMapping("/leitos_ocupados")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<List<OcupacaoLeito>> leitosOcupados(@RequestBody HospedagemPeriodoRequest model)

@@ -6,6 +6,7 @@ import br.com.itarocha.betesda.domain.hospedagem.RelatorioGeral;
 import lombok.RequiredArgsConstructor;
 import org.jooq.*;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,7 +15,7 @@ import static br.com.itarocha.betesda.jooq.model.Tables.*;
 import static org.jooq.impl.DSL.*;
 import static org.jooq.impl.DSL.coalesce;
 
-@Repository
+@Service
 @RequiredArgsConstructor
 public class RelatorioGeralAdapter implements RelatorioGeralRepository {
 

@@ -14,12 +14,12 @@ import java.util.*;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class RelatorioGeralService {
 
 
-	private RelatorioGeralRepository relatorioGeralRepository;
+	private final RelatorioGeralRepository relatorioGeralRepository;
 
 	private List<ResumoHospedagem> listResumoHospedagem = new ArrayList<>();
 	private Map<Long, PessoaAtendida> mapPessoaAtendida = new HashMap<>();

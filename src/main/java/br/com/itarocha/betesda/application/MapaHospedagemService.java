@@ -106,6 +106,14 @@ public class MapaHospedagemService {
         Condition a2 = hl.DATA_ENTRADA.le(dataIni).and(hl.DATA_SAIDA.ge(dataFim));
         Condition condicaoA = a1.or(a2);
 
+       //, (SELECT MIN(hlx.data_entrada) FROM hospede_leito hlx WHERE hlx.hospede_id = hl.hospede_id) AS data_primeira_entrada
+       //, (SELECT MAX(hlx.data_entrada) FROM hospede_leito hlx WHERE hlx.hospede_id = hl.hospede_id) AS data_ultima_entrada
+
+        //dsl.selectFrom(SERIES)
+        //        .orderBy(DSL.field(dsl.select(DSL.max(COMPETITION.COMPETITION_DATE)).from(COMPETITION)
+        //                .where(COMPETITION.SERIES_ID.eq(SERIES.ID))).desc())
+        //        .fetch()
+
         Select<Record14<Long, Long, Long, Integer, Long, Integer, Integer, LocalDate, LocalDate, LocalDate, LocalDate, String, LocalDate, LocalDate>>
                 s1 =
                 create.select(hl.HOSPEDE_ID.as("hospede_id")
@@ -120,8 +128,8 @@ public class MapaHospedagemService {
                         , when(hl.DATA_ENTRADA.lessThan(dataIni), dataIni).otherwise(hl.DATA_ENTRADA).as("data_ini")
                         , when(hl.DATA_SAIDA.greaterThan(dataFim), dataFim).otherwise(hl.DATA_SAIDA).as("data_fim")
                         , tipoUtilizacaoT.as("tipo_utilizacao")
-                        , min(hl.DATA_ENTRADA).as("data_primeira_entrada")
-                        , max(hl.DATA_ENTRADA).as("data_ultima_entrada")
+                        , field(select(min(HOSPEDE_LEITO.DATA_ENTRADA)).from(HOSPEDE_LEITO).where(HOSPEDE_LEITO.HOSPEDE_ID.eq(hl.HOSPEDE_ID))).as("data_primeira_entrada")
+                        , field(select(max(HOSPEDE_LEITO.DATA_ENTRADA)).from(HOSPEDE_LEITO).where(HOSPEDE_LEITO.HOSPEDE_ID.eq(hl.HOSPEDE_ID))).as("data_ultima_entrada")
                 )
                         .from(hl)
                         .innerJoin(leito).on(hl.LEITO_ID.eq(leito.ID))
