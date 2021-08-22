@@ -44,4 +44,6 @@ public interface HospedeLeitoRepository{
 	List<Long> hospedagensDePessoaNoPeriodo(Long pessoaId, LocalDate dataIni, LocalDate dataFim);
 
 	Integer countOfHospedagensParciaisDePessoaNoPeriodo(Long pessoaId, LocalDate dataIni, LocalDate dataFim);
+
+	void updateDataSaida(Long id, LocalDate dataRenovacao);
 }

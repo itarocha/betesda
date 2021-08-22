@@ -209,7 +209,6 @@ public class HospedagemService implements HospedagemUseCase {
 					hospedeLeitoRepo.save(hl);
 				});
 			}
-
 			h.setDataEfetivaSaida(dataEncerramento);
 			hospedagemRepo.save(h);
 		});
@@ -295,7 +294,6 @@ public class HospedagemService implements HospedagemUseCase {
 	}
 
 	public void transferirHospede(Long hospedeId, Long leitoId, LocalDate dataTransferencia)  {
-		DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		hospedeRepo.findById(hospedeId).ifPresent(hospedeEntity -> {
 
 			if ((LogicoEnum.S.equals(hospedeEntity.getBaixado())  )) {
@@ -364,8 +362,6 @@ public class HospedagemService implements HospedagemUseCase {
 	}
 
 	public void adicionarHospede(Long hospedagemId, Long pessoaId, Long tipoHospedeId, Long leitoId, LocalDate dataEntrada) {
-		DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		
 		Optional<HospedagemEntity> hospedagemOpt = hospedagemRepo.findById(hospedagemId);
 		Optional<PessoaEntity> pessoaOpt = pessoaRepo.findById(pessoaId);
 		Optional<LeitoEntity> leitoOpt = leitoRepo.findById(leitoId);
@@ -450,24 +446,24 @@ public class HospedagemService implements HospedagemUseCase {
 		* Para cada hospedeLeito, setar o último hospedagemLeito.setDataSaída(novaDataPrevistaSaida)
 		* hospedagem.setDataPrevistaSaida(novaDataPrevistaSaida)
 		 */
-		hospedagemRepo.findById(hospedagemId).ifPresent(h -> {
+		hospedagemRepo.findById(hospedagemId).ifPresent(hospedagemEntity -> {
 
-			if ((h.getDataEfetivaSaida() != null)) {
+			if ((hospedagemEntity.getDataEfetivaSaida() != null)) {
 				throw new EntityValidationException("*", "Hospedagem deve ter status = emAberto");
 			}
 	
-			if (!dataRenovacao.isAfter(h.getDataPrevistaSaida())) {
+			if (!dataRenovacao.isAfter(hospedagemEntity.getDataPrevistaSaida())) {
 				throw new EntityValidationException("*",
-						String.format("Data de Renovação deve ser igual ou superior a Data Prevista de Saída (%s)", fmt.format(h.getDataPrevistaSaida())) );
+						String.format("Data de Renovação deve ser igual ou superior a Data Prevista de Saída (%s)", fmt.format(hospedagemEntity.getDataPrevistaSaida())) );
 			}
 
 			List<HospedeLeito> hlToSave = new ArrayList<>();
 
 			// Para cada leito (caso seja Total), verificar se ele está sendo utilizado no período (dataPrevistaSaida ~ dataRenovacao)
 			// Para cada pessoa, verificar se ele está em outra hospedagem no período entre h.getDataPrevistaSaida() e dataRenovacao
-			if (TipoUtilizacaoHospedagemEnum.T.equals(h.getTipoUtilizacao())) {
-				h.getHospedes().stream().forEach(hpd -> {
-					if (!this.pessoaLivreNoPeriodo(hpd.getPessoa().getId(), h.getDataPrevistaSaida().plusDays(1), dataRenovacao)) {
+			if (TipoUtilizacaoHospedagemEnum.T.equals(hospedagemEntity.getTipoUtilizacao())) {
+				hospedagemEntity.getHospedes().stream().forEach(hpd -> {
+					if (!this.pessoaLivreNoPeriodo(hpd.getPessoa().getId(), hospedagemEntity.getDataPrevistaSaida().plusDays(1), dataRenovacao)) {
 						throw new EntityValidationException("*",
 								String.format("[%s] está em outra hospedagem nesse novo período", hpd.getPessoa().getNome() ));
 					}
@@ -480,7 +476,7 @@ public class HospedagemService implements HospedagemUseCase {
 									Long leitoId = hl.getLeito().getId();
 
 									List<Long> listaHospedeId = hospedeLeitoRepo.hospedagensNoPeriodo(	leitoId,
-											h.getDataPrevistaSaida().plusDays(1),
+											hospedagemEntity.getDataPrevistaSaida().plusDays(1),
 											dataRenovacao);
 
 									listaHospedeId.stream()
@@ -496,15 +492,11 @@ public class HospedagemService implements HospedagemUseCase {
 				 			});
 				});
 			}
-
 			hlToSave.stream().forEach(hl -> {
-				//UPDATE HOSPEDE_LEITO SET DATA_SAIDA = dataRenovacao WHERE ID = hl.getId()
-				hl.setDataSaida(dataRenovacao);
-				hospedeLeitoRepo.save(hl);
+				hospedeLeitoRepo.updateDataSaida(hl.getId(), dataRenovacao);
 			});
 
-			h.setDataPrevistaSaida(dataRenovacao);
-			hospedagemRepo.save(h);
+			hospedagemRepo.updateDataPrevistaSaida(hospedagemEntity.getId(), dataRenovacao);
 		});
 	}
 

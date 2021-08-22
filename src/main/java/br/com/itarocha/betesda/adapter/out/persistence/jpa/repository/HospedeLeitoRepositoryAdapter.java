@@ -187,4 +187,9 @@ public class HospedeLeitoRepositoryAdapter implements HospedeLeitoRepository {
 		return qtd;
 	}
 
+	@Override
+	public void updateDataSaida(Long id, LocalDate dataRenovacao) {
+		repository.updateDataSaida(id, dataRenovacao);
+	}
+
 }

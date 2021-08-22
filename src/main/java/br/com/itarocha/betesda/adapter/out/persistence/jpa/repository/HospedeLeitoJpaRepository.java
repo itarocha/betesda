@@ -2,6 +2,7 @@ package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.HospedeLeitoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -38,8 +39,7 @@ public interface HospedeLeitoJpaRepository extends JpaRepository<HospedeLeitoEnt
 	
 	@Query(value = "SELECT COUNT(*) FROM  hospede h WHERE h.baixado = 'N' AND h.hospedagem_id = :hospedagemId", nativeQuery = true)	
 	Long countHospedesNaoBaixadosByHospedagemId(@Param("hospedagemId") Long hospedagemId);
-	
-	
+
 	@Query(value = "SELECT     MAX(hl.data_entrada) data_entrada "+ 
 	"FROM       hospede h "+
 	"INNER JOIN hospede_leito hl "+
@@ -69,4 +69,8 @@ public interface HospedeLeitoJpaRepository extends JpaRepository<HospedeLeitoEnt
 			"AND        (((hl.data_entrada BETWEEN :dataIni AND :dataFim) OR (hl.data_saida BETWEEN :dataIni AND :dataFim)) "+
 			"OR          ((hl.data_entrada <= :dataIni) AND (hl.data_saida >= :dataFim))) ",nativeQuery = true)
 	List<BigInteger> leitosNoPeriodoPorHospedagem(@Param("hospedagemId")Long hospedagemId, @Param("dataIni") LocalDate dataIni, @Param("dataFim") LocalDate dataFim);
+
+	@Modifying
+	@Query(value = "update hospede_leito hl set hl.data_saida = :dataRenovacao where hl.id = :id", nativeQuery = true)
+	void updateDataSaida(@Param("id") Long id, @Param("dataRenovacao") LocalDate dataRenovacao);
 }
