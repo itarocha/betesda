@@ -2,6 +2,8 @@ package br.com.itarocha.betesda.adapter.in.web.controller;
 
 import br.com.itarocha.betesda.adapter.in.web.dto.*;
 import br.com.itarocha.betesda.core.ports.in.HospedagemUseCase;
+import br.com.itarocha.betesda.core.ports.in.PlanilhaGeralUseCase;
+import br.com.itarocha.betesda.core.ports.in.RelatorioGeralUseCase;
 import br.com.itarocha.betesda.core.service.*;
 import br.com.itarocha.betesda.domain.hospedagem.*;
 import br.com.itarocha.betesda.domain.Hospedagem;
@@ -29,12 +31,13 @@ import java.util.List;
 public class HospedagemController {
 
 	private final HospedagemUseCase hospedagemService;
-	private final RelatorioGeralService relatorioService;
+	private final RelatorioGeralUseCase relatorioService;
 	private final MapaHospedagemService mapaHospedagemService;
 	private final MapaHospedesService mapaHospedesService;
 	private final MapaCidadesService mapaCidadesService;
 	private final MapaQuadroService mapaQuadroService;
 	private final ValidatorUtil validationUtils;
+	private final PlanilhaGeralUseCase planilhaGeralService;
 
 	@PostMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
@@ -108,7 +111,7 @@ public class HospedagemController {
 		}
 		
 		//System.out.println(String.format("%s - Gerando planilha", LocalDateTime.now()));
-		ByteArrayInputStream in = PlanilhaGeralService.toExcel(retorno);
+		ByteArrayInputStream in = planilhaGeralService.toExcel(retorno);
 		//System.out.println(String.format("%s - Planilha gerada", LocalDateTime.now()));
 		
 		HttpHeaders headers = new HttpHeaders();

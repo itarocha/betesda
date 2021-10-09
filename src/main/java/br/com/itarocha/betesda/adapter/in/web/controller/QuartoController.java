@@ -1,7 +1,6 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
 import br.com.itarocha.betesda.core.ports.in.*;
-import br.com.itarocha.betesda.core.service.EntidadeService;
 import br.com.itarocha.betesda.domain.*;
 import br.com.itarocha.betesda.util.validacoes.ValidatorUtil;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,7 @@ public class QuartoController {
 	private final SituacaoLeitoUseCase sls;
 	private final TipoHospedeUseCase ths;
 	private final TipoServicoUseCase tss;
-	private final EntidadeService etds;
+	private final EntidadeUseCase etds;
 
 
 	@GetMapping
@@ -140,7 +139,7 @@ public class QuartoController {
 
 	static class AutoWired {
 		public List<ItemDictionary> listaTipoLeito = new ArrayList<>();
-		public List<ItemDictionary> listaDestinacaoHospedagem = new ArrayList<ItemDictionary>();
+		public List<ItemDictionary> listaDestinacaoHospedagem = new ArrayList<>();
 		public List<ItemDictionary> listaSituacaoLeito = new ArrayList<>();
 		public List<ItemDictionary> listaTipoHospede = new ArrayList<>();
 		public List<ItemDictionary> listaTipoServico = new ArrayList<>();

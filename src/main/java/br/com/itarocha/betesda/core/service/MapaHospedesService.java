@@ -1,6 +1,7 @@
 package br.com.itarocha.betesda.core.service;
 
-import br.com.itarocha.betesda.core.service.MapaHospedagemService;
+import br.com.itarocha.betesda.core.ports.in.MapaHospedagemUseCase;
+import br.com.itarocha.betesda.core.ports.in.MapaHospedesUseCase;
 import br.com.itarocha.betesda.domain.hospedagem.HospedeMapa;
 import br.com.itarocha.betesda.domain.hospedagem.MapaHospedes;
 import br.com.itarocha.betesda.utils.LocalDateUtils;
@@ -12,9 +13,9 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class MapaHospedesService {
+public class MapaHospedesService implements MapaHospedesUseCase {
 
-    private final MapaHospedagemService mapaHospedagemService;
+    private final MapaHospedagemUseCase mapaHospedagemService;
 
     public static final int QTD_DIAS = 7;
 

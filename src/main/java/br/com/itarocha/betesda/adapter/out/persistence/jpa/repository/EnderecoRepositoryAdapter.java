@@ -25,46 +25,4 @@ public class EnderecoRepositoryAdapter implements EnderecoRepository {
         }
     }
 
-    /*
-    @Override
-    public Optional<TipoServico> findById(Long id) {
-        Optional<TipoServicoEntity> opt = repository.findById(id);
-        return opt.isPresent() ? Optional.of(mapper.toModel(opt.get())) : Optional.ofNullable(null);
-    }
-
-    @Override
-    public void delete(TipoServico model) {
-        try {
-            repository.delete(mapper.toEntity(model));
-        } catch (DataIntegrityViolationException e) {
-            throw new IntegridadeException("Falha de integridade ao tentar excluir Tipo de Serviço"
-                    , e.getMostSpecificCause().getMessage());
-        }
-    }
-
-    @Override
-    public List<TipoServico> findAllOrderByDescricao() {
-        return repository.findAllOrderByDescricao()
-                .stream()
-                .map(mapper::toModel)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<TipoServico> findAllAtivosOrderByDescricao() {
-        return repository.findAllAtivosOrderByDescricao()
-                .stream()
-                .map(mapper::toModel)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<SelectValueVO> findAllToSelectVO() {
-        return repository.findAllAtivosOrderByDescricao()
-                .stream()
-                .map(mapper::toModel)
-                .map(mapper::toSelectValueVO)
-                .collect(Collectors.toList());
-    }
-     */
 }

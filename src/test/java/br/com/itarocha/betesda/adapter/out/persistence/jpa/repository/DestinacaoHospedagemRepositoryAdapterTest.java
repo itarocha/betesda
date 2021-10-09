@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
-public class DestinacaoHospedagemRepositoryAdapterTest {
+class DestinacaoHospedagemRepositoryAdapterTest {
 
     @Autowired
     private DestinacaoHospedagemJpaRepository repository;
@@ -28,7 +28,7 @@ public class DestinacaoHospedagemRepositoryAdapterTest {
 
     @Test
     @DisplayName("Ao persistir DestinacaoHospedagem retorna sucesso")
-    public void save_PersistDestinacaoHospedagem_WhenSuccessful() {
+    void save_PersistDestinacaoHospedagem_WhenSuccessful() {
         assertThat(repository).isNotNull();
 
         repoAdapter = new DestinacaoHospedagemRepositoryAdapter(repository, new DestinacaoHospedagemMapper());
@@ -44,7 +44,7 @@ public class DestinacaoHospedagemRepositoryAdapterTest {
 
     @Test
     @DisplayName("Ao gravar DestinacaoHospedagem com valores inválidos, retorna ConstraintValidationException")
-    public void save_PersistDestinacaoHospedagem_WhenConstraintValidation() {
+    void save_PersistDestinacaoHospedagem_WhenConstraintValidation() {
         assertThat(repository).isNotNull();
 
         repoAdapter = new DestinacaoHospedagemRepositoryAdapter(repository, new DestinacaoHospedagemMapper());
@@ -56,7 +56,7 @@ public class DestinacaoHospedagemRepositoryAdapterTest {
 
     @Test
     @DisplayName("Ao executar findById em DestinacaoHospedagem retorna sucesso")
-    public void findById_PersistDestinacaoHospedagem_WhenSuccessful() {
+    void findById_PersistDestinacaoHospedagem_WhenSuccessful() {
         assertThat(repository).isNotNull();
 
         repoAdapter = new DestinacaoHospedagemRepositoryAdapter(repository, new DestinacaoHospedagemMapper());
@@ -74,7 +74,7 @@ public class DestinacaoHospedagemRepositoryAdapterTest {
 
     @Test
     @DisplayName("Ao executar findByAllOrderByDescricao em DestinacaoHospedagem retorna sucesso")
-    public void findAllOrderByDescricao_DestinacaoHospedagem_WhenSuccessful() {
+    void findAllOrderByDescricao_DestinacaoHospedagem_WhenSuccessful() {
         assertThat(repository).isNotNull();
 
         repoAdapter = new DestinacaoHospedagemRepositoryAdapter(repository, new DestinacaoHospedagemMapper());
@@ -104,7 +104,7 @@ public class DestinacaoHospedagemRepositoryAdapterTest {
 
     @Test
     @DisplayName("Ao executar delete em DestinacaoHospedagem retorna sucesso")
-    public void delete_DestinacaoHospedagem_WhenSuccessful() {
+    void delete_DestinacaoHospedagem_WhenSuccessful() {
         assertThat(repository).isNotNull();
 
         repoAdapter = new DestinacaoHospedagemRepositoryAdapter(repository, new DestinacaoHospedagemMapper());

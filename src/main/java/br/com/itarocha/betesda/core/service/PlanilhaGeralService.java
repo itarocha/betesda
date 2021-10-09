@@ -1,5 +1,6 @@
 package br.com.itarocha.betesda.core.service;
 
+import br.com.itarocha.betesda.core.ports.in.PlanilhaGeralUseCase;
 import br.com.itarocha.betesda.report.ChaveValor;
 import br.com.itarocha.betesda.report.RelatorioAtendimentos;
 
@@ -14,9 +15,9 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
-public class PlanilhaGeralService {
+public class PlanilhaGeralService implements PlanilhaGeralUseCase {
 
-	public static ByteArrayInputStream toExcel(RelatorioAtendimentos dados) throws IOException {
+	public ByteArrayInputStream toExcel(RelatorioAtendimentos dados) throws IOException {
 
 		String[] colsPlanilhaGeral = {	"Atendimento", 
 										"Id Pessoa", 

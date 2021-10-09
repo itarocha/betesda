@@ -1,5 +1,6 @@
 package br.com.itarocha.betesda.core.service;
 
+import br.com.itarocha.betesda.core.ports.in.RelatorioGeralUseCase;
 import br.com.itarocha.betesda.core.ports.out.report.RelatorioGeralRepository;
 import br.com.itarocha.betesda.domain.hospedagem.PessoaEncaminhada;
 import br.com.itarocha.betesda.domain.hospedagem.RelatorioGeral;
@@ -16,8 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class RelatorioGeralService {
-
+public class RelatorioGeralService implements RelatorioGeralUseCase {
 
 	private final RelatorioGeralRepository relatorioGeralRepository;
 

@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-public class TipoServicoRepositoryAdapterTest {
+class TipoServicoRepositoryAdapterTest {
 
     @Autowired
     private TipoServicoJpaRepository repository;
@@ -30,7 +30,7 @@ public class TipoServicoRepositoryAdapterTest {
 
     @Test
     @DisplayName("Ao persistir TipoServico retorna sucesso")
-    public void save_PersistTipoServico_WhenSuccessful() {
+    void save_PersistTipoServico_WhenSuccessful() {
         assertThat(repository).isNotNull();
 
         repoAdapter = new TipoServicoRepositoryAdapter(repository, new TipoServicoMapper());
@@ -47,7 +47,7 @@ public class TipoServicoRepositoryAdapterTest {
 
     @Test
     @DisplayName("Ao gravar TipoServico com valores inválidos, retorna ConstraintValidationException")
-    public void save_PersistTipoServico_WhenConstraintValidation() {
+    void save_PersistTipoServico_WhenConstraintValidation() {
         assertThat(repository).isNotNull();
 
         repoAdapter = new TipoServicoRepositoryAdapter(repository, new TipoServicoMapper());
@@ -59,7 +59,7 @@ public class TipoServicoRepositoryAdapterTest {
 
     @Test
     @DisplayName("Ao executar findById em TipoServico retorna sucesso")
-    public void findById_PersistTipoServico_WhenSuccessful() {
+    void findById_PersistTipoServico_WhenSuccessful() {
         assertThat(repository).isNotNull();
 
         repoAdapter = new TipoServicoRepositoryAdapter(repository, new TipoServicoMapper());
@@ -78,7 +78,7 @@ public class TipoServicoRepositoryAdapterTest {
 
     @Test
     @DisplayName("Ao executar findByAllOrderByDescricao em TipoServico retorna sucesso")
-    public void findAllOrderByDescricao_TipoServico_WhenSuccessful() {
+    void findAllOrderByDescricao_TipoServico_WhenSuccessful() {
         assertThat(repository).isNotNull();
 
         repoAdapter = new TipoServicoRepositoryAdapter(repository, new TipoServicoMapper());
@@ -117,7 +117,7 @@ public class TipoServicoRepositoryAdapterTest {
 
     @Test
     @DisplayName("Ao executar delete em TipoServico retorna sucesso")
-    public void delete_TipoServico_WhenSuccessful() {
+    void delete_TipoServico_WhenSuccessful() {
         assertThat(repository).isNotNull();
 
         repoAdapter = new TipoServicoRepositoryAdapter(repository, new TipoServicoMapper());

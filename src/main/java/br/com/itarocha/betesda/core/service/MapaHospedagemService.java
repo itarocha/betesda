@@ -1,5 +1,6 @@
 package br.com.itarocha.betesda.core.service;
 
+import br.com.itarocha.betesda.core.ports.in.MapaHospedagemUseCase;
 import br.com.itarocha.betesda.core.ports.out.LeitoRepository;
 import br.com.itarocha.betesda.core.ports.in.QuartoUseCase;
 import br.com.itarocha.betesda.domain.Leito;
@@ -27,7 +28,7 @@ import static org.jooq.impl.DSL.*;
 
 @Service
 @RequiredArgsConstructor
-public class MapaHospedagemService {
+public class MapaHospedagemService implements MapaHospedagemUseCase {
 
     private final QuartoUseCase quartoService;
     private final LeitoRepository leitoRepository;

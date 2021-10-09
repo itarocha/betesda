@@ -1,5 +1,6 @@
 package br.com.itarocha.betesda.core.service;
 
+import br.com.itarocha.betesda.core.ports.in.MapaQuadroUseCase;
 import br.com.itarocha.betesda.core.ports.in.QuartoUseCase;
 import br.com.itarocha.betesda.domain.Quarto;
 import br.com.itarocha.betesda.domain.hospedagem.*;
@@ -13,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
-public class MapaQuadroService {
+public class MapaQuadroService implements MapaQuadroUseCase {
 
     private final MapaHospedagemService mapaHospedagemService;
     private final MapaHospedesService mapaHospedesService;

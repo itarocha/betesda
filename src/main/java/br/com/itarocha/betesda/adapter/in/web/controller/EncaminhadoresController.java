@@ -42,7 +42,7 @@ public class EncaminhadoresController {
 	
 	@DeleteMapping("{id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity excluir(@PathVariable("id") Long id) {
+	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
 		service.remove(id);
 		return ResponseEntity.noContent().build();
 	 }

@@ -24,8 +24,8 @@ public class EncaminhadorRepositoryAdapter implements EncaminhadorRepository {
     @Override
     public Encaminhador save(Encaminhador model) {
         try {
-            EncaminhadorEntity EncaminhadorEntity = mapper.toEntity(model);
-            EncaminhadorEntity saved = repository.save(EncaminhadorEntity);
+            EncaminhadorEntity encaminhadorEntity = mapper.toEntity(model);
+            EncaminhadorEntity saved = repository.save(encaminhadorEntity);
             return mapper.toModel(saved);
         } catch ( DataIntegrityViolationException e) {
             throw new IntegridadeException("Falha de integridade ao tentar gravar Encaminhador"
