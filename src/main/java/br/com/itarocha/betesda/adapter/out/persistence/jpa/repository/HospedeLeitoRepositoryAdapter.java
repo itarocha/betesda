@@ -2,7 +2,7 @@ package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.HospedeLeitoEntity;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.HospedeLeitoMapper;
-import br.com.itarocha.betesda.application.out.HospedeLeitoRepository;
+import br.com.itarocha.betesda.core.ports.out.HospedeLeitoRepository;
 import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
 import br.com.itarocha.betesda.domain.HospedeLeito;
 import br.com.itarocha.betesda.domain.LeitoDTO;

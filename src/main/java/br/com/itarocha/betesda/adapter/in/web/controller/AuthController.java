@@ -2,7 +2,7 @@ package br.com.itarocha.betesda.adapter.in.web.controller;
 
 import br.com.itarocha.betesda.adapter.dto.EmailRequest;
 import br.com.itarocha.betesda.adapter.dto.RedefinicaoSenha;
-import br.com.itarocha.betesda.application.port.in.AutenticacaoUseCase;
+import br.com.itarocha.betesda.core.ports.in.AutenticacaoUseCase;
 import br.com.itarocha.betesda.domain.User;
 import br.com.itarocha.betesda.adapter.in.web.security.AuthenticationToken;
 import br.com.itarocha.betesda.domain.UserLogin;

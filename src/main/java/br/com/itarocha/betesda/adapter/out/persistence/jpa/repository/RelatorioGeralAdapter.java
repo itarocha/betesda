@@ -1,11 +1,10 @@
 package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
 
-import br.com.itarocha.betesda.application.out.report.RelatorioGeralRepository;
+import br.com.itarocha.betesda.core.ports.out.report.RelatorioGeralRepository;
 import br.com.itarocha.betesda.domain.hospedagem.PessoaEncaminhada;
 import br.com.itarocha.betesda.domain.hospedagem.RelatorioGeral;
 import lombok.RequiredArgsConstructor;
 import org.jooq.*;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

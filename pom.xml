@@ -136,6 +136,7 @@
 						<exclude>**/config/**</exclude>
 						<exclude>**/generated-sources/**</exclude>
 						<exclude>**/generated-test-sources/**</exclude>
+						<exclude>**/jooq/model/tables/pojos/**</exclude>
 					</excludes>
 				</configuration>
 				<executions>

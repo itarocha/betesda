@@ -2,9 +2,9 @@ package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.TipoHospedeEntity;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.TipoHospedeMapper;
-import br.com.itarocha.betesda.application.out.TipoHospedeRepository;
+import br.com.itarocha.betesda.core.ports.out.TipoHospedeRepository;
 import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
-import br.com.itarocha.betesda.domain.SelectValueVO;
+import br.com.itarocha.betesda.domain.ItemDictionary;
 import br.com.itarocha.betesda.domain.TipoHospede;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -56,7 +56,7 @@ public class TipoHospedeRepositoryAdapter implements TipoHospedeRepository {
     }
 
     @Override
-    public List<SelectValueVO> findAllToSelectVO() {
+    public List<ItemDictionary> findAllToSelectVO() {
         return repository.findAllOrderByDescricao()
                 .stream()
                 .map(mapper::toModel)

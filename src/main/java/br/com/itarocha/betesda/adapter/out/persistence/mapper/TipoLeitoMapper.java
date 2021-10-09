@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.adapter.out.persistence.mapper;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.TipoLeitoEntity;
-import br.com.itarocha.betesda.domain.SelectValueVO;
+import br.com.itarocha.betesda.domain.ItemDictionary;
 import br.com.itarocha.betesda.domain.TipoLeito;
 import org.springframework.stereotype.Component;
 
@@ -30,8 +30,8 @@ public class TipoLeitoMapper {
                 .build();
     }
 
-    public SelectValueVO toSelectValueVO(TipoLeito input){
-        return new SelectValueVO(input.getId(), input.getDescricao());
+    public ItemDictionary toSelectValueVO(TipoLeito input){
+        return new ItemDictionary(input.getId(), input.getDescricao());
     }
 
 }

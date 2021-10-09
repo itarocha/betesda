@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
 
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.DestinacaoHospedagemMapper;
-import br.com.itarocha.betesda.domain.SelectValueVO;
+import br.com.itarocha.betesda.domain.ItemDictionary;
 import br.com.itarocha.betesda.domain.DestinacaoHospedagem;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -97,7 +97,7 @@ public class DestinacaoHospedagemRepositoryAdapterTest {
 
         assertThat(sbSorted.toString()).isEqualTo(sbData.toString());
 
-        List<SelectValueVO> lstSelect = repoAdapter.findAllToSelectVO();
+        List<ItemDictionary> lstSelect = repoAdapter.findAllToSelectVO();
         assertThat(lstSelect).isNotNull();
         assertThat(lstSelect.size()).isEqualTo(nomes.length);
     }

@@ -2,7 +2,7 @@ package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.PessoaEntity;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.PessoaMapper;
-import br.com.itarocha.betesda.application.out.PessoaRepository;
+import br.com.itarocha.betesda.core.ports.out.PessoaRepository;
 import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
 import br.com.itarocha.betesda.domain.Pessoa;
 import lombok.RequiredArgsConstructor;

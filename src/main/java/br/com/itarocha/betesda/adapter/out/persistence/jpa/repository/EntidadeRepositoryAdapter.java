@@ -2,10 +2,10 @@ package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.EntidadeEntity;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.EntidadeMapper;
-import br.com.itarocha.betesda.application.out.EntidadeRepository;
+import br.com.itarocha.betesda.core.ports.out.EntidadeRepository;
 import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
 import br.com.itarocha.betesda.domain.Entidade;
-import br.com.itarocha.betesda.domain.SelectValueVO;
+import br.com.itarocha.betesda.domain.ItemDictionary;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -86,7 +86,7 @@ public class EntidadeRepositoryAdapter implements EntidadeRepository {
     }
 
     @Override
-    public List<SelectValueVO> findAllToSelectVO() {
+    public List<ItemDictionary> findAllToSelectVO() {
         return repository.findAllOrderByNome()
                 .stream()
                 .map(mapper::toModel)

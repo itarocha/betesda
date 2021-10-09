@@ -2,9 +2,9 @@ package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.TipoServicoEntity;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.TipoServicoMapper;
-import br.com.itarocha.betesda.application.out.TipoServicoRepository;
+import br.com.itarocha.betesda.core.ports.out.TipoServicoRepository;
 import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
-import br.com.itarocha.betesda.domain.SelectValueVO;
+import br.com.itarocha.betesda.domain.ItemDictionary;
 import br.com.itarocha.betesda.domain.TipoServico;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -64,7 +64,7 @@ public class TipoServicoRepositoryAdapter implements TipoServicoRepository {
     }
 
     @Override
-    public List<SelectValueVO> findAllToSelectVO() {
+    public List<ItemDictionary> findAllToSelectVO() {
         return repository.findAllAtivosOrderByDescricao()
                 .stream()
                 .map(mapper::toModel)

@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.adapter.out.persistence.mapper;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.TipoServicoEntity;
-import br.com.itarocha.betesda.domain.SelectValueVO;
+import br.com.itarocha.betesda.domain.ItemDictionary;
 import br.com.itarocha.betesda.domain.TipoServico;
 import org.springframework.stereotype.Component;
 
@@ -30,8 +30,8 @@ public class TipoServicoMapper {
                 .build();
     }
 
-    public SelectValueVO toSelectValueVO(TipoServico input){
-        return new SelectValueVO(input.getId(), input.getDescricao());
+    public ItemDictionary toSelectValueVO(TipoServico input){
+        return new ItemDictionary(input.getId(), input.getDescricao());
     }
 
 }

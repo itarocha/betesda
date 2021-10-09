@@ -2,7 +2,7 @@ package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.QuartoEntity;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.QuartoMapper;
-import br.com.itarocha.betesda.application.out.QuartoRepository;
+import br.com.itarocha.betesda.core.ports.out.QuartoRepository;
 import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
 import br.com.itarocha.betesda.domain.Quarto;
 import lombok.RequiredArgsConstructor;

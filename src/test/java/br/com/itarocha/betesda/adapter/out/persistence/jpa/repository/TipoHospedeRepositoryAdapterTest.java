@@ -2,7 +2,7 @@ package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
 
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.TipoHospedeMapper;
 import br.com.itarocha.betesda.domain.TipoHospede;
-import br.com.itarocha.betesda.domain.SelectValueVO;
+import br.com.itarocha.betesda.domain.ItemDictionary;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,7 +97,7 @@ public class TipoHospedeRepositoryAdapterTest {
 
         assertThat(sbSorted.toString()).isEqualTo(sbData.toString());
 
-        List<SelectValueVO> lstSelect = repoAdapter.findAllToSelectVO();
+        List<ItemDictionary> lstSelect = repoAdapter.findAllToSelectVO();
         assertThat(lstSelect).isNotNull();
         assertThat(lstSelect.size()).isEqualTo(nomes.length);
     }

@@ -2,9 +2,9 @@ package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.SituacaoLeitoEntity;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.SituacaoLeitoMapper;
-import br.com.itarocha.betesda.application.out.SituacaoLeitoRepository;
+import br.com.itarocha.betesda.core.ports.out.SituacaoLeitoRepository;
 import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
-import br.com.itarocha.betesda.domain.SelectValueVO;
+import br.com.itarocha.betesda.domain.ItemDictionary;
 import br.com.itarocha.betesda.domain.SituacaoLeito;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -56,7 +56,7 @@ public class SituacaoLeitoRepositoryAdapter implements SituacaoLeitoRepository {
     }
 
     @Override
-    public List<SelectValueVO> findAllToSelectVO() {
+    public List<ItemDictionary> findAllToSelectVO() {
         return repository.findAllOrderByDescricao()
                 .stream()
                 .map(mapper::toModel)

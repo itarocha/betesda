@@ -2,7 +2,7 @@ package br.com.itarocha.betesda.adapter.out.persistence.mapper;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.SituacaoLeitoEntity;
 import br.com.itarocha.betesda.domain.SituacaoLeito;
-import br.com.itarocha.betesda.domain.SelectValueVO;
+import br.com.itarocha.betesda.domain.ItemDictionary;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.isNull;
@@ -30,8 +30,8 @@ public class SituacaoLeitoMapper {
                 .build();
     }
 
-    public SelectValueVO toSelectValueVO(SituacaoLeito input){
-        return new SelectValueVO(input.getId(), input.getDescricao());
+    public ItemDictionary toSelectValueVO(SituacaoLeito input){
+        return new ItemDictionary(input.getId(), input.getDescricao());
     }
 
 }

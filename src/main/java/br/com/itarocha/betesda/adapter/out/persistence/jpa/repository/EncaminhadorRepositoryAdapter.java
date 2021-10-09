@@ -2,10 +2,10 @@ package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.EncaminhadorEntity;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.EncaminhadorMapper;
-import br.com.itarocha.betesda.application.out.EncaminhadorRepository;
+import br.com.itarocha.betesda.core.ports.out.EncaminhadorRepository;
 import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
 import br.com.itarocha.betesda.domain.Encaminhador;
-import br.com.itarocha.betesda.domain.SelectValueVO;
+import br.com.itarocha.betesda.domain.ItemDictionary;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -68,7 +68,7 @@ public class EncaminhadorRepositoryAdapter implements EncaminhadorRepository {
     }
 
     @Override
-    public List<SelectValueVO> findAllByEntidadeIdToSelectVO(Long entidadeId) {
+    public List<ItemDictionary> findAllByEntidadeIdToSelectVO(Long entidadeId) {
         return repository.findAllByEntidadeId(entidadeId)
                 .stream()
                 .map(mapper::toModel)

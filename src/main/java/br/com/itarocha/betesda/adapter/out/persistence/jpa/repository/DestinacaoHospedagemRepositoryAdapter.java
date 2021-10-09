@@ -2,10 +2,10 @@ package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.DestinacaoHospedagemEntity;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.DestinacaoHospedagemMapper;
-import br.com.itarocha.betesda.application.out.DestinacaoHospedagemRepository;
+import br.com.itarocha.betesda.core.ports.out.DestinacaoHospedagemRepository;
 import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
 import br.com.itarocha.betesda.domain.DestinacaoHospedagem;
-import br.com.itarocha.betesda.domain.SelectValueVO;
+import br.com.itarocha.betesda.domain.ItemDictionary;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -56,7 +56,7 @@ public class DestinacaoHospedagemRepositoryAdapter implements DestinacaoHospedag
     }
 
     @Override
-    public List<SelectValueVO> findAllToSelectVO() {
+    public List<ItemDictionary> findAllToSelectVO() {
         return repository.findAllOrderByDescricao()
                 .stream()
                 .map(mapper::toModel)

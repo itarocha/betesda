@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
 
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.EnderecoMapper;
-import br.com.itarocha.betesda.application.out.EnderecoRepository;
+import br.com.itarocha.betesda.core.ports.out.EnderecoRepository;
 import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
 import br.com.itarocha.betesda.domain.Endereco;
 import lombok.RequiredArgsConstructor;

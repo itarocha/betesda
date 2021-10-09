@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
-import br.com.itarocha.betesda.application.port.in.TipoHospedeUseCase;
+import br.com.itarocha.betesda.core.ports.in.TipoHospedeUseCase;
 import br.com.itarocha.betesda.domain.TipoHospede;
 import br.com.itarocha.betesda.util.validacoes.ValidatorUtil;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
-import br.com.itarocha.betesda.application.*;
-import br.com.itarocha.betesda.application.port.in.*;
+import br.com.itarocha.betesda.core.ports.in.*;
+import br.com.itarocha.betesda.core.service.EntidadeService;
 import br.com.itarocha.betesda.domain.*;
 import br.com.itarocha.betesda.util.validacoes.ValidatorUtil;
 import lombok.RequiredArgsConstructor;
@@ -139,11 +139,11 @@ public class QuartoController {
 	}
 
 	static class AutoWired {
-		public List<SelectValueVO> listaTipoLeito = new ArrayList<>();
-		public List<SelectValueVO> listaDestinacaoHospedagem = new ArrayList<SelectValueVO>();
-		public List<SelectValueVO> listaSituacaoLeito = new ArrayList<>();
-		public List<SelectValueVO> listaTipoHospede = new ArrayList<>();
-		public List<SelectValueVO> listaTipoServico = new ArrayList<>();
-		public List<SelectValueVO> listaEntidade = new ArrayList<>();
+		public List<ItemDictionary> listaTipoLeito = new ArrayList<>();
+		public List<ItemDictionary> listaDestinacaoHospedagem = new ArrayList<ItemDictionary>();
+		public List<ItemDictionary> listaSituacaoLeito = new ArrayList<>();
+		public List<ItemDictionary> listaTipoHospede = new ArrayList<>();
+		public List<ItemDictionary> listaTipoServico = new ArrayList<>();
+		public List<ItemDictionary> listaEntidade = new ArrayList<>();
 	} 
 }

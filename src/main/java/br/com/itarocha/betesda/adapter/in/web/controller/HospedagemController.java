@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
 import br.com.itarocha.betesda.adapter.in.web.dto.*;
-import br.com.itarocha.betesda.application.*;
-import br.com.itarocha.betesda.application.port.in.HospedagemUseCase;
+import br.com.itarocha.betesda.core.ports.in.HospedagemUseCase;
+import br.com.itarocha.betesda.core.service.*;
 import br.com.itarocha.betesda.domain.hospedagem.*;
 import br.com.itarocha.betesda.domain.Hospedagem;
 import br.com.itarocha.betesda.domain.HospedagemNew;

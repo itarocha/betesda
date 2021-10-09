@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.domain.hospedagem;
 
-import br.com.itarocha.betesda.application.MapaHospedagemUtil;
+import br.com.itarocha.betesda.core.service.MapaHospedagemUtil;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -2,7 +2,7 @@ package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
 
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.SituacaoLeitoMapper;
 import br.com.itarocha.betesda.domain.SituacaoLeito;
-import br.com.itarocha.betesda.domain.SelectValueVO;
+import br.com.itarocha.betesda.domain.ItemDictionary;
 import br.com.itarocha.betesda.domain.enums.LogicoEnum;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -100,7 +100,7 @@ public class SituacaoLeitoRepositoryAdapterTest {
 
         assertThat(sbSorted.toString()).isEqualTo(sbData.toString());
 
-        List<SelectValueVO> lstSelect = repoAdapter.findAllToSelectVO();
+        List<ItemDictionary> lstSelect = repoAdapter.findAllToSelectVO();
         assertThat(lstSelect).isNotNull();
         assertThat(lstSelect.size()).isEqualTo(nomes.length);
     }

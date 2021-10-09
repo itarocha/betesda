@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
 
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.TipoServicoMapper;
-import br.com.itarocha.betesda.domain.SelectValueVO;
+import br.com.itarocha.betesda.domain.ItemDictionary;
 import br.com.itarocha.betesda.domain.TipoServico;
 import br.com.itarocha.betesda.domain.enums.LogicoEnum;
 import org.apache.commons.lang3.ArrayUtils;
@@ -106,7 +106,7 @@ public class TipoServicoRepositoryAdapterTest {
 
         assertThat(sbSorted.toString()).isEqualTo(sbData.toString());
 
-        List<SelectValueVO> lstSelect = repoAdapter.findAllToSelectVO();
+        List<ItemDictionary> lstSelect = repoAdapter.findAllToSelectVO();
         assertThat(lstSelect).isNotNull();
         assertThat(lstSelect.size()).isEqualTo(nomesAtivos.length);
 

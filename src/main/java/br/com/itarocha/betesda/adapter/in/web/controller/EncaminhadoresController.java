@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
-import br.com.itarocha.betesda.application.port.in.EncaminhadorUseCase;
+import br.com.itarocha.betesda.core.ports.in.EncaminhadorUseCase;
 import br.com.itarocha.betesda.domain.Encaminhador;
-import br.com.itarocha.betesda.domain.SelectValueVO;
+import br.com.itarocha.betesda.domain.ItemDictionary;
 import br.com.itarocha.betesda.util.validacoes.ValidatorUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +49,7 @@ public class EncaminhadoresController {
 	
 	@GetMapping("/lista/{id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<List<SelectValueVO>> getListaEncaminhadores(@PathVariable("id") Long entidadeId) {
+	public ResponseEntity<List<ItemDictionary>> getListaEncaminhadores(@PathVariable("id") Long entidadeId) {
 		return ResponseEntity.ok(service.listSelectByEntidadeId(entidadeId));
 	}
 }
