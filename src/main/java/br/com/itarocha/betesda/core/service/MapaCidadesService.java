@@ -1,6 +1,7 @@
 package br.com.itarocha.betesda.core.service;
 
 import br.com.itarocha.betesda.core.ports.in.MapaCidadesUseCase;
+import br.com.itarocha.betesda.core.ports.in.MapaHospedesUseCase;
 import br.com.itarocha.betesda.domain.hospedagem.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ import java.util.TreeMap;
 @RequiredArgsConstructor
 public class MapaCidadesService implements MapaCidadesUseCase {
 
-    private final MapaHospedesService mapaHospedesService;
+    private final MapaHospedesUseCase mapaHospedesService;
 
     //MAPA CIDADES
     public MapaCidades buildMapaCidades(LocalDate dataBase) {

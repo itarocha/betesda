@@ -1,10 +1,7 @@
 package br.com.itarocha.betesda.adapter.in.web.controller;
 
 import br.com.itarocha.betesda.adapter.in.web.dto.*;
-import br.com.itarocha.betesda.core.ports.in.HospedagemUseCase;
-import br.com.itarocha.betesda.core.ports.in.PlanilhaGeralUseCase;
-import br.com.itarocha.betesda.core.ports.in.RelatorioGeralUseCase;
-import br.com.itarocha.betesda.core.service.*;
+import br.com.itarocha.betesda.core.ports.in.*;
 import br.com.itarocha.betesda.domain.hospedagem.*;
 import br.com.itarocha.betesda.domain.Hospedagem;
 import br.com.itarocha.betesda.domain.HospedagemNew;
@@ -32,10 +29,10 @@ public class HospedagemController {
 
 	private final HospedagemUseCase hospedagemService;
 	private final RelatorioGeralUseCase relatorioService;
-	private final MapaHospedagemService mapaHospedagemService;
-	private final MapaHospedesService mapaHospedesService;
-	private final MapaCidadesService mapaCidadesService;
-	private final MapaQuadroService mapaQuadroService;
+	private final MapaHospedagemUseCase mapaHospedagemService;
+	private final MapaHospedesUseCase mapaHospedesService;
+	private final MapaCidadesUseCase mapaCidadesService;
+	private final MapaQuadroUseCase mapaQuadroService;
 	private final ValidatorUtil validationUtils;
 	private final PlanilhaGeralUseCase planilhaGeralService;
 
@@ -104,16 +101,13 @@ public class HospedagemController {
 		
 		RelatorioAtendimentos retorno = null;
 		try {
-			//System.out.println(String.format("%s - Gerando dados", LocalDateTime.now()));
 			retorno = relatorioService.buildPlanilha(model.getDataIni(), model.getDataFim());
 		} catch(Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		//System.out.println(String.format("%s - Gerando planilha", LocalDateTime.now()));
 		ByteArrayInputStream in = planilhaGeralService.toExcel(retorno);
-		//System.out.println(String.format("%s - Planilha gerada", LocalDateTime.now()));
-		
+
 		HttpHeaders headers = new HttpHeaders();
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm");
