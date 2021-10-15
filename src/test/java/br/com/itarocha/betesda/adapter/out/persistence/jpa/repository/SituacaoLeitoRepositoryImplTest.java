@@ -1,5 +1,6 @@
 package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
 
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.impl.SituacaoLeitoRepositoryImpl;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.SituacaoLeitoMapper;
 import br.com.itarocha.betesda.domain.SituacaoLeito;
 import br.com.itarocha.betesda.domain.ItemDictionary;
@@ -20,19 +21,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
-public class SituacaoLeitoRepositoryAdapterTest {
+public class SituacaoLeitoRepositoryImplTest {
 
     @Autowired
     private SituacaoLeitoJpaRepository repository;
 
-    private SituacaoLeitoRepositoryAdapter repoAdapter;
+    private SituacaoLeitoRepositoryImpl repoAdapter;
 
     @Test
     @DisplayName("Ao persistir SituacaoLeito retorna sucesso")
     public void save_PersistSituacaoLeito_WhenSuccessful() {
         assertThat(repository).isNotNull();
 
-        repoAdapter = new SituacaoLeitoRepositoryAdapter(repository, new SituacaoLeitoMapper());
+        repoAdapter = new SituacaoLeitoRepositoryImpl(repository, new SituacaoLeitoMapper());
         assertThat(repoAdapter).isNotNull();
         SituacaoLeito toSave =  makeSituacaoLeitoMockSucesso();
 
@@ -49,7 +50,7 @@ public class SituacaoLeitoRepositoryAdapterTest {
     public void save_PersistSituacaoLeito_WhenConstraintValidation() {
         assertThat(repository).isNotNull();
 
-        repoAdapter = new SituacaoLeitoRepositoryAdapter(repository, new SituacaoLeitoMapper());
+        repoAdapter = new SituacaoLeitoRepositoryImpl(repository, new SituacaoLeitoMapper());
         assertThat(repoAdapter).isNotNull();
         SituacaoLeito toSave = makeSituacaoLeitoMockInvalido();
 
@@ -61,7 +62,7 @@ public class SituacaoLeitoRepositoryAdapterTest {
     public void findById_PersistSituacaoLeito_WhenSuccessful() {
         assertThat(repository).isNotNull();
 
-        repoAdapter = new SituacaoLeitoRepositoryAdapter(repository, new SituacaoLeitoMapper());
+        repoAdapter = new SituacaoLeitoRepositoryImpl(repository, new SituacaoLeitoMapper());
         assertThat(repoAdapter).isNotNull();
         SituacaoLeito toSave = makeSituacaoLeitoMockSucesso();
 
@@ -80,7 +81,7 @@ public class SituacaoLeitoRepositoryAdapterTest {
     public void findAllOrderByDescricao_SituacaoLeito_WhenSuccessful() {
         assertThat(repository).isNotNull();
 
-        repoAdapter = new SituacaoLeitoRepositoryAdapter(repository, new SituacaoLeitoMapper());
+        repoAdapter = new SituacaoLeitoRepositoryImpl(repository, new SituacaoLeitoMapper());
 
         String[] nomes = {"GGGGGG", "AAAAAA", "ZZZZZZ", "BBBBBB"};
 
@@ -110,7 +111,7 @@ public class SituacaoLeitoRepositoryAdapterTest {
     public void delete_SituacaoLeito_WhenSuccessful() {
         assertThat(repository).isNotNull();
 
-        repoAdapter = new SituacaoLeitoRepositoryAdapter(repository, new SituacaoLeitoMapper());
+        repoAdapter = new SituacaoLeitoRepositoryImpl(repository, new SituacaoLeitoMapper());
         assertThat(repoAdapter).isNotNull();
         SituacaoLeito toSave = makeSituacaoLeitoMockSucesso();
 

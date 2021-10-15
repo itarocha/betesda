@@ -1,6 +1,7 @@
-package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
+package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.impl;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.EncaminhadorEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.EncaminhadorJpaRepository;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.EncaminhadorMapper;
 import br.com.itarocha.betesda.core.ports.out.EncaminhadorRepository;
 import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class EncaminhadorRepositoryAdapter implements EncaminhadorRepository {
+public class EncaminhadorRepositoryImpl implements EncaminhadorRepository {
 
     private final EncaminhadorJpaRepository repository;
     private final EncaminhadorMapper mapper;

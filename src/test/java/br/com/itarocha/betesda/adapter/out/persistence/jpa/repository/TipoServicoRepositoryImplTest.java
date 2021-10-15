@@ -1,5 +1,6 @@
 package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
 
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.impl.TipoServicoRepositoryImpl;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.TipoServicoMapper;
 import br.com.itarocha.betesda.domain.ItemDictionary;
 import br.com.itarocha.betesda.domain.TipoServico;
@@ -21,19 +22,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-class TipoServicoRepositoryAdapterTest {
+class TipoServicoRepositoryImplTest {
 
     @Autowired
     private TipoServicoJpaRepository repository;
 
-    private TipoServicoRepositoryAdapter repoAdapter;
+    private TipoServicoRepositoryImpl repoAdapter;
 
     @Test
     @DisplayName("Ao persistir TipoServico retorna sucesso")
     void save_PersistTipoServico_WhenSuccessful() {
         assertThat(repository).isNotNull();
 
-        repoAdapter = new TipoServicoRepositoryAdapter(repository, new TipoServicoMapper());
+        repoAdapter = new TipoServicoRepositoryImpl(repository, new TipoServicoMapper());
         assertThat(repoAdapter).isNotNull();
         TipoServico toSave =  makeTipoServicoMockSucesso();
 
@@ -50,7 +51,7 @@ class TipoServicoRepositoryAdapterTest {
     void save_PersistTipoServico_WhenConstraintValidation() {
         assertThat(repository).isNotNull();
 
-        repoAdapter = new TipoServicoRepositoryAdapter(repository, new TipoServicoMapper());
+        repoAdapter = new TipoServicoRepositoryImpl(repository, new TipoServicoMapper());
         assertThat(repoAdapter).isNotNull();
         TipoServico toSave = makeTipoServicoMockInvalido();
 
@@ -62,7 +63,7 @@ class TipoServicoRepositoryAdapterTest {
     void findById_PersistTipoServico_WhenSuccessful() {
         assertThat(repository).isNotNull();
 
-        repoAdapter = new TipoServicoRepositoryAdapter(repository, new TipoServicoMapper());
+        repoAdapter = new TipoServicoRepositoryImpl(repository, new TipoServicoMapper());
         assertThat(repoAdapter).isNotNull();
         TipoServico toSave = makeTipoServicoMockSucesso();
 
@@ -81,7 +82,7 @@ class TipoServicoRepositoryAdapterTest {
     void findAllOrderByDescricao_TipoServico_WhenSuccessful() {
         assertThat(repository).isNotNull();
 
-        repoAdapter = new TipoServicoRepositoryAdapter(repository, new TipoServicoMapper());
+        repoAdapter = new TipoServicoRepositoryImpl(repository, new TipoServicoMapper());
 
         String[] nomesAtivos = {"GGGGGG", "AAAAAA", "ZZZZZZ", "BBBBBB"};
         String[] nomesInativos = {"VVVVVV", "CCCCCC", "EEEEEE"};
@@ -120,7 +121,7 @@ class TipoServicoRepositoryAdapterTest {
     void delete_TipoServico_WhenSuccessful() {
         assertThat(repository).isNotNull();
 
-        repoAdapter = new TipoServicoRepositoryAdapter(repository, new TipoServicoMapper());
+        repoAdapter = new TipoServicoRepositoryImpl(repository, new TipoServicoMapper());
         assertThat(repoAdapter).isNotNull();
         TipoServico toSave = makeTipoServicoMockSucesso();
 

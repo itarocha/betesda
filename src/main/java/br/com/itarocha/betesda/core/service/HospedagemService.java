@@ -1,12 +1,9 @@
 package br.com.itarocha.betesda.core.service;
 
-//TODO: Não pode chamar **.adapter.**
-import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.*;
-import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.*;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.*;
 
 import br.com.itarocha.betesda.core.ports.in.HospedagemUseCase;
-import br.com.itarocha.betesda.core.ports.out.HospedeLeitoRepository;
+import br.com.itarocha.betesda.core.ports.out.*;
 import br.com.itarocha.betesda.domain.*;
 import br.com.itarocha.betesda.domain.enums.LogicoEnum;
 import br.com.itarocha.betesda.domain.enums.TipoUtilizacaoHospedagemEnum;
@@ -32,20 +29,12 @@ import static java.util.Objects.isNull;
 @RequiredArgsConstructor
 public class HospedagemService implements HospedagemUseCase {
 
-	private final HospedagemJpaRepository hospedagemRepo;
-	private final HospedagemRepositoryAdapter hospedagemRepositoryNew;
-	private final PessoaJpaRepository pessoaRepo;
-	private final TipoHospedeJpaRepository tipoHospedeRepo;
-	private final LeitoJpaRepository leitoRepo;
+	private final HospedagemRepository hospedagemRepo;
+	private final PessoaRepository pessoaRepo;
+	private final TipoHospedeRepository tipoHospedeRepo;
+	private final LeitoRepository leitoRepo;
 	private final HospedeLeitoRepository hospedeLeitoRepo;
-	private final HospedeJpaRepository hospedeRepo;
-	private final HospedagemMapper hospedagemMapper;
-
-	// TODO esses mappers devem ser movidos para o HospedagemMapper
-	private final HospedeMapper hospedeMapper;
-	private final HospedeLeitoMapper hospedeLeitoMapper;
-	private final QuartoMapper quartoMapper;
-	private final LeitoMapper leitoMapper;
+	private final HospedeRepository hospedeRepo;
 
 	private final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
@@ -54,7 +43,7 @@ public class HospedagemService implements HospedagemUseCase {
 		if (!violations.isEmpty()){
 			throw new EntityValidationException(violations);
 		}
-		return hospedagemRepositoryNew.save(model);
+		return hospedagemRepo.save(model);
 	}
 
 	private Set<Violation> validateCreateHospedagem(HospedagemNew model) {
@@ -146,7 +135,7 @@ public class HospedagemService implements HospedagemUseCase {
 	}
 	
 	public Hospedagem getHospedagemPorHospedeLeitoId(Long hospedagemId) {
-		return hospedagemMapper.toModel(hospedagemRepo.findHospedagemByHospedagemId(hospedagemId));
+		return hospedagemRepo.findHospedagemByHospedagemId(hospedagemId);
 	}
 
 	public void encerrarHospedagem(Long hospedagemId, LocalDate dataEncerramento) {
@@ -158,7 +147,7 @@ public class HospedagemService implements HospedagemUseCase {
 		* hospedagem.setDataPrevistaSaida(dataEncerramento)
 		*/
 
-		Optional<HospedagemEntity> hospedagemOpt  = hospedagemRepo.findById(hospedagemId);
+		Optional<Hospedagem> hospedagemOpt  = hospedagemRepo.findById(hospedagemId);
 
 		hospedagemOpt.ifPresent(h -> {
 			Set<Violation> violations = new HashSet<>();
@@ -200,11 +189,9 @@ public class HospedagemService implements HospedagemUseCase {
 				h.getHospedes()
 						.stream()
 						.filter(hpd -> LogicoEnum.N.equals(hpd.getBaixado()))
-						.forEach(hpd -> {
-									hospedeLeitoRepo.findUltimoByHospedeId(hpd.getId())
-											.stream()
-											.forEach(hl -> hlToSave.add(hl));
-								});
+						.forEach(hpd ->  hospedeLeitoRepo.findUltimoByHospedeId(hpd.getId())
+								.stream()
+								.forEach(hl -> hlToSave.add(hl)));
 
 				hlToSave.stream().forEach(hl -> {
 					hl.setDataSaida(dataEncerramento);
@@ -217,7 +204,7 @@ public class HospedagemService implements HospedagemUseCase {
 	}
 
 	public void baixarHospede(Long hospedeId, LocalDate dataBaixa) {
-		Optional<HospedeEntity> hospedeOptional = hospedeRepo.findById(hospedeId);
+		Optional<Hospede> hospedeOptional = hospedeRepo.findById(hospedeId);
 
 		hospedeOptional.ifPresent(hospedeEntity -> {
 			Long hospedagemId = hospedeEntity.getId();
@@ -263,9 +250,9 @@ public class HospedagemService implements HospedagemUseCase {
 	}
 
 	public void removerHospede(Long hospedagemId, Long hospedeId) {
-		Optional<HospedeEntity> hospedeOpt = hospedeRepo.findById(hospedeId);
+		Optional<Hospede> hospedeOpt = hospedeRepo.findById(hospedeId);
 		hospedeOpt.ifPresent(hospedeEntity -> {
-			Optional<HospedagemEntity> opt = hospedagemRepo.findById(hospedagemId);
+			Optional<Hospedagem> opt = hospedagemRepo.findById(hospedagemId);
 			opt.ifPresent( h -> {
 				Set<Violation> violations = new HashSet<>();
 				if ((h.getDataEfetivaSaida() != null)) {
@@ -284,25 +271,25 @@ public class HospedagemService implements HospedagemUseCase {
 	}
 
 	public void alterarTipoHospede(Long hospedeId, Long tipoHospedeId) {
-		Optional<HospedeEntity> hospedeOpt = hospedeRepo.findById(hospedeId);
+		Optional<Hospede> hospedeOpt = hospedeRepo.findById(hospedeId);
 		hospedeOpt.ifPresent(hospedeEntity -> {
 			if ((LogicoEnum.S.equals(hospedeEntity.getBaixado())  )) {
 				throw new EntityValidationException("*", "Hóspede já está baixado");
 			}
-			Optional<TipoHospedeEntity> th = tipoHospedeRepo.findById(tipoHospedeId);
+			Optional<TipoHospede> th = tipoHospedeRepo.findById(tipoHospedeId);
 			hospedeEntity.setTipoHospede(th.get());
 			hospedeRepo.save(hospedeEntity);
 		});
 	}
 
 	public void transferirHospede(Long hospedeId, Long leitoId, LocalDate dataTransferencia)  {
-		hospedeRepo.findById(hospedeId).ifPresent(hospedeEntity -> {
+		hospedeRepo.findById(hospedeId).ifPresent(hospede -> {
 
-			if ((LogicoEnum.S.equals(hospedeEntity.getBaixado())  )) {
+			if ((LogicoEnum.S.equals(hospede.getBaixado())  )) {
 				throw new EntityValidationException("*", "Hóspede já está baixado");
 			}
 
-			Long hospedagemId = hospedeEntity.getHospedagem().getId();
+			Long hospedagemId = hospede.getHospedagem().getId();
 
 			hospedagemRepo.findById(hospedagemId).ifPresent( h -> {
 
@@ -348,15 +335,14 @@ public class HospedagemService implements HospedagemUseCase {
 
 				// Inserir novo HospedeLeito com LeitoId, dataTransferencia até dataPrevistaSaida
 				leitoRepo.findById(leitoId)
-						.ifPresent(leitoEntity -> {
-							QuartoEntity q = leitoEntity.getQuarto();
-							HospedeLeitoEntity hl = HospedeLeitoEntity.builder().build();
-							hl.setHospede(hospedeEntity);
+						.ifPresent(leito -> {
+							HospedeLeito hl = HospedeLeito.builder().build();
+							hl.setHospede(hospede);
 							hl.setDataEntrada(dataTransferencia);
 							hl.setDataSaida(h.getDataPrevistaSaida());
-							hl.setQuarto(q);
-							hl.setLeito(leitoEntity);
-							hospedeLeitoRepo.save(hospedeLeitoMapper.toModel(hl));
+							hl.setQuarto(leito.getQuarto() );
+							hl.setLeito(leito);
+							hospedeLeitoRepo.save(hl);
 						});
 			});
 
@@ -364,10 +350,10 @@ public class HospedagemService implements HospedagemUseCase {
 	}
 
 	public void adicionarHospede(Long hospedagemId, Long pessoaId, Long tipoHospedeId, Long leitoId, LocalDate dataEntrada) {
-		Optional<HospedagemEntity> hospedagemOpt = hospedagemRepo.findById(hospedagemId);
-		Optional<PessoaEntity> pessoaOpt = pessoaRepo.findById(pessoaId);
-		Optional<LeitoEntity> leitoOpt = leitoRepo.findById(leitoId);
-		Optional<TipoHospedeEntity> tipoHospedeOpt = tipoHospedeRepo.findById(tipoHospedeId);
+		Optional<Hospedagem> hospedagemOpt = hospedagemRepo.findById(hospedagemId);
+		Optional<Pessoa> pessoaOpt = pessoaRepo.findById(pessoaId);
+		Optional<Leito> leitoOpt = leitoRepo.findById(leitoId);
+		Optional<TipoHospede> tipoHospedeOpt = tipoHospedeRepo.findById(tipoHospedeId);
 
 		Set<Violation> violations = new HashSet<>();
 
@@ -383,16 +369,16 @@ public class HospedagemService implements HospedagemUseCase {
 			violations.add(new Violation("*", "Leito não encontrado"));
 		}
 		
-		HospedagemEntity hospedagemEntity = hospedagemOpt.get();
-		if (!TipoUtilizacaoHospedagemEnum.T.equals(hospedagemEntity.getTipoUtilizacao())) {
+		Hospedagem hospedagem = hospedagemOpt.get();
+		if (!TipoUtilizacaoHospedagemEnum.T.equals(hospedagem.getTipoUtilizacao())) {
 			violations.add(new Violation("*", "Tipo de Utilização da Hospedagem deve ser Total"));
 		} 
 		
-		if ((hospedagemEntity.getDataEfetivaSaida() != null)) {
+		if ((hospedagem.getDataEfetivaSaida() != null)) {
 			violations.add(new Violation("*", "Hospedagem deve ter status = emAberto"));
 		}
 
-		if (dataEntrada.isBefore(hospedagemEntity.getDataEntrada())){
+		if (dataEntrada.isBefore(hospedagem.getDataEntrada())){
 			violations.add(new Violation("*", "Data não pode ser inferior a Data de Início da Hospedagem"));
 		}
 		
@@ -402,9 +388,9 @@ public class HospedagemService implements HospedagemUseCase {
 			violations.add(new Violation("*", String.format("Data de Entrada não pode ser superior a data atual (%s)",fmt.format(hoje))));
 		}
 		
-		if (dataEntrada.isAfter(hospedagemEntity.getDataPrevistaSaida())) {
+		if (dataEntrada.isAfter(hospedagem.getDataPrevistaSaida())) {
 			violations.add(new Violation("*",
-					String.format("Data de Entrada deve ser inferior a data Prevista de Saída (%s)",fmt.format(hospedagemEntity.getDataPrevistaSaida())))
+					String.format("Data de Entrada deve ser inferior a data Prevista de Saída (%s)",fmt.format(hospedagem.getDataPrevistaSaida())))
 			);
 		}
 
@@ -414,27 +400,27 @@ public class HospedagemService implements HospedagemUseCase {
 
 		//TODO Hóspede não pode já estar hospedado em algum outro leito no período 
 		
-		QuartoEntity q = leitoOpt.get().getQuarto();
+		Quarto q = leitoOpt.get().getQuarto();
 
-		HospedeEntity hospedeEntity = HospedeEntity.builder()
-				.hospedagem(hospedagemEntity)
+		Hospede hospedeToSave = Hospede.builder()
+				.hospedagem(hospedagem)
 				.pessoa(pessoaOpt.get())
 				.tipoHospede(tipoHospedeOpt.get())
 				.build();
-		hospedeEntity = hospedeRepo.save(hospedeEntity);
+		Hospede hospedeSaved = hospedeRepo.save(hospedeToSave);
 		
 		HospedeLeito hl = HospedeLeito.builder()
-				.hospede(hospedeMapper.toModel(hospedeEntity))
+				.hospede(hospedeSaved)
 				.dataEntrada(dataEntrada)
-				.dataSaida(hospedagemEntity.getDataPrevistaSaida())
-				.quarto(quartoMapper.toModel(q))
-				.leito(leitoMapper.toModel(leitoOpt.get()))
+				.dataSaida(hospedagem.getDataPrevistaSaida())
+				.quarto(q)
+				.leito(leitoOpt.get())
 				.build();
 
 		hospedeLeitoRepo.save(hl);
 		
-		hospedagemEntity.getHospedes().add(hospedeEntity);
-		hospedagemEntity = hospedagemRepo.save(hospedagemEntity);
+		hospedagem.getHospedes().add(hospedeSaved);
+		hospedagemRepo.save(hospedagem);
 	} 
 
 	//TODO Implementar renovarHospedagem
@@ -456,7 +442,8 @@ public class HospedagemService implements HospedagemUseCase {
 	
 			if (!dataRenovacao.isAfter(hospedagemEntity.getDataPrevistaSaida())) {
 				throw new EntityValidationException("*",
-						String.format("Data de Renovação deve ser igual ou superior a Data Prevista de Saída (%s)", fmt.format(hospedagemEntity.getDataPrevistaSaida())) );
+						String.format("Data de Renovação deve ser igual ou superior a Data Prevista de Saída (%s)",
+								fmt.format(hospedagemEntity.getDataPrevistaSaida())) );
 			}
 
 			List<HospedeLeito> hlToSave = new ArrayList<>();

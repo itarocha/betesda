@@ -21,7 +21,7 @@ import static java.util.Objects.isNull;
 public class QuartoMapper {
 
     private final DestinacaoHospedagemMapper destinacaoHospedagemMapper;
-    private final LeitoMapper leitoMapper;
+    //private final LeitoMapper leitoMapper;
 
     public Quarto toModel(QuartoEntity entity) {
         if (isNull(entity)) return null;
@@ -32,11 +32,13 @@ public class QuartoMapper {
                 .map(destinacaoHospedagemMapper::toModel)
                 .collect(Collectors.toSet());
 
+        /*
         List<Leito> leitos = isNull(entity.getLeitos()) ? new ArrayList<>()
                 : entity.getLeitos()
                 .stream()
                 .map(leitoMapper::toModel)
                 .collect(Collectors.toList());
+        */
 
         return Quarto.builder()
                 .id(entity.getId())
@@ -44,7 +46,7 @@ public class QuartoMapper {
                 .descricao(entity.getDescricao())
                 .displayText(entity.getDisplayText())
                 .destinacoes(destinacoes)
-                .leitos(leitos)
+                //.leitos(leitos)
                 .build();
     }
 

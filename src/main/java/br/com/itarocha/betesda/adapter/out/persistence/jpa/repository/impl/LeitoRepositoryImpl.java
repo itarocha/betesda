@@ -1,6 +1,7 @@
-package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
+package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.impl;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.LeitoEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.LeitoJpaRepository;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.LeitoMapper;
 import br.com.itarocha.betesda.core.ports.out.LeitoRepository;
 import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
@@ -22,7 +23,7 @@ import static br.com.itarocha.betesda.jooq.model.Tables.QUARTO;
 
 @Service
 @RequiredArgsConstructor
-public class LeitoRepositoryAdapter implements LeitoRepository {
+public class LeitoRepositoryImpl implements LeitoRepository {
 
     private final LeitoJpaRepository repository;
     private final LeitoMapper mapper;

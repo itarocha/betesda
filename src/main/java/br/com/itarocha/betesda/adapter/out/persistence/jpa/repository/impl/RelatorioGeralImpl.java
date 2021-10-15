@@ -1,4 +1,4 @@
-package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
+package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.impl;
 
 import br.com.itarocha.betesda.core.ports.out.report.RelatorioGeralRepository;
 import br.com.itarocha.betesda.domain.hospedagem.PessoaEncaminhada;
@@ -16,7 +16,7 @@ import static org.jooq.impl.DSL.coalesce;
 
 @Service
 @RequiredArgsConstructor
-public class RelatorioGeralAdapter implements RelatorioGeralRepository {
+public class RelatorioGeralImpl implements RelatorioGeralRepository {
 
     private final DSLContext create;
 

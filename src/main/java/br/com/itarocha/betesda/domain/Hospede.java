@@ -20,7 +20,7 @@ public class Hospede extends UserDateAudit implements Serializable{
 	
 	private Long id;
 
-	//private HospedagemEntity hospedagem;
+	private Hospedagem hospedagem;
 	
 	@NotNull(message="Pessoa precisa ser informada")
 	private Pessoa pessoa;

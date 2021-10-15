@@ -1,17 +1,6 @@
 package br.com.itarocha.betesda.adapter.out.persistence.repository;
 
-import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.TipoServicoEntity;
-import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.TipoServicoJpaRepository;
-import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.TipoServicoRepositoryAdapter;
-import br.com.itarocha.betesda.adapter.out.persistence.mapper.TipoServicoMapper;
-import br.com.itarocha.betesda.domain.TipoServico;
-import br.com.itarocha.betesda.domain.enums.LogicoEnum;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import javax.validation.ConstraintViolationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;

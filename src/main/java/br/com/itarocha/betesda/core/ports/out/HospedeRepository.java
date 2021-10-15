@@ -1,23 +1,19 @@
 package br.com.itarocha.betesda.core.ports.out;
 
-import br.com.itarocha.betesda.domain.HospedeLeito;
-import br.com.itarocha.betesda.domain.LeitoDTO;
-
-import java.math.BigInteger;
-import java.time.LocalDate;
-import java.util.List;
+import br.com.itarocha.betesda.domain.Hospede;
 import java.util.Optional;
 
-public interface HospedeLeitoRepository{
+public interface HospedeRepository {
 
-	HospedeLeito save(HospedeLeito model);
+	Hospede save(Hospede model);
 
-	Optional<HospedeLeito> findById(Long id);
+	Optional<Hospede> findById(Long id);
 
-	void delete(HospedeLeito model);
+	void delete(Hospede model);
 
 	void deleteById(Long id);
 
+	/*
 	List<HospedeLeito> findUltimoByHospedagemId(Long hospedagemId);
 	
 	List<HospedeLeito> findUltimoByHospedeId(Long hospedeId);
@@ -45,4 +41,6 @@ public interface HospedeLeitoRepository{
 	Integer countOfHospedagensParciaisDePessoaNoPeriodo(Long pessoaId, LocalDate dataIni, LocalDate dataFim);
 
 	void updateDataSaida(Long id, LocalDate dataRenovacao);
+
+	 */
 }

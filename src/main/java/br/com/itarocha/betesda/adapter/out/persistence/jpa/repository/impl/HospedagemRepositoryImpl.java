@@ -1,6 +1,7 @@
-package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
+package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.impl;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.*;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.*;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.HospedagemMapper;
 import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
 import br.com.itarocha.betesda.domain.Hospedagem;
@@ -16,7 +17,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class HospedagemRepositoryAdapter {
+public class HospedagemRepositoryImpl {
 
 	private final DSLContext create;
 

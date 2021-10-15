@@ -1,6 +1,8 @@
-package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
+package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.impl;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.PessoaEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.EnderecoJpaRepository;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.PessoaJpaRepository;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.PessoaMapper;
 import br.com.itarocha.betesda.core.ports.out.PessoaRepository;
 import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
@@ -17,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class PessoaRepositoryAdapter implements PessoaRepository {
+public class PessoaRepositoryImpl implements PessoaRepository {
 
     private final PessoaJpaRepository repository;
     private final EnderecoJpaRepository enderecoRepository;

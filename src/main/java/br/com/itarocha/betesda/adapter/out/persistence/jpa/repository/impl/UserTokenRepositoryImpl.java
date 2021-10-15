@@ -1,6 +1,7 @@
-package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
+package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.impl;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.UserTokenEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.UserTokenJpaRepository;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.UsuarioTokenMapper;
 import br.com.itarocha.betesda.core.ports.out.UserTokenRepository;
 import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UserTokenRepositoryAdapter implements UserTokenRepository {
+public class UserTokenRepositoryImpl implements UserTokenRepository {
 
     private final UserTokenJpaRepository repository;
     private final UsuarioTokenMapper mapper;

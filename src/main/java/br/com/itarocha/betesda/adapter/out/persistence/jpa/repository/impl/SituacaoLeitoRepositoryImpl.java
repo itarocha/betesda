@@ -1,11 +1,12 @@
-package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
+package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.impl;
 
-import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.DestinacaoHospedagemEntity;
-import br.com.itarocha.betesda.adapter.out.persistence.mapper.DestinacaoHospedagemMapper;
-import br.com.itarocha.betesda.core.ports.out.DestinacaoHospedagemRepository;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.SituacaoLeitoEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.SituacaoLeitoJpaRepository;
+import br.com.itarocha.betesda.adapter.out.persistence.mapper.SituacaoLeitoMapper;
+import br.com.itarocha.betesda.core.ports.out.SituacaoLeitoRepository;
 import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
-import br.com.itarocha.betesda.domain.DestinacaoHospedagem;
 import br.com.itarocha.betesda.domain.ItemDictionary;
+import br.com.itarocha.betesda.domain.SituacaoLeito;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -16,39 +17,39 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class DestinacaoHospedagemRepositoryAdapter implements DestinacaoHospedagemRepository {
+public class SituacaoLeitoRepositoryImpl implements SituacaoLeitoRepository {
 
-    private final DestinacaoHospedagemJpaRepository repository;
-    private final DestinacaoHospedagemMapper mapper;
+    private final SituacaoLeitoJpaRepository repository;
+    private final SituacaoLeitoMapper mapper;
 
     @Override
-    public DestinacaoHospedagem save(DestinacaoHospedagem model) {
+    public SituacaoLeito save(SituacaoLeito model) {
         try {
             return mapper.toModel(repository.save(mapper.toEntity(model)));
         } catch ( DataIntegrityViolationException e) {
-            throw new IntegridadeException("Falha de integridade ao tentar gravar Destinação de Hospedagem"
+            throw new IntegridadeException("Falha de integridade ao tentar gravar Situação de Leito"
                     , e.getMostSpecificCause().getMessage());
         }
     }
 
     @Override
-    public Optional<DestinacaoHospedagem> findById(Long id) {
-        Optional<DestinacaoHospedagemEntity> opt = repository.findById(id);
+    public Optional<SituacaoLeito> findById(Long id) {
+        Optional<SituacaoLeitoEntity> opt = repository.findById(id);
         return opt.isPresent() ? Optional.of(mapper.toModel(opt.get())) : Optional.ofNullable(null);
     }
 
     @Override
-    public void delete(DestinacaoHospedagem model) {
+    public void delete(SituacaoLeito model) {
         try {
             repository.delete(mapper.toEntity(model));
-        } catch ( DataIntegrityViolationException e) {
-            throw new IntegridadeException("Falha de integridade ao tentar excluir Destinação de Hospedagem"
+        } catch (DataIntegrityViolationException e) {
+            throw new IntegridadeException("Falha de integridade ao tentar excluir Situação de Leito"
                     , e.getMostSpecificCause().getMessage());
         }
     }
 
     @Override
-    public List<DestinacaoHospedagem> findAllOrderByDescricao() {
+    public List<SituacaoLeito> findAllOrderByDescricao() {
         return repository.findAllOrderByDescricao()
                 .stream()
                 .map(mapper::toModel)

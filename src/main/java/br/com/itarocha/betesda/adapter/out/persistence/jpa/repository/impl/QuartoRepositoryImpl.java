@@ -1,6 +1,7 @@
-package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
+package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.impl;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.QuartoEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.QuartoJpaRepository;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.QuartoMapper;
 import br.com.itarocha.betesda.core.ports.out.QuartoRepository;
 import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class QuartoRepositoryAdapter implements QuartoRepository {
+public class QuartoRepositoryImpl implements QuartoRepository {
 
     private final QuartoJpaRepository repository;
     private final QuartoMapper mapper;

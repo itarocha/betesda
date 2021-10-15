@@ -1,6 +1,7 @@
-package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
+package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.impl;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.HospedeLeitoEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.HospedeLeitoJpaRepository;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.HospedeLeitoMapper;
 import br.com.itarocha.betesda.core.ports.out.HospedeLeitoRepository;
 import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
@@ -25,7 +26,7 @@ import static org.jooq.impl.DSL.count;
 
 @Service
 @RequiredArgsConstructor
-public class HospedeLeitoRepositoryAdapter implements HospedeLeitoRepository {
+public class HospedeLeitoRepositoryImpl implements HospedeLeitoRepository {
 
 	private final HospedeLeitoJpaRepository repository;
 	private final HospedeLeitoMapper mapper;

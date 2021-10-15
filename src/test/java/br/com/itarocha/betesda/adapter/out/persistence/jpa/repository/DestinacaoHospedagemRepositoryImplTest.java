@@ -1,5 +1,6 @@
 package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
 
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.impl.DestinacaoHospedagemRepositoryImpl;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.DestinacaoHospedagemMapper;
 import br.com.itarocha.betesda.domain.ItemDictionary;
 import br.com.itarocha.betesda.domain.DestinacaoHospedagem;
@@ -19,19 +20,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
-class DestinacaoHospedagemRepositoryAdapterTest {
+class DestinacaoHospedagemRepositoryImplTest {
 
     @Autowired
     private DestinacaoHospedagemJpaRepository repository;
 
-    private DestinacaoHospedagemRepositoryAdapter repoAdapter;
+    private DestinacaoHospedagemRepositoryImpl repoAdapter;
 
     @Test
     @DisplayName("Ao persistir DestinacaoHospedagem retorna sucesso")
     void save_PersistDestinacaoHospedagem_WhenSuccessful() {
         assertThat(repository).isNotNull();
 
-        repoAdapter = new DestinacaoHospedagemRepositoryAdapter(repository, new DestinacaoHospedagemMapper());
+        repoAdapter = new DestinacaoHospedagemRepositoryImpl(repository, new DestinacaoHospedagemMapper());
         assertThat(repoAdapter).isNotNull();
         DestinacaoHospedagem toSave =  makeDestinacaoHospedagemMockSucesso();
 
@@ -47,7 +48,7 @@ class DestinacaoHospedagemRepositoryAdapterTest {
     void save_PersistDestinacaoHospedagem_WhenConstraintValidation() {
         assertThat(repository).isNotNull();
 
-        repoAdapter = new DestinacaoHospedagemRepositoryAdapter(repository, new DestinacaoHospedagemMapper());
+        repoAdapter = new DestinacaoHospedagemRepositoryImpl(repository, new DestinacaoHospedagemMapper());
         assertThat(repoAdapter).isNotNull();
         DestinacaoHospedagem toSave = makeDestinacaoHospedagemMockInvalido();
 
@@ -59,7 +60,7 @@ class DestinacaoHospedagemRepositoryAdapterTest {
     void findById_PersistDestinacaoHospedagem_WhenSuccessful() {
         assertThat(repository).isNotNull();
 
-        repoAdapter = new DestinacaoHospedagemRepositoryAdapter(repository, new DestinacaoHospedagemMapper());
+        repoAdapter = new DestinacaoHospedagemRepositoryImpl(repository, new DestinacaoHospedagemMapper());
         assertThat(repoAdapter).isNotNull();
         DestinacaoHospedagem toSave = makeDestinacaoHospedagemMockSucesso();
 
@@ -77,7 +78,7 @@ class DestinacaoHospedagemRepositoryAdapterTest {
     void findAllOrderByDescricao_DestinacaoHospedagem_WhenSuccessful() {
         assertThat(repository).isNotNull();
 
-        repoAdapter = new DestinacaoHospedagemRepositoryAdapter(repository, new DestinacaoHospedagemMapper());
+        repoAdapter = new DestinacaoHospedagemRepositoryImpl(repository, new DestinacaoHospedagemMapper());
 
         String[] nomes = {"GGGGGG", "AAAAAA", "ZZZZZZ", "BBBBBB"};
 
@@ -107,7 +108,7 @@ class DestinacaoHospedagemRepositoryAdapterTest {
     void delete_DestinacaoHospedagem_WhenSuccessful() {
         assertThat(repository).isNotNull();
 
-        repoAdapter = new DestinacaoHospedagemRepositoryAdapter(repository, new DestinacaoHospedagemMapper());
+        repoAdapter = new DestinacaoHospedagemRepositoryImpl(repository, new DestinacaoHospedagemMapper());
         assertThat(repoAdapter).isNotNull();
         DestinacaoHospedagem toSave = makeDestinacaoHospedagemMockSucesso();
 

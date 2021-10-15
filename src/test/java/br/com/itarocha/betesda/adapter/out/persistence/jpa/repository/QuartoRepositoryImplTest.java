@@ -1,5 +1,7 @@
 package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
 
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.impl.DestinacaoHospedagemRepositoryImpl;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.impl.QuartoRepositoryImpl;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.*;
 import br.com.itarocha.betesda.domain.DestinacaoHospedagem;
 import br.com.itarocha.betesda.domain.Quarto;
@@ -15,7 +17,7 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-public class QuartoRepositoryAdapterTest {
+public class QuartoRepositoryImplTest {
 
     private static final String QUARTO_PREFIX = "QUARTO_";
     private static final String DESTINACAO_PREFIX = "DESTINACAO_";
@@ -36,8 +38,8 @@ public class QuartoRepositoryAdapterTest {
     @Test
     @DisplayName("Ao persistir Quarto retorna sucesso")
     public void save_PersistQuarto_WhenSuccessful() {
-        QuartoRepositoryAdapter repoAdapter = buildRepoAdapter();
-        DestinacaoHospedagemRepositoryAdapter repoDestinacoes = buildDestinacaoHospedagemAdapter();
+        QuartoRepositoryImpl repoAdapter = buildRepoAdapter();
+        DestinacaoHospedagemRepositoryImpl repoDestinacoes = buildDestinacaoHospedagemAdapter();
         Set<DestinacaoHospedagem> destinacoes = buildDestinacoesMock(repoDestinacoes,3);
 
         List<Quarto> quartos = buildQuartosMock(repoAdapter, 3, destinacoes);
@@ -56,12 +58,12 @@ public class QuartoRepositoryAdapterTest {
         assertThat(repoAdapter.existeOutroQuartoComEsseNumero(4)).isNullOrEmpty();
     }
 
-    private DestinacaoHospedagemRepositoryAdapter buildDestinacaoHospedagemAdapter() {
-        return new DestinacaoHospedagemRepositoryAdapter(destinacaoRepository,
+    private DestinacaoHospedagemRepositoryImpl buildDestinacaoHospedagemAdapter() {
+        return new DestinacaoHospedagemRepositoryImpl(destinacaoRepository,
                 new DestinacaoHospedagemMapper());
     }
 
-    private Set<DestinacaoHospedagem> buildDestinacoesMock(DestinacaoHospedagemRepositoryAdapter repo, Integer qtd){
+    private Set<DestinacaoHospedagem> buildDestinacoesMock(DestinacaoHospedagemRepositoryImpl repo, Integer qtd){
         Set<DestinacaoHospedagem> destinacoes = new HashSet<>();
         IntStream.rangeClosed(1, qtd).boxed().forEach(x ->
             destinacoes.add(repo.save(DestinacaoHospedagem.builder().descricao(DESTINACAO_PREFIX+x).build()))
@@ -69,7 +71,7 @@ public class QuartoRepositoryAdapterTest {
         return destinacoes;
     }
 
-    private List<Quarto> buildQuartosMock(QuartoRepositoryAdapter repo, Integer qtd, Set<DestinacaoHospedagem> destinacoes){
+    private List<Quarto> buildQuartosMock(QuartoRepositoryImpl repo, Integer qtd, Set<DestinacaoHospedagem> destinacoes){
         List<Quarto> quartos = new ArrayList<>();
         IntStream.rangeClosed(1, qtd).boxed().forEach(x ->
                 quartos.add(repo.save(Quarto.builder()
@@ -82,11 +84,12 @@ public class QuartoRepositoryAdapterTest {
         return quartos;
     }
 
-    private QuartoRepositoryAdapter buildRepoAdapter() {
+    private QuartoRepositoryImpl buildRepoAdapter() {
         DestinacaoHospedagemMapper destinacaoHospedagemMapper = new DestinacaoHospedagemMapper();
         TipoLeitoMapper tipoLeitoMapper = new TipoLeitoMapper();
         SituacaoLeitoMapper situacaoLeitoMapper = new SituacaoLeitoMapper();
-        LeitoMapper leitoMapper = new LeitoMapper(tipoLeitoMapper, situacaoLeitoMapper);
-        return new QuartoRepositoryAdapter(repository, new QuartoMapper(destinacaoHospedagemMapper, leitoMapper));
+        QuartoMapper quartoMapper = new QuartoMapper(destinacaoHospedagemMapper);
+        LeitoMapper leitoMapper = new LeitoMapper(tipoLeitoMapper, situacaoLeitoMapper, quartoMapper);
+        return new QuartoRepositoryImpl(repository, new QuartoMapper(destinacaoHospedagemMapper));
     }
 }

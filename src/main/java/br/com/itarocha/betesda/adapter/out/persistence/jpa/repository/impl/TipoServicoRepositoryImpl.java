@@ -1,6 +1,7 @@
-package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
+package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.impl;
 
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.TipoServicoEntity;
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.TipoServicoJpaRepository;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.TipoServicoMapper;
 import br.com.itarocha.betesda.core.ports.out.TipoServicoRepository;
 import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class TipoServicoRepositoryAdapter implements TipoServicoRepository {
+public class TipoServicoRepositoryImpl implements TipoServicoRepository {
 
     private final TipoServicoJpaRepository repository;
     private final TipoServicoMapper mapper;

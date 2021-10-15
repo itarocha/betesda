@@ -1,5 +1,6 @@
-package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository;
+package br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.impl;
 
+import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.EnderecoJpaRepository;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.EnderecoMapper;
 import br.com.itarocha.betesda.core.ports.out.EnderecoRepository;
 import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class EnderecoRepositoryAdapter implements EnderecoRepository {
+public class EnderecoRepositoryImpl implements EnderecoRepository {
 
     private final EnderecoJpaRepository repository;
     private final EnderecoMapper mapper;

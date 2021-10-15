@@ -13,6 +13,7 @@ public class LeitoMapper {
 
     private final TipoLeitoMapper tipoLeitoMapper;
     private final SituacaoLeitoMapper situacaoLeitoMapper;
+    private final QuartoMapper quartoMapper;
 
     public Leito toModel(LeitoEntity entity) {
         if (isNull(entity)) return null;
@@ -22,6 +23,7 @@ public class LeitoMapper {
                 .numero(entity.getNumero())
                 .tipoLeito(tipoLeitoMapper.toModel(entity.getTipoLeito()))
                 .situacao(situacaoLeitoMapper.toModel(entity.getSituacao()))
+                .quarto(quartoMapper.toModel(entity.getQuarto()))
                 .build();
     }
 
