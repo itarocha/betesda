@@ -21,6 +21,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 //TODO Tinha mais de 1300 linhas. Deveria ter no máximo 400. Quebrar em diversas classes
 
@@ -63,37 +64,39 @@ public class HospedagemService implements HospedagemUseCase {
 							fmt.format(model.getDataEntrada()))));
 		}
 
-		model.getHospedes()
-				.stream()
-				.filter(h -> !pessoaLivreNoPeriodo(h.getPessoaId(), model.getDataEntrada(), model.getDataPrevistaSaida()))
-				.forEach(h -> addViolation(	violations,
-									"*",
-											String.format("[%s] está em outra hospedagem nesse período", h.getPessoaNome() )));
-
 		if (model.getHospedes().isEmpty()) {
 			violations.add(new Violation("id", "É necessário pelo menos um hóspede"));
 		}
 
 		model.getHospedes()
 				.stream()
+				.filter(h -> Boolean.FALSE.equals(pessoaLivreNoPeriodo(h.getPessoaId(),
+																		model.getDataEntrada(),
+																		model.getDataPrevistaSaida())) )
+				.forEach(h -> addViolation(	violations,
+									"*",
+											String.format("[%s] está em outra hospedagem nesse período", h.getPessoaNome() )));
+
+
+		model.getHospedes()
 				.forEach(h -> {
-						if (TipoUtilizacaoHospedagemEnum.T.equals(model.getTipoUtilizacao()) &&
-								(isNull(h.getAcomodacao())))
+						if (TipoUtilizacaoHospedagemEnum.T.equals(model.getTipoUtilizacao())
+								&& (isNull(h.getAcomodacao())))
 						{
-							addViolation(violations,
-									"id",
-									String.format("É necessário informar o Leito para o Hóspede [%s]", h.getPessoaNome()));
+							addViolation(violations,"id",
+									String.format("É necessário informar o Leito para o Hóspede [%s]",
+											h.getPessoaNome()));
 						}
 						/*
 						if (!service.pessoaLivre(h.getPessoaId())) {
 							v.addError("id", String.format("[%s] está utilizando uma Hospedagem ainda pendente", h.getPessoaNome()));
 						}
 						*/
-						if (	TipoUtilizacaoHospedagemEnum.T.equals(model.getTipoUtilizacao()) &&
-								(!isNull(h.getAcomodacao())) &&
-								(h.getAcomodacao().getLeitoId() != null) &&
-								(!isNull(model.getDataEntrada())) &&
-								(!isNull(model.getDataPrevistaSaida())) )
+						if (TipoUtilizacaoHospedagemEnum.T.equals(model.getTipoUtilizacao())
+								&& (nonNull(h.getAcomodacao()))
+								&& (nonNull(h.getAcomodacao().getLeitoId()))
+								&& (nonNull(model.getDataEntrada()))
+								&& (nonNull(model.getDataPrevistaSaida())) )
 						{
 							Long leitoId = h.getAcomodacao().getLeitoId();
 							LocalDate dataIni = model.getDataEntrada();

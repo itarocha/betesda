@@ -40,8 +40,7 @@ public class HospedagemRepositoryImpl {
 			HospedagemEntity toSave = HospedagemEntity.builder().build();
 			toSave.setDataEntrada(model.getDataEntrada());
 			toSave.setDataPrevistaSaida(model.getDataPrevistaSaida());
-			TipoUtilizacaoHospedagemEnum tu = TipoUtilizacaoHospedagemEnum.valueOf(model.getTipoUtilizacao());
-			toSave.setTipoUtilizacao(tu);
+			toSave.setTipoUtilizacao(model.getTipoUtilizacao());
 			toSave.setObservacoes(model.getObservacoes());
 
 			Optional<EntidadeEntity> entidadeOpt = entidadeRepo.findById(model.getEntidadeId());

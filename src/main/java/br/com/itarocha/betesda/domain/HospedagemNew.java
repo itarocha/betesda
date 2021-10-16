@@ -1,5 +1,6 @@
 package br.com.itarocha.betesda.domain;
 
+import br.com.itarocha.betesda.domain.enums.TipoUtilizacaoHospedagemEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -36,7 +37,7 @@ public class HospedagemNew {
 	private String destinacaoHospedagemDescricao;
 	
 	@NotNull(message="Tipo de Utilização precisa ser informada")
-    private String tipoUtilizacao;
+    private TipoUtilizacaoHospedagemEnum tipoUtilizacao;
 	
 	private String observacoes;
 	
