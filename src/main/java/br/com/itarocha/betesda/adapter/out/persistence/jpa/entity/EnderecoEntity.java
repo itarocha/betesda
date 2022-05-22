@@ -22,7 +22,7 @@ import java.io.Serializable;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class EnderecoEntity extends UserDateAudit implements Serializable{
 
-	private static final long serialVersionUID = -2125966634044382751L;
+	private static final long serialVersionUID = -2125966634044382756L;
 
 	@Id
 	@Column(name = "id")
@@ -61,3 +61,4 @@ public class EnderecoEntity extends UserDateAudit implements Serializable{
 	@Builder.Default
 	private double longitude = 0;
 }
+

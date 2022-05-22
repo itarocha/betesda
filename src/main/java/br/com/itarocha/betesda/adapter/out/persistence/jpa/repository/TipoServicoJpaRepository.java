@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+//@Repository
 public interface TipoServicoJpaRepository extends JpaRepository<TipoServicoEntity, Long> {
 
     @Query("SELECT e FROM TipoServicoEntity e ORDER BY e.descricao")

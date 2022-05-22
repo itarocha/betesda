@@ -1,6 +1,5 @@
 package br.com.itarocha.betesda.domain;
 
-import br.com.itarocha.betesda.adapter.out.persistence.audit.UserDateAudit;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Entidade extends UserDateAudit implements Serializable{
+public class Entidade implements Serializable{
 	
 	private Long id;
 

@@ -1,6 +1,5 @@
 package br.com.itarocha.betesda.domain;
 
-import br.com.itarocha.betesda.adapter.out.persistence.audit.UserDateAudit;
 import br.com.itarocha.betesda.domain.enums.LogicoEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +14,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Encaminhador extends UserDateAudit implements Serializable{
+public class Encaminhador implements Serializable{
 	
 	private Long id;
 	

@@ -3,7 +3,7 @@ package br.com.itarocha.betesda.security;
 import br.com.itarocha.betesda.core.ports.out.UserRepository;
 import br.com.itarocha.betesda.domain.User;
 import br.com.itarocha.betesda.exception.ResourceNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,10 +13,10 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class JpaUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    UserRepository repository;
+    private final UserRepository repository;
 
     @Override
     @Transactional

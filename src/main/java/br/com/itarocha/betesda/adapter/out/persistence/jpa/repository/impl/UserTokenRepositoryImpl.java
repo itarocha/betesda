@@ -7,9 +7,11 @@ import br.com.itarocha.betesda.core.ports.out.UserTokenRepository;
 import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
 import br.com.itarocha.betesda.domain.UserToken;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,59 +20,71 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserTokenRepositoryImpl implements UserTokenRepository {
 
-    private final UserTokenJpaRepository repository;
     private final UsuarioTokenMapper mapper;
+
+    @Autowired
+    UserTokenJpaRepository repository;
 
     @Override
     public UserToken save(UserToken model) {
+        return null;
+        /*
         try {
-            return mapper.toModel(repository.save(mapper.toEntity(model)));
+            return repository.save(model);
+            //return mapper.toModel(repository.save(model));
         } catch ( DataIntegrityViolationException e) {
             throw new IntegridadeException("Falha de integridade ao tentar gravar UsuarioToken"
                     , e.getMostSpecificCause().getMessage());
         }
+         */
     }
 
     @Override
     public Optional<UserToken> findById(Long id) {
-        Optional<UserTokenEntity> opt = repository.findById(id);
-        return opt.isPresent() ? Optional.of(mapper.toModel(opt.get())) : Optional.ofNullable(null);
+        return Optional.ofNullable(null);
+        //return repository.findById(id);
     }
 
     @Override
     public Optional<UserToken> findByToken(String token) {
-        Optional<UserTokenEntity> opt = repository.findByToken(token);
-        return opt.isPresent() ? Optional.of(mapper.toModel(opt.get())) : Optional.ofNullable(null);
+        return Optional.ofNullable(null);
+        //return repository.findByToken(token);
     }
 
     @Override
     public List<UserToken> findAllByEmail(String email) {
-        return repository.findByEmail(email).stream().map(mapper::toModel).collect(Collectors.toList());
+        return new ArrayList<>();
+        //return repository.findAllByEmail(email).stream().collect(Collectors.toList());
     }
 
     @Override
     public void delete(UserToken model) {
+        /*
         try {
-            repository.delete(mapper.toEntity(model));
+            repository.delete(model);
         } catch (DataIntegrityViolationException e) {
             throw new IntegridadeException("Falha de integridade ao tentar excluir UsuarioToken"
                     , e.getMostSpecificCause().getMessage());
         }
+         */
     }
 
     @Override
     public void deleteAllByEmail(String email) {
+        /*
         try {
-            repository.deleteAllWhereEmail(email);
+            repository.deleteAllByEmail(email);
         } catch (DataIntegrityViolationException e) {
             throw new IntegridadeException("Falha de integridade ao tentar excluir UsuarioToken"
                     , e.getMostSpecificCause().getMessage());
         }
+         */
     }
 
     @Override
     public List<UserToken> findByEmailAndToken(String email, String token) {
-        return repository.findByEmailAndToken(email, token).stream().map(mapper::toModel).collect(Collectors.toList());
+        return new ArrayList<>();
+        //return repository.findByEmailAndToken(email, token).stream().collect(Collectors.toList());
     }
 
     @Override

@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static br.com.itarocha.betesda.jooq.model.Tables.*;
-import static br.com.itarocha.betesda.jooq.model.Tables.QUARTO;
+//import static br.com.itarocha.betesda.jooq.model.Tables.*;
+//import static br.com.itarocha.betesda.jooq.model.Tables.QUARTO;
 import static org.jooq.impl.DSL.coalesce;
 import static org.jooq.impl.DSL.count;
 
@@ -109,8 +109,11 @@ public class HospedeLeitoRepositoryImpl implements HospedeLeitoRepository {
 		return repository.leitosNoPeriodoPorHospedagem(hospedagemId, dataIni, dataFim);
 	}
 
+	//TODO JOOQ
 	@Override
 	public LeitoDTO findLeitoByHospedeLeitoId(Long hospedeLeitoId){
+		return null;
+		/*
 		LeitoDTO retorno =
 				create.select(LEITO.ID, LEITO.NUMERO, QUARTO.ID, QUARTO.NUMERO)
 						.from(HOSPEDE_LEITO)
@@ -120,9 +123,14 @@ public class HospedeLeitoRepositoryImpl implements HospedeLeitoRepository {
 						.fetchOne()
 						.map(r -> new LeitoDTO(r.get(LEITO.ID),r.get(LEITO.NUMERO),r.get(QUARTO.ID),r.get(QUARTO.NUMERO)));
 		return retorno;
+
+		 */
 	}
 
+	//TODO JOOQ
 	public List<Long> hospedagensNoPeriodo(Long leitoId, LocalDate dataIni, LocalDate dataFim) {
+		return null;
+		/*
 		Condition a1 = HOSPEDE_LEITO.DATA_ENTRADA.between(dataIni, dataFim)
 				.or(HOSPEDE_LEITO.DATA_SAIDA.between(dataIni, dataFim));
 		Condition a2 = HOSPEDE_LEITO.DATA_ENTRADA.le(dataIni).and(HOSPEDE_LEITO.DATA_SAIDA.ge(dataFim));
@@ -136,9 +144,13 @@ public class HospedeLeitoRepositoryImpl implements HospedeLeitoRepository {
 				.and(condicao)
 				.fetch().getValues(HOSPEDE.HOSPEDAGEM_ID);
 		return lista;
+		 */
 	}
 
+	//TODO JOOQ
 	public boolean leitoLivreNoPeriodo(Long leitoId, LocalDate dataIni, LocalDate dataFim) {
+		return false;
+		/*
 		Condition a1 = HOSPEDE_LEITO.DATA_ENTRADA.between(dataIni, dataFim)
 				.or(HOSPEDE_LEITO.DATA_SAIDA.between(dataIni, dataFim));
 		Condition a2 = HOSPEDE_LEITO.DATA_ENTRADA.le(dataIni).and(HOSPEDE_LEITO.DATA_SAIDA.ge(dataFim));
@@ -151,9 +163,13 @@ public class HospedeLeitoRepositoryImpl implements HospedeLeitoRepository {
 						.and(condicao)
 						.fetchOne(0, Integer.class);
 		return qtd <= 0;
+		 */
 	}
 
+	//TODO JOOQ
 	public List<Long> hospedagensDePessoaNoPeriodo(Long pessoaId, LocalDate dataIni, LocalDate dataFim) {
+		return null;
+		/*
 		Condition a1 = HOSPEDE_LEITO.DATA_ENTRADA.between(dataIni, dataFim)
 				.or(HOSPEDE_LEITO.DATA_SAIDA.between(dataIni, dataFim));
 		Condition a2 = HOSPEDE_LEITO.DATA_ENTRADA.le(dataIni).and(HOSPEDE_LEITO.DATA_SAIDA.ge(dataFim));
@@ -167,9 +183,13 @@ public class HospedeLeitoRepositoryImpl implements HospedeLeitoRepository {
 						.and(condicao)
 						.fetch().getValues(HOSPEDE.HOSPEDAGEM_ID);
 		return lista;
+		 */
 	}
 
+	//TODO JOOQ
 	public Integer countOfHospedagensParciaisDePessoaNoPeriodo(Long pessoaId, LocalDate dataIni, LocalDate dataFim) {
+		return null;
+		/*
 		Condition a1 = HOSPEDAGEM.DATA_ENTRADA.between(dataIni, dataFim)
 				.or(coalesce(HOSPEDAGEM.DATA_EFETIVA_SAIDA, HOSPEDAGEM.DATA_PREVISTA_SAIDA)
 						.between(dataIni, dataFim));
@@ -186,6 +206,7 @@ public class HospedeLeitoRepositoryImpl implements HospedeLeitoRepository {
 						.and(condicao)
 						.fetchOne(0, Integer.class);
 		return qtd;
+		 */
 	}
 
 	@Override

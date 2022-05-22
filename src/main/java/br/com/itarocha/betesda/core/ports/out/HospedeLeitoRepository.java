@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-public interface HospedeLeitoRepository{
+public interface HospedeLeitoRepository {
 
 	HospedeLeito save(HospedeLeito model);
 

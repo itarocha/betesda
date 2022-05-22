@@ -10,9 +10,17 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 
-import static br.com.itarocha.betesda.jooq.model.Tables.*;
+//import static br.com.itarocha.betesda.jooq.model.Tables.*;
 import static org.jooq.impl.DSL.*;
 import static org.jooq.impl.DSL.coalesce;
+import br.com.itarocha.betesda.core.ports.out.report.RelatorioGeralRepository;
+import br.com.itarocha.betesda.domain.hospedagem.PessoaEncaminhada;
+import br.com.itarocha.betesda.domain.hospedagem.RelatorioGeral;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +30,8 @@ public class RelatorioGeralImpl implements RelatorioGeralRepository {
 
     @Override
     public List<PessoaEncaminhada> listPessoasEncaminhadas(LocalDate dataIni, LocalDate dataFim) {
+        return null;
+        /*
         br.com.itarocha.betesda.jooq.model.tables.HospedeLeito hl = HOSPEDE_LEITO.as("hl");
         Field<String> tipoUtilizacaoT = val("T");
 
@@ -71,7 +81,7 @@ public class RelatorioGeralImpl implements RelatorioGeralRepository {
                         HOSPEDE.HOSPEDAGEM_ID.as("hospedagemId")
                         , PESSOA.ID.as("pessoaId")
                         , PESSOA.NOME.as("pessoaNome")
-                        , PESSOA.DATA_NASCIMENTO.as("pessoaDataNascimento")
+                        , PESSOA.DATANASCIMENTO.as("pessoaDataNascimento")
                         , ENDERECO.CIDADE
                         , ENDERECO.UF
                         , HOSPEDE.TIPO_HOSPEDE_ID.as("tipoHospedeId")
@@ -96,10 +106,13 @@ public class RelatorioGeralImpl implements RelatorioGeralRepository {
                         )
                         .fetchInto(PessoaEncaminhada.class);
         return lista;
+         */
     }
 
     @Override
     public List<RelatorioGeral> listRelatorioGeral(LocalDate dataIni, LocalDate dataFim) {
+        return null;
+        /*
         br.com.itarocha.betesda.jooq.model.tables.HospedeLeito hl = HOSPEDE_LEITO.as("hl");
         Field<String> tipoUtilizacaoT = val("T");
 
@@ -155,7 +168,7 @@ public class RelatorioGeralImpl implements RelatorioGeralRepository {
                         , s3.field("tipo_utilizacao", String.class).as("tipoUtilizacao")
                         , HOSPEDE.PESSOA_ID.as("pessoaId")
                         , PESSOA.NOME.as("pessoaNome")
-                        , PESSOA.DATA_NASCIMENTO.as("pessoaDataNascimento")
+                        , PESSOA.DATANASCIMENTO.as("pessoaDataNascimento")
                         , ENDERECO.CIDADE
                         , ENDERECO.UF
                         , HOSPEDE.TIPO_HOSPEDE_ID.as("tipoHospedeId")
@@ -175,5 +188,6 @@ public class RelatorioGeralImpl implements RelatorioGeralRepository {
                         .fetchInto(RelatorioGeral.class);
 
         return lista;
+         */
     }
 }

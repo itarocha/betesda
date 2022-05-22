@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 
-import static br.com.itarocha.betesda.jooq.model.Tables.*;
+//import static br.com.itarocha.betesda.jooq.model.Tables.*;
 import static org.jooq.impl.DSL.*;
 import static org.jooq.impl.DSL.coalesce;
 
@@ -19,8 +19,11 @@ public class HospedeMapaJooqRepository implements HospedeMapaRepository {
 
     private final DSLContext create;
 
+    //TODO JOOQ
     @Override
     public List<HospedeMapa> buildListaHospedeMapa(LocalDate dataIni, LocalDate dataFim){
+        return null;
+        /*
         // PRIMEIRO SELECT - HÓSPEDES COM LEITO
         br.com.itarocha.betesda.jooq.model.tables.HospedeLeito hl = HOSPEDE_LEITO.as("hl");
         br.com.itarocha.betesda.jooq.model.tables.Leito leito = LEITO.as("leito");
@@ -78,6 +81,7 @@ public class HospedeMapaJooqRepository implements HospedeMapaRepository {
                         .between(dataIni, dataFim));
         Condition b2 = hpd.DATA_ENTRADA.le(dataIni)
                 .and(coalesce(hpd.DATA_EFETIVA_SAIDA, hpd.DATA_PREVISTA_SAIDA).ge(dataFim));
+
         Condition b3 = hpd.TIPO_UTILIZACAO.eq("P");
         Condition condicaoB = b1.or(b2).and(b3);
 
@@ -153,5 +157,6 @@ public class HospedeMapaJooqRepository implements HospedeMapaRepository {
                                 , PESSOA.ID
                                 , HOSPEDE.HOSPEDAGEM_ID
                         ).fetchInto(HospedeMapa.class);
+         */
     }
 }

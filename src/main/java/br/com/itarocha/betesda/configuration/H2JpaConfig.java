@@ -16,7 +16,7 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 ////////////////////////////@Configuration
-@EnableJpaRepositories(basePackages = { "br.com.itarocha.betesda.repository" })
+@EnableJpaRepositories(basePackages = { "br.com.itarocha.betesda.adapter.out.persistence.jpa.repository" })
 //@PropertySource("classpath:persistence.properties")
 //@PropertySource("classpath:persistence-derby.properties")
 //@PropertySource("classpath:persistence-hsqldb.properties")

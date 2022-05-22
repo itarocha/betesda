@@ -4,6 +4,7 @@ import br.com.itarocha.betesda.adapter.out.persistence.jpa.entity.*;
 import br.com.itarocha.betesda.adapter.out.persistence.jpa.repository.*;
 import br.com.itarocha.betesda.adapter.out.persistence.mapper.HospedagemMapper;
 import br.com.itarocha.betesda.core.exceptions.IntegridadeException;
+import br.com.itarocha.betesda.core.ports.out.HospedagemRepository;
 import br.com.itarocha.betesda.domain.Hospedagem;
 import br.com.itarocha.betesda.domain.HospedagemNew;
 import br.com.itarocha.betesda.domain.HospedeNew;
@@ -13,11 +14,12 @@ import org.jooq.DSLContext;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class HospedagemRepositoryImpl {
+public class HospedagemRepositoryImpl implements HospedagemRepository {
 
 	private final DSLContext create;
 
@@ -34,6 +36,11 @@ public class HospedagemRepositoryImpl {
 	private final TipoServicoJpaRepository tipoServicoRepo;
 	private final HospedagemTipoServicoJpaRepository hospedagemTipoServicoRepo;
 	private final HospedagemMapper hospedagemMapper;
+
+	@Override
+	public Hospedagem save(Hospedagem model) {
+		return null;
+	}
 
 	public Hospedagem save(HospedagemNew model) {
 		try {
@@ -113,6 +120,31 @@ public class HospedagemRepositoryImpl {
 			throw new IntegridadeException("Falha de integridade ao tentar gravar Hospagem"
 					, e.getMostSpecificCause().getMessage());
 		}
+	}
+
+	@Override
+	public Optional<Hospedagem> findById(Long id) {
+		return Optional.empty();
+	}
+
+	@Override
+	public void delete(Hospedagem model) {
+
+	}
+
+	@Override
+	public void deleteById(Long id) {
+
+	}
+
+	@Override
+	public Hospedagem findHospedagemByHospedagemId(Long hospedagemId) {
+		return null;
+	}
+
+	@Override
+	public Hospedagem updateDataPrevistaSaida(Long hospedagemId, LocalDate dataRenovacao) {
+		return null;
 	}
 
 }

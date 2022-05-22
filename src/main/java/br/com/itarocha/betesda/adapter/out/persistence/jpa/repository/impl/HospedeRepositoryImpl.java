@@ -29,7 +29,6 @@ public class HospedeRepositoryImpl implements HospedeRepository {
 			throw new IntegridadeException("Falha de integridade ao tentar gravar Hospede"
 					, e.getMostSpecificCause().getMessage());
 		}
-
 	}
 
 	@Override

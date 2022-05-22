@@ -1,6 +1,5 @@
 package br.com.itarocha.betesda.domain;
 
-import br.com.itarocha.betesda.adapter.out.persistence.audit.UserDateAudit;
 import br.com.itarocha.betesda.domain.enums.LogicoEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Hospede extends UserDateAudit implements Serializable{
+public class Hospede implements Serializable{
 	
 	private Long id;
 

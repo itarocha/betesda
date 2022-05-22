@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.0</version>
+		<version>2.6.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.com.itarocha</groupId>
@@ -15,16 +15,38 @@
 	<packaging>jar</packaging>
 	<description>Api Betesda com Spring Boot</description>
 
+	<!-- mvn dependency:tree -->
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>1.8</java.version>
+		<java.version>11</java.version>
 		<jjwt.version>0.9.0</jjwt.version>
+		<jooq.version>3.15.4</jooq.version>
 
 		<sonar.projectKey>itarocha_betesda</sonar.projectKey>
 		<sonar.organization>itarocha</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+
+		<!-- ENV VARIÁRVEIS -->
+<!--		<database.password>${DATABASE_PASSWORD}</database.password>-->
+		<db.url>jdbc:tc:mariadb:10.5:///betesda?TC_INITSCRIPT=file:${basedir}/src/test/resources/betesda.sql</db.url>
+		<db.username>root</db.username>
+		<db.password>root</db.password>
+		<testcontainers.version>1.16.3</testcontainers.version>
 	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.testcontainers</groupId>
+				<artifactId>testcontainers-bom</artifactId>
+				<version>${testcontainers.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
 		<dependency>
@@ -35,10 +57,39 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
+
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-jooq</artifactId>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq</artifactId>
+			<version>${jooq.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq-meta</artifactId>
+			<version>${jooq.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq-codegen</artifactId>
+			<version>${jooq.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq-meta-extensions-hibernate</artifactId>
+			<version>${jooq.version}</version>
+		</dependency>
+
+
+
+<!--		jooqRuntime("org.jooq:jooq:${jooqVersion}")-->
+<!--		jooqRuntime("org.jooq:jooq-meta:${jooqVersion}")-->
+<!--		jooqRuntime("org.jooq:jooq-codegen:${jooqVersion}")-->
+<!--		jooqRuntime("org.jooq:jooq-meta-extensions:${jooqVersion}")-->
+
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter-jooq</artifactId>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
@@ -51,32 +102,34 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
+		<!--
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>org.mariadb.jdbc</groupId>
 			<artifactId>mariadb-java-client</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>test</scope>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>com.h2database</groupId>-->
+<!--			<artifactId>h2</artifactId>-->
+<!--			<scope>runtime</scope>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.junit.vintage</groupId>
-					<artifactId>junit-vintage-engine</artifactId>
-				</exclusion>
-			</exclusions>
+<!--			<exclusions>-->
+<!--				<exclusion>-->
+<!--					<groupId>org.junit.vintage</groupId>-->
+<!--					<artifactId>junit-vintage-engine</artifactId>-->
+<!--				</exclusion>-->
+<!--			</exclusions>-->
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -98,6 +151,15 @@
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
+<!--		<dependency>-->
+<!--			<groupId>javax.xml.bind</groupId>-->
+<!--			<artifactId>jaxb-api</artifactId>-->
+<!--			<version>2.3.1</version>-->
+<!--		</dependency>-->
+
+
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
@@ -113,6 +175,23 @@
 			<artifactId>unirest-java</artifactId>
 			<version>3.4.00</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>testcontainers</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>mariadb</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -134,9 +213,9 @@
 						<exclude>**/BetesdaApplication.*</exclude>
 						<exclude>**/exception/**</exclude>
 						<exclude>**/config/**</exclude>
-						<exclude>**/generated-sources/**</exclude>
-						<exclude>**/generated-test-sources/**</exclude>
-						<exclude>**/jooq/model/tables/pojos/**</exclude>
+<!--						<exclude>**/generated-sources/**</exclude>-->
+<!--						<exclude>**/generated-test-sources/**</exclude>-->
+<!--						<exclude>**/jooq/model/tables/pojos/**</exclude>-->
 					</excludes>
 				</configuration>
 				<executions>
@@ -173,15 +252,123 @@
                                 <version>${org.mapstruct.version}</version>
                             </path>
                             -->
-                            <path>
-                                <groupId>org.projectlombok</groupId>
-                                <artifactId>lombok</artifactId>
-                                <version>${lombok.version}</version>
-                            </path>
-                        </annotationProcessorPaths>
-                    </configuration>
-                </plugin>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
 
+<!--
+			<plugin>
+				<groupId>org.jooq</groupId>
+				<artifactId>jooq-codegen-maven</artifactId>
+
+				<version>3.15.4</version>
+				<executions>
+					<execution>
+						<id>generate-mariadb</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<generator>
+								<database>
+									<name>org.jooq.meta.extensions.jpa.JPADatabase</name>
+									<properties>
+										<property>
+											<key>scripts</key>
+											<value>src/main/resources/betesda-dml.sql</value>
+										</property>
+										<property>
+											<key>unqualifiedSchema</key>
+											<value>none</value>
+										</property>
+										<property>
+											<key>defaultNameCase</key>
+											<value>as_is</value>
+										</property>
+										<property>
+											<key>packages</key>
+											<value>br.com.itarocha.betesda.adapter.out.persistence.jpa.entity</value>
+										</property>
+										<property>
+											<key>useAttributeConverters</key>
+											<value>true</value>
+										</property>
+										<property>
+											<key>unqualifiedSchema</key>
+											<value>none</value>
+										</property>
+									</properties>
+								</database>
+								<generate>
+								</generate>
+								<target>
+									<packageName>br.com.itarocha.betesda.jooq.model</packageName>
+									<packageName>
+										br.com.itarocha.betesda.jooq.model
+									</packageName>
+									<directory>
+										target/generated-sources/jooq
+									</directory>
+								</target>
+							</generator>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+-->
+
+<!--			<plugin>-->
+<!--				<groupId>org.jooq</groupId>-->
+<!--				<artifactId>jooq-codegen-maven</artifactId>-->
+<!--				<version>3.15.4</version>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<id>generate-mariadb</id>-->
+<!--						<phase>generate-sources</phase>-->
+<!--						<goals>-->
+<!--							<goal>generate</goal>-->
+<!--						</goals>-->
+<!--						<configuration>-->
+<!--							<generator>-->
+<!--								<database>-->
+<!--									<name>org.jooq.meta.extensions.jpa.JPADatabase</name>-->
+<!--									<properties>-->
+<!--										<property>-->
+<!--											<key>packages</key>-->
+<!--											<value>br.com.itarocha.betesda.adapter.out.persistence.jpa.entity</value>-->
+<!--										</property>-->
+<!--										<property>-->
+<!--											<key>useAttributeConverters</key>-->
+<!--											<value>true</value>-->
+<!--										</property>-->
+<!--										<property>-->
+<!--											<key>unqualifiedSchema</key>-->
+<!--											<value>none</value>-->
+<!--										</property>-->
+<!--									</properties>-->
+<!--								</database>-->
+<!--								<generate>-->
+<!--								</generate>-->
+<!--								<target>-->
+<!--									<packageName>br.com.itarocha.betesda.jooq.model</packageName>-->
+<!--									<packageName>-->
+<!--										br.com.itarocha.betesda.jooq.model-->
+<!--									</packageName>-->
+<!--								</target>-->
+<!--							</generator>-->
+<!--						</configuration>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--			</plugin>-->
+
+
+			<!--
 				<plugin>
 					<groupId>org.jooq</groupId>
 					<artifactId>jooq-codegen-maven</artifactId>
@@ -193,12 +380,11 @@
 								<goal>generate</goal>
 							</goals>
 							<configuration>
-								<!--Insert your DB configuration-->
 								<jdbc>
-									<driver>org.mariadb.jdbc.Driver</driver>
-									<url>jdbc:mariadb://localhost:3306/betesda</url>
-									<user>root</user>
-									<password>root</password>
+									<driver>org.testcontainers.jdbc.ContainerDatabaseDriver</driver>
+									<url>${db.url}</url>
+									<user>${db.username}</user>
+									<password>${db.password}</password>
 								</jdbc>
 								<generator>
 									<database>
@@ -226,8 +412,7 @@
 						</execution>
 					</executions>
 				</plugin>
-
-
+			-->
             </plugins>
         </build>
 

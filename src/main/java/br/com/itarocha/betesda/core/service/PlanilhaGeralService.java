@@ -7,6 +7,7 @@ import br.com.itarocha.betesda.report.RelatorioAtendimentos;
 //TODO: Não pode chamar **.poi.**
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -15,6 +16,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
+@Service
 public class PlanilhaGeralService implements PlanilhaGeralUseCase {
 
 	public ByteArrayInputStream toExcel(RelatorioAtendimentos dados) throws IOException {

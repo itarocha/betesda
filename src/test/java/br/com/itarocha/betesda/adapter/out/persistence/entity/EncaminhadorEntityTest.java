@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 
-import static br.com.itarocha.betesda.jooq.model.Tables.HOSPEDE_LEITO;
+////import static br.com.itarocha.betesda.jooq.model.Tables.HOSPEDE_LEITO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EncaminhadorEntityTest {

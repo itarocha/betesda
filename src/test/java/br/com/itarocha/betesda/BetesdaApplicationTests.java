@@ -11,5 +11,4 @@ class BetesdaApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

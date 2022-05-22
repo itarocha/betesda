@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -34,7 +33,7 @@ public class Quarto {
 	private List<Leito> leitos;
 
 	@Builder.Default
-	@Enumerated(EnumType.STRING)
+	//@Enumerated(EnumType.STRING)
 	private LogicoEnum ativo = LogicoEnum.S;;
 
 	//@Transient

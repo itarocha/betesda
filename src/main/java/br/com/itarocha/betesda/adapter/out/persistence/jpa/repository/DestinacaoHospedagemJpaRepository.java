@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
+//@Component
 public interface DestinacaoHospedagemJpaRepository extends JpaRepository<DestinacaoHospedagemEntity, Long> {
 
     @Query("SELECT o FROM DestinacaoHospedagemEntity o ORDER BY o.descricao")

@@ -1,6 +1,5 @@
 package br.com.itarocha.betesda.domain;
 
-import br.com.itarocha.betesda.adapter.out.persistence.audit.UserDateAudit;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class HospedeLeito extends UserDateAudit implements Serializable{
+public class HospedeLeito implements Serializable{
 	
 	private Long id;
 	

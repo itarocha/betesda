@@ -1,0 +1,56 @@
+server:
+  port: 8088
+
+logging:
+  level:
+    root: INFO
+
+spring:
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:mariadb:10.5.///betesda?TC_INITSCRIPT=betesda.sql
+    username: root
+    password: root
+  jpa:
+    show-sql: false
+    #database-platform: org.hibernate.dialect.mariadb
+    generate-ddl: true
+    hibernate:
+      ddl-auto: validate
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+    time-zone: UTC
+
+app:
+  jwtSecret: JWTSuperSecretKey
+  jwtExpirationInMs: 604800000
+
+mail:
+  smtp:
+    host: smtp.gmail.com
+    port: 465
+    username: itarocha1972@gmail.com
+    password: Ircj84925
+    connectiontimeout: 60000
+    timeout: 60000
+    writetimeout: 60000
+
+  properties:
+    mail:
+      smtp:
+        starttls:
+          enable: true
+          required: true
+        auth: true
+
+service:
+  url: https://api.mailgun.net/v3/
+  apikey: key-3bbd952e121ed106e7a0bd728c530d00
+
+application:
+  domain:
+    name: petrasistemas.com.br
+  link:
+    reset: http://localhost:8080/#/redefinir-senha/
