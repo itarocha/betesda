@@ -3,7 +3,7 @@ package br.com.itarocha.betesda.service;
 import br.com.itarocha.betesda.persistencia.model.DestinacaoHospedagemEntity;
 import br.com.itarocha.betesda.model.SelectValueVO;
 import br.com.itarocha.betesda.persistencia.repository.DestinacaoHospedagemEntityRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityManager;
@@ -13,13 +13,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class DestinacaoHospedagemService {
 
-	@Autowired
-	private EntityManager em;
+	private final EntityManager em;
 	
-	@Autowired
-	private DestinacaoHospedagemEntityRepository repositorio;
+	private final DestinacaoHospedagemEntityRepository repositorio;
 
 	public DestinacaoHospedagemEntity create(DestinacaoHospedagemEntity model) {
 		try{

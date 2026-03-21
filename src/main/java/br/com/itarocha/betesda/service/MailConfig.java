@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -12,10 +12,10 @@ import java.util.Properties;
 
 @Configuration
 @PropertySource("classpath:env/mail.properties")
+@RequiredArgsConstructor
 public class MailConfig {
 
-	@Autowired
-	private Environment env;
+	private final Environment env;
 	
 	@Bean
 	public JavaMailSender mailSender() {

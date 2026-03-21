@@ -2,7 +2,7 @@ package br.com.itarocha.betesda.service;
 
 import br.com.itarocha.betesda.report.*;
 import br.com.itarocha.betesda.utils.StrUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,19 +16,14 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class RelatorioGeralService {
 
 	
-	@Autowired
-	private EntityManager em;
+	private final EntityManager em;
 	
-	private List<ResumoHospedagem> listResumoHospedagem;
-	private Map<BigInteger, PessoaAtendida> mapPessoaAtendida;
-
-	public RelatorioGeralService() {
-		this.listResumoHospedagem = new ArrayList<>();
-		this.mapPessoaAtendida = new HashMap<>();
-	}
+	private List<ResumoHospedagem> listResumoHospedagem = new ArrayList<>();
+	private Map<BigInteger, PessoaAtendida> mapPessoaAtendida = new HashMap<>();
 	
 	//PlanilhaGeral
 	public RelatorioAtendimentos buildNovaPlanilha(LocalDate dataIni, LocalDate dataFim) {

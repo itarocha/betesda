@@ -6,7 +6,7 @@ import br.com.itarocha.betesda.model.SelectValueVO;
 import br.com.itarocha.betesda.persistencia.repository.EnderecoEntityRepository;
 import br.com.itarocha.betesda.persistencia.repository.EntidadeEntityRepository;
 import br.com.itarocha.betesda.util.validation.ResultError;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityManager;
@@ -16,19 +16,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class EntidadeService {
 
-	@Autowired
-	private EntityManager em;
+	private final EntityManager em;
 
-	@Autowired
-	private EntidadeEntityRepository repositorio;
+	private final EntidadeEntityRepository repositorio;
 
-	@Autowired
-	private EnderecoEntityRepository enderecoRepo;
-
-	public EntidadeService() {
-	}
+	private final EnderecoEntityRepository enderecoRepo;
 
 	public EntidadeEntity create(EntidadeEntity model) throws ValidationException {
 		try{

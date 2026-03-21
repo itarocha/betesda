@@ -8,12 +8,16 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Email;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name="entidade")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "encaminhadores"})
+@Data
+@AllArgsConstructor
 public class EntidadeEntity extends UserDateAudit implements Serializable{
 	
 	private static final long serialVersionUID = 9099025388150371771L;
@@ -54,78 +58,6 @@ public class EntidadeEntity extends UserDateAudit implements Serializable{
 	
 	public EntidadeEntity(){
 		this.endereco = new EnderecoEntity();
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public String getCnpj() {
-		return cnpj;
-	}
-
-	public void setCnpj(String cnpj) {
-		this.cnpj = cnpj;
-	}
-
-	public EnderecoEntity getEndereco() {
-		return endereco;
-	}
-
-	public void setEndereco(EnderecoEntity endereco) {
-		this.endereco = endereco;
-	}
-
-	public String getTelefone() {
-		return telefone;
-	}
-
-	public void setTelefone(String telefone) {
-		this.telefone = telefone;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getTelefone2() {
-		return telefone2;
-	}
-
-	public void setTelefone2(String telefone2) {
-		this.telefone2 = telefone2;
-	}
-
-	public String getObservacoes() {
-		return observacoes;
-	}
-
-	public void setObservacoes(String observacoes) {
-		this.observacoes = observacoes;
-	}
-
-	public List<EncaminhadorEntity> getEncaminhadores() {
-		return encaminhadores;
-	}
-
-	public void setEncaminhadores(List<EncaminhadorEntity> encaminhadores) {
-		this.encaminhadores = encaminhadores;
 	}
 
 	@Override

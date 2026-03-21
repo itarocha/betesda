@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,6 +16,8 @@ import java.util.List;
 @Entity
 @Table(name="hospedagem")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "hospedes"})
+@Data
+@AllArgsConstructor
 public class HospedagemEntity extends UserDateAudit implements Serializable {
 
 	private static final long serialVersionUID = 1841335162635443594L;
@@ -63,93 +67,5 @@ public class HospedagemEntity extends UserDateAudit implements Serializable {
 	
 	public HospedagemEntity() {
 		this.tipoUtilizacao = TipoUtilizacaoHospedagem.T;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public EntidadeEntity getEntidade() {
-		return this.entidade;
-	}
-
-	public void setEntidade(EntidadeEntity entidade) {
-		this.entidade = entidade;
-	}
-
-	public EncaminhadorEntity getEncaminhador() {
-		return this.encaminhador;
-	}
-
-	public void setEncaminhador(EncaminhadorEntity encaminhador) {
-		this.encaminhador = encaminhador;
-	}
-
-	public LocalDate getDataEntrada() {
-		return this.dataEntrada;
-	}
-
-	public void setDataEntrada(LocalDate dataEntrada) {
-		this.dataEntrada = dataEntrada;
-	}
-
-	public LocalDate getDataPrevistaSaida() {
-		return this.dataPrevistaSaida;
-	}
-
-	public void setDataPrevistaSaida(LocalDate dataPrevistaSaida) {
-		this.dataPrevistaSaida = dataPrevistaSaida;
-	}
-
-	public LocalDate getDataEfetivaSaida() {
-		return dataEfetivaSaida;
-	}
-
-	public void setDataEfetivaSaida(LocalDate dataEfetivaSaida) {
-		this.dataEfetivaSaida = dataEfetivaSaida;
-	}
-
-	public String getObservacoes() {
-		return this.observacoes;
-	}
-
-	public void setObservacoes(String observacoes) {
-		this.observacoes = observacoes;
-	}
-
-	public DestinacaoHospedagemEntity getDestinacaoHospedagem() {
-		return destinacaoHospedagem;
-	}
-
-	public void setDestinacaoHospedagem(DestinacaoHospedagemEntity destinacaoHospedagem) {
-		this.destinacaoHospedagem = destinacaoHospedagem;
-	}
-
-	public TipoUtilizacaoHospedagem getTipoUtilizacao() {
-		return tipoUtilizacao;
-	}
-
-	public void setTipoUtilizacao(TipoUtilizacaoHospedagem tipoUtilizacao) {
-		this.tipoUtilizacao = tipoUtilizacao;
-	}
-
-	public List<HospedeEntity> getHospedes() {
-		return this.hospedes;
-	}
-
-	public void setHospedes(List<HospedeEntity> hospedes) {
-		this.hospedes = hospedes;
-	}
-
-	public List<HospedagemTipoServicoEntity> getServicos() {
-		return servicos;
-	}
-
-	public void setServicos(List<HospedagemTipoServicoEntity> servicos) {
-		this.servicos = servicos;
 	}
 }

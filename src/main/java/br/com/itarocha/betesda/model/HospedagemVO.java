@@ -3,10 +3,15 @@ package br.com.itarocha.betesda.model;
 import br.com.itarocha.betesda.persistencia.model.EncaminhadorEntity;
 import br.com.itarocha.betesda.persistencia.model.EntidadeEntity;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
+@NoArgsConstructor
 public class HospedagemVO {
 	
 	private Long id;
@@ -40,110 +45,4 @@ public class HospedagemVO {
 	private Long[] servicos;
 	
 	private List<HospedeVO> hospedes = new ArrayList<HospedeVO>();
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Long getEntidadeId() {
-		return entidadeId;
-	}
-
-	public void setEntidadeId(Long entidadeId) {
-		this.entidadeId = entidadeId;
-	}
-
-	public EntidadeEntity getEntidade() {
-		return entidade;
-	}
-
-	public void setEntidade(EntidadeEntity entidade) {
-		this.entidade = entidade;
-	}
-
-	public Long getEncaminhadorId() {
-		return encaminhadorId;
-	}
-
-	public void setEncaminhadorId(Long encaminhadorId) {
-		this.encaminhadorId = encaminhadorId;
-	}
-
-	public EncaminhadorEntity getEncaminhador() {
-		return encaminhador;
-	}
-
-	public void setEncaminhador(EncaminhadorEntity encaminhador) {
-		this.encaminhador = encaminhador;
-	}
-
-	public LocalDate getDataEntrada() {
-		return dataEntrada;
-	}
-
-	public void setDataEntrada(LocalDate dataEntrada) {
-		this.dataEntrada = dataEntrada;
-	}
-
-	public LocalDate getDataPrevistaSaida() {
-		return dataPrevistaSaida;
-	}
-
-	public void setDataPrevistaSaida(LocalDate dataPrevistaSaida) {
-		this.dataPrevistaSaida = dataPrevistaSaida;
-	}
-
-	public Long getDestinacaoHospedagemId() {
-		return destinacaoHospedagemId;
-	}
-
-	public void setDestinacaoHospedagemId(Long destinacaoHospedagemId) {
-		this.destinacaoHospedagemId = destinacaoHospedagemId;
-	}
-
-	public String getDestinacaoHospedagemDescricao() {
-		return destinacaoHospedagemDescricao;
-	}
-
-	public void setDestinacaoHospedagemDescricao(String destinacaoHospedagemDescricao) {
-		this.destinacaoHospedagemDescricao = destinacaoHospedagemDescricao;
-	}
-
-	public String getTipoUtilizacao() {
-		return tipoUtilizacao;
-	}
-
-	public void setTipoUtilizacao(String tipoUtilizacao) {
-		this.tipoUtilizacao = tipoUtilizacao;
-	}
-
-	public String getObservacoes() {
-		return observacoes;
-	}
-
-	public void setObservacoes(String observacoes) {
-		this.observacoes = observacoes;
-	}
-
-	public Long[] getServicos() {
-		return servicos;
-	}
-
-	public void setServicos(Long[] servicos) {
-		this.servicos = servicos;
-	}
-
-	public List<HospedeVO> getHospedes() {
-		return hospedes;
-	}
-
-	public void setHospedes(List<HospedeVO> hospedes) {
-		this.hospedes = hospedes;
-	} 
-	
 }
-

@@ -7,11 +7,15 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import java.io.Serializable;
 
 @Entity
 @Table(name="endereco")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Data
+@AllArgsConstructor
 public class EnderecoEntity extends UserDateAudit implements Serializable{
 
 	private static final long serialVersionUID = -2125966634044382751L;
@@ -68,86 +72,6 @@ public class EnderecoEntity extends UserDateAudit implements Serializable{
 		this.longitude = 0;
 	}
 		
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getLogradouro() {
-		return logradouro;
-	}
-
-	public void setLogradouro(String logradouro) {
-		this.logradouro = logradouro;
-	}
-
-	public Integer getNumero() {
-		return numero;
-	}
-
-	public void setNumero(Integer numero) {
-		this.numero = numero;
-	}
-
-	public String getComplemento() {
-		return complemento;
-	}
-
-	public void setComplemento(String complemento) {
-		this.complemento = complemento;
-	}
-
-	public String getBairro() {
-		return bairro;
-	}
-
-	public void setBairro(String bairro) {
-		this.bairro = bairro;
-	}
-
-	public String getCep() {
-		return cep;
-	}
-
-	public void setCep(String cep) {
-		this.cep = cep;
-	}
-
-	public String getCidade() {
-		return cidade;
-	}
-
-	public void setCidade(String cidade) {
-		this.cidade = cidade;
-	}
-
-	public UnidadeFederacao getUf() {
-		return uf;
-	}
-
-	public void setUf(UnidadeFederacao uf) {
-		this.uf = uf;
-	}
-
-	public double getLatitude() {
-		return latitude;
-	}
-
-	public void setLatitude(double latitude) {
-		this.latitude = latitude;
-	}
-
-	public double getLongitude() {
-		return longitude;
-	}
-
-	public void setLongitude(double longitude) {
-		this.longitude = longitude;
-	}
-	
 	@Override
 	public String toString(){
 		StringBuilder sb = new StringBuilder();

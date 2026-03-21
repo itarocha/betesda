@@ -12,7 +12,7 @@ import br.com.itarocha.betesda.persistencia.repository.RoleEntityRepository;
 import br.com.itarocha.betesda.persistencia.repository.UserEntityRepository;
 import br.com.itarocha.betesda.security.JwtTokenProvider;
 import br.com.itarocha.betesda.service.EmailService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,25 +33,15 @@ import java.util.Collections;
 
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
-    @Autowired
-    AuthenticationManager authenticationManager;
-
-    @Autowired
-    UserEntityRepository userRepository;
-
-    @Autowired
-    RoleEntityRepository roleRepository;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-    @Autowired
-    JwtTokenProvider tokenProvider;
-    
-    @Autowired
-    EmailService emailService;
+    private final AuthenticationManager authenticationManager;
+    private final UserEntityRepository userRepository;
+    private final RoleEntityRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider tokenProvider;
+    private final EmailService emailService;
 
     @RequestMapping(value="/login", method = RequestMethod.POST)
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {

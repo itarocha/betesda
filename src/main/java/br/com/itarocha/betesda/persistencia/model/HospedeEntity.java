@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,8 @@ import java.util.List;
 @Entity
 @Table(name="hospede")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "hospedagem"})
+@Data
+@AllArgsConstructor
 public class HospedeEntity extends UserDateAudit implements Serializable{
 	
 	private static final long serialVersionUID = 7525841265591324037L;
@@ -48,52 +52,4 @@ public class HospedeEntity extends UserDateAudit implements Serializable{
 		this.baixado = Logico.N;
 	}
 	
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public HospedagemEntity getHospedagem() {
-		return this.hospedagem;
-	}
-
-	public void setHospedagem(HospedagemEntity hospedagem) {
-		this.hospedagem = hospedagem;
-	}
-
-	public PessoaEntity getPessoa() {
-		return this.pessoa;
-	}
-
-	public void setPessoa(PessoaEntity pessoa) {
-		this.pessoa = pessoa;
-	}
-
-	public TipoHospedeEntity getTipoHospede() {
-		return this.tipoHospede;
-	}
-
-	public void setTipoHospede(TipoHospedeEntity tipoHospede) {
-		this.tipoHospede = tipoHospede;
-	}
-
-	public Logico getBaixado() {
-		return baixado;
-	}
-
-	public void setBaixado(Logico baixado) {
-		this.baixado = baixado;
-	}
-
-	public List<HospedeLeitoEntity> getLeitos() {
-		return leitos;
-	}
-
-	public void setLeitos(List<HospedeLeitoEntity> leitos) {
-		this.leitos = leitos;
-	}
-
 }

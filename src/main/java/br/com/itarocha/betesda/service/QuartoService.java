@@ -7,7 +7,7 @@ import br.com.itarocha.betesda.persistencia.model.QuartoEntity;
 import br.com.itarocha.betesda.persistencia.model.SituacaoLeitoEntity;
 import br.com.itarocha.betesda.persistencia.model.TipoLeitoEntity;
 import br.com.itarocha.betesda.persistencia.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -18,24 +18,20 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 //https://www.devmedia.com.br/conheca-o-spring-transactional-annotations/32472
 //https://docs.spring.io/spring-data/jpa/docs/current/reference/html/
 public class QuartoService {
 
-	@Autowired
-	private QuartoEntityRepository quartoRepo; 
+	private final QuartoEntityRepository quartoRepo; 
 	
-	@Autowired
-	private LeitoEntityRepository leitoRepo;
+	private final LeitoEntityRepository leitoRepo;
 	
-	@Autowired
-	private TipoLeitoEntityRepository tipoLeitoRepo;
+	private final TipoLeitoEntityRepository tipoLeitoRepo;
 	
-	@Autowired
-	private SituacaoLeitoEntityRepository situacaoLeitoRepo;
+	private final SituacaoLeitoEntityRepository situacaoLeitoRepo;
 	
-	@Autowired
-	private DestinacaoHospedagemEntityRepository destinacaoHospedagemRepo;
+	private final DestinacaoHospedagemEntityRepository destinacaoHospedagemRepo;
 
 	public QuartoEntity create(QuartoEntity model) {
 		try{

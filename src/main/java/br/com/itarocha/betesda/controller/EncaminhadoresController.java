@@ -4,7 +4,7 @@ import br.com.itarocha.betesda.persistencia.model.EncaminhadorEntity;
 import br.com.itarocha.betesda.model.SelectValueVO;
 import br.com.itarocha.betesda.service.EncaminhadorService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,10 +15,10 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/app/encaminhadores")
+@RequiredArgsConstructor
 public class EncaminhadoresController {
 
-	@Autowired
-	private EncaminhadorService service;
+	private final EncaminhadorService service;
 	
 	@RequestMapping(value="{id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")

@@ -3,6 +3,11 @@ package br.com.itarocha.betesda.model.hospedagem;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
 public class Quadro {
 	public List<QuadroQuarto> quartos = new ArrayList<>();
 	

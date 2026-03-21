@@ -6,11 +6,17 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 @Entity
 @Table(name="leito")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "quarto"})
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class LeitoEntity extends UserDateAudit implements Serializable {
 	
 	private static final long serialVersionUID = 5765750404479537331L;
@@ -37,45 +43,5 @@ public class LeitoEntity extends UserDateAudit implements Serializable {
 	@JoinColumn(name="situacao_leito_id")
 	@NotNull(message="Situação do Leito deve ser informada")
 	private SituacaoLeitoEntity situacao;
-	
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public QuartoEntity getQuarto() {
-		return this.quarto;
-	}
-
-	public void setQuarto(QuartoEntity quarto) {
-		this.quarto = quarto;
-	}
-
-	public Integer getNumero() {
-		return this.numero;
-	}
-
-	public void setNumero(Integer numero) {
-		this.numero = numero;
-	}
-
-	public TipoLeitoEntity getTipoLeito() {
-		return this.tipoLeito;
-	}
-
-	public void setTipoLeito(TipoLeitoEntity tipoLeito) {
-		this.tipoLeito = tipoLeito;
-	}
-
-	public SituacaoLeitoEntity getSituacao() {
-		return this.situacao;
-	}
-
-	public void setSituacao(SituacaoLeitoEntity situacao) {
-		this.situacao = situacao;
-	}
 	
 }

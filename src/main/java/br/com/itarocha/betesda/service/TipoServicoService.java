@@ -3,7 +3,7 @@ package br.com.itarocha.betesda.service;
 import br.com.itarocha.betesda.model.SelectValueVO;
 import br.com.itarocha.betesda.persistencia.model.TipoServicoEntity;
 import br.com.itarocha.betesda.persistencia.repository.TipoServicoEntityRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityManager;
@@ -12,13 +12,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class TipoServicoService {
 
-	@Autowired
-	private EntityManager em;
+	private final EntityManager em;
 	
-	@Autowired
-	private TipoServicoEntityRepository repositorio;
+	private final TipoServicoEntityRepository repositorio;
 
 	public TipoServicoEntity create(TipoServicoEntity model) {
 		repositorio.save(model);

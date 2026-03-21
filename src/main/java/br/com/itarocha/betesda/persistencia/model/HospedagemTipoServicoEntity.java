@@ -5,11 +5,17 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 @Entity
 @Table(name="hospedagem_tipo_servico")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class HospedagemTipoServicoEntity extends UserDateAudit implements Serializable{
 	
 	private static final long serialVersionUID = 4121535384605572478L;
@@ -27,29 +33,5 @@ public class HospedagemTipoServicoEntity extends UserDateAudit implements Serial
 	@JoinColumn(name="tipo_servico_id")
 	@NotNull(message="Tipo de Serviço precisa ser informado")
 	private TipoServicoEntity tipoServico;
-	
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public HospedagemEntity getHospedagem() {
-		return this.hospedagem;
-	}
-
-	public void setHospedagem(HospedagemEntity hospedagem) {
-		this.hospedagem = hospedagem;
-	}
-
-	public TipoServicoEntity getTipoServico() {
-		return this.tipoServico;
-	}
-
-	public void setTipoServico(TipoServicoEntity tipoServico) {
-		this.tipoServico = tipoServico;
-	}
 
 }

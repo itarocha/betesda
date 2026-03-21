@@ -2,7 +2,11 @@ package br.com.itarocha.betesda.model;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
 public class EditLeitoVO {
 
 	private Long id;
@@ -21,56 +25,4 @@ public class EditLeitoVO {
 	
 	@NotNull(message="Situação do Leito deve ser informada")
 	private Long situacao;
-	
-	public EditLeitoVO() {
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Long getQuartoId() {
-		return quartoId;
-	}
-
-	public void setQuartoId(Long quartoId) {
-		this.quartoId = quartoId;
-	}
-
-	public Integer getQuartoNumero() {
-		return quartoNumero;
-	}
-
-	public void setQuartoNumero(Integer quartoNumero) {
-		this.quartoNumero = quartoNumero;
-	}
-
-	public Integer getNumero() {
-		return numero;
-	}
-
-	public void setNumero(Integer numero) {
-		this.numero = numero;
-	}
-
-	public Long getTipoLeito() {
-		return tipoLeito;
-	}
-
-	public void setTipoLeito(Long tipoLeito) {
-		this.tipoLeito = tipoLeito;
-	}
-
-	public Long getSituacao() {
-		return situacao;
-	}
-
-	public void setSituacao(Long situacao) {
-		this.situacao = situacao;
-	}
-
 }

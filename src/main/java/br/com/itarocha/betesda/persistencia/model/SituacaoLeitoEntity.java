@@ -8,11 +8,15 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import java.io.Serializable;
 
 @Entity
 @Table(name="estado_leito")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
+@Data
+@AllArgsConstructor
 public class SituacaoLeitoEntity extends UserDateAudit implements Serializable{
 
 /*
@@ -40,30 +44,6 @@ public class SituacaoLeitoEntity extends UserDateAudit implements Serializable{
 
 	public SituacaoLeitoEntity() {
 		this.disponivel = Logico.S;
-	}
-	
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getDescricao() {
-		return descricao;
-	}
-
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
-	}
-
-	public Logico getDisponivel() {
-		return disponivel;
-	}
-
-	public void setDisponivel(Logico disponivel) {
-		this.disponivel = disponivel;
 	}
 	
 }

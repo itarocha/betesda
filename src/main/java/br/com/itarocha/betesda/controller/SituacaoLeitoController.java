@@ -3,7 +3,7 @@ package br.com.itarocha.betesda.controller;
 import br.com.itarocha.betesda.persistencia.model.SituacaoLeitoEntity;
 import br.com.itarocha.betesda.service.SituacaoLeitoService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,10 +13,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/app/situacao_leito")
+@RequiredArgsConstructor
 public class SituacaoLeitoController {
 
-	@Autowired
-	private SituacaoLeitoService service;
+	private final SituacaoLeitoService service;
 	
 	@RequestMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")

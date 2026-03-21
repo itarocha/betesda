@@ -1,7 +1,13 @@
 package br.com.itarocha.betesda.model;
 
 import br.com.itarocha.betesda.persistencia.model.TipoLeitoEntity;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class LeitoVO {
 	
 	private Long id;
@@ -13,59 +19,4 @@ public class LeitoVO {
 	private Integer quartoNumero;
 	
 	private TipoLeitoEntity tipoLeito;
-	
-	public LeitoVO() {
-		
-	}
-	
-	public LeitoVO(Long id, Integer numero, Long quartoId, Integer quartoNumero, TipoLeitoEntity tipoLeito) {
-		this.id = id;
-		this.numero = numero;
-		this.quartoId = quartoId;
-		this.quartoNumero = quartoNumero;
-		this.tipoLeito = tipoLeito;
-	}
-	
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Integer getNumero() {
-		return numero;
-	}
-
-	public void setNumero(Integer numero) {
-		this.numero = numero;
-	}
-
-	public Long getQuartoId() {
-		return quartoId;
-	}
-
-	public void setQuartoId(Long quartoId) {
-		this.quartoId = quartoId;
-	}
-
-	public Integer getQuartoNumero() {
-		return quartoNumero;
-	}
-
-	public void setQuartoNumero(Integer quartoNumero) {
-		this.quartoNumero = quartoNumero;
-	}
-
-	public TipoLeitoEntity getTipoLeito() {
-		return tipoLeito;
-	}
-
-	public void setTipoLeito(TipoLeitoEntity tipoLeito) {
-		this.tipoLeito = tipoLeito;
-	}
-
-	
 }
-

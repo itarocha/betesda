@@ -6,7 +6,7 @@ import br.com.itarocha.betesda.model.SearchRequest;
 import br.com.itarocha.betesda.service.PessoaService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
 import br.com.itarocha.betesda.utils.Validadores;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,10 +18,10 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/app/pessoas")
+@RequiredArgsConstructor
 public class PessoasController {
 
-	@Autowired
-	private PessoaService service;
+	private final PessoaService service;
 	
 	@RequestMapping(value="{id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")

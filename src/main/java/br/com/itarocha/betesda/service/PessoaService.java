@@ -6,7 +6,7 @@ import br.com.itarocha.betesda.persistencia.model.PessoaEntity;
 import br.com.itarocha.betesda.persistencia.repository.EnderecoEntityRepository;
 import br.com.itarocha.betesda.persistencia.repository.PessoaEntityRepository;
 import br.com.itarocha.betesda.util.validation.ResultError;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -19,19 +19,14 @@ import java.util.Optional;
 //import static org.springframework.data.jpa.domain.Specifications.where;
 
 @Service
+@RequiredArgsConstructor
 public class PessoaService {
 
-	@Autowired
-	private EntityManager em;
+	private final EntityManager em;
 
-	@Autowired
-	private PessoaEntityRepository repositorio;
+	private final PessoaEntityRepository repositorio;
 
-	@Autowired
-	private EnderecoEntityRepository enderecoRepo;
-
-	public PessoaService() {
-	}
+	private final EnderecoEntityRepository enderecoRepo;
 
 	public PessoaEntity create(PessoaEntity model) throws ValidationException {
 		try{

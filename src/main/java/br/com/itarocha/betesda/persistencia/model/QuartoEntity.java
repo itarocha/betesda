@@ -6,6 +6,8 @@ import br.com.itarocha.betesda.persistencia.model.audit.UserDateAudit;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
@@ -13,6 +15,8 @@ import java.util.Set;
 
 @Entity
 @Table(name="quarto")
+@Data
+@AllArgsConstructor
 public class QuartoEntity extends UserDateAudit implements Serializable{
 
 	private static final long serialVersionUID = -6172158858365759661L;
@@ -55,66 +59,6 @@ public class QuartoEntity extends UserDateAudit implements Serializable{
 	public QuartoEntity() {
 		this.ativo = Logico.S;
 	}
-	
-	public Long getId() {
-		return this.id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Integer getNumero() {
-		return this.numero;
-	}
-
-	public void setNumero(Integer numero) {
-		this.numero = numero;
-		this.displayText = "Quarto " + ((this.numero != null) ? this.numero.toString() : "???");
-	}
-
-	public String getDescricao() {
-		return descricao;
-	}
-
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
-	}
-	
-	/*
-	public DestinacaoHospedagemEntity getDestinacaoHospedagem() {
-		return this.destinacaoHospedagem;
-	}
-
-	public void setDestinacaoHospedagem(DestinacaoHospedagemEntity destinacaoHospedagem) {
-		this.destinacaoHospedagem = destinacaoHospedagem;
-	}
-	*/
-	
-    public Set<DestinacaoHospedagemEntity> getDestinacoes() {
-        return this.destinacoes;
-    }
-
-    public void setDestinacoes(Set<DestinacaoHospedagemEntity> destinacoes) {
-        this.destinacoes = destinacoes;
-    }
-	
-	
-	public List<LeitoEntity> getLeitos() {
-		return this.leitos;
-	}
-
-	public void setLeitos(List<LeitoEntity> leitos) {
-		this.leitos = leitos;
-	}
-
-	public Logico getAtivo() {
-		return this.ativo;
-	}
-
-	public void setAtivo(Logico ativo) {
-		this.ativo = ativo;
-	}		
 	
 	@Transient
 	public String getDisplayText() {

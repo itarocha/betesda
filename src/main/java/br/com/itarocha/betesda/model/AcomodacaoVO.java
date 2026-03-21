@@ -1,55 +1,21 @@
 package br.com.itarocha.betesda.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class AcomodacaoVO {
-	
-	private Long id;
-	
-	private Long quartoId;
-	
-	private Integer quartoNumero;
-	
-	private Long leitoId;
-	
-	private Integer leitoNumero;
 
-	public Long getId() {
-		return id;
-	}
+    private Long id;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    private Long quartoId;
 
-	public Long getQuartoId() {
-		return quartoId;
-	}
+    private Integer quartoNumero;
 
-	public void setQuartoId(Long quartoId) {
-		this.quartoId = quartoId;
-	}
+    private Long leitoId;
 
-	public Integer getQuartoNumero() {
-		return quartoNumero;
-	}
-
-	public void setQuartoNumero(Integer quartoNumero) {
-		this.quartoNumero = quartoNumero;
-	}
-
-	public Long getLeitoId() {
-		return leitoId;
-	}
-
-	public void setLeitoId(Long leitoId) {
-		this.leitoId = leitoId;
-	}
-
-	public Integer getLeitoNumero() {
-		return leitoNumero;
-	}
-
-	public void setLeitoNumero(Integer leitoNumero) {
-		this.leitoNumero = leitoNumero;
-	}
-
+    private Integer leitoNumero;
 }

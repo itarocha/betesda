@@ -5,17 +5,17 @@ import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
 import kong.unirest.UnirestException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 @Component
 @PropertySource("classpath:env/mail.properties")
+@RequiredArgsConstructor
 public class MailGunService {
 
-	@Autowired
-	private Environment env;
+	private final Environment env;
 	
     public JsonNode sendHtmlMail(Email eParams) {
     	

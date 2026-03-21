@@ -8,11 +8,15 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import java.io.Serializable;
 
 @Entity
 @Table(name="tipo_leito")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Data
+@AllArgsConstructor
 public class TipoLeitoEntity extends UserDateAudit implements Serializable{
 
 	private static final long serialVersionUID = -732012434360084121L;
@@ -29,29 +33,5 @@ public class TipoLeitoEntity extends UserDateAudit implements Serializable{
 	@Min(value=1, message="Quantidade de Leitos deve ser no mínimo 1" )
 	@Max(value=2, message="Quantidade de Leitos deve ser no máximo 2" )
 	private Integer quantidadeCamas;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getDescricao() {
-		return descricao;
-	}
-
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
-	}
-
-	public Integer getQuantidadeCamas() {
-		return quantidadeCamas;
-	}
-
-	public void setQuantidadeCamas(Integer quantidadeCamas) {
-		this.quantidadeCamas = quantidadeCamas;
-	}
 	
 }

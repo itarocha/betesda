@@ -5,12 +5,18 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
 @Table(name="hospede_leito")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "quarto", "leito", "hospede"})
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class HospedeLeitoEntity extends UserDateAudit implements Serializable{
 	
 	private static final long serialVersionUID = 5590030840087022870L;
@@ -48,68 +54,4 @@ public class HospedeLeitoEntity extends UserDateAudit implements Serializable{
 	
 	@Transient
 	private Integer leitoNumero;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public HospedeEntity getHospede() {
-		return hospede;
-	}
-
-	public void setHospede(HospedeEntity hospede) {
-		this.hospede = hospede;
-	}
-
-	public LocalDate getDataEntrada() {
-		return dataEntrada;
-	}
-
-	public void setDataEntrada(LocalDate dataEntrada) {
-		this.dataEntrada = dataEntrada;
-	}
-
-	public LocalDate getDataSaida() {
-		return dataSaida;
-	}
-
-	public void setDataSaida(LocalDate dataSaida) {
-		this.dataSaida = dataSaida;
-	}
-
-	public QuartoEntity getQuarto() {
-		return quarto;
-	}
-
-	public void setQuarto(QuartoEntity quarto) {
-		this.quarto = quarto;
-	}
-
-	public LeitoEntity getLeito() {
-		return leito;
-	}
-
-	public void setLeito(LeitoEntity leito) {
-		this.leito = leito;
-	}
-
-	public Integer getQuartoNumero() {
-		return quartoNumero;
-	}
-
-	public void setQuartoNumero(Integer quartoNumero) {
-		this.quartoNumero = quartoNumero;
-	}
-
-	public Integer getLeitoNumero() {
-		return leitoNumero;
-	}
-
-	public void setLeitoNumero(Integer leitoNumero) {
-		this.leitoNumero = leitoNumero;
-	}
 }

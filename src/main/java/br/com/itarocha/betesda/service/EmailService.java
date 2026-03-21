@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.service;
 
 import br.com.itarocha.betesda.model.Email;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
@@ -16,16 +16,14 @@ import java.util.Map;
 
 @Service
 @PropertySource("classpath:env/mail.properties")
+@RequiredArgsConstructor
 public class EmailService {
 
-	@Autowired
-	private JavaMailSender mailSender;
+	private final JavaMailSender mailSender;
 	
-	@Autowired
-	MailGunService ms;
+	private final MailGunService ms;
 
-	@Autowired
-	private Environment env;
+	private final Environment env;
 
 	public void redefinirSenha(String emailDestinatario, String nome, String token) {
 		

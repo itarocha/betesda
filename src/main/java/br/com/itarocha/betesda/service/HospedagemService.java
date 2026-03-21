@@ -19,7 +19,7 @@ import br.com.itarocha.betesda.persistencia.repository.*;
 import br.com.itarocha.betesda.util.validation.ResultError;
 import br.com.itarocha.betesda.utils.LocalDateUtils;
 import br.com.itarocha.betesda.utils.StrUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,51 +34,38 @@ import java.util.*;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class HospedagemService {
 
 	private static final int QTD_DIAS = 7;
 	
-	@Autowired
-	private EntityManager em;
+	private final EntityManager em;
 	
-	@Autowired
-	private DestinacaoHospedagemEntityRepository destinacaoHospedagemRepo;
+	private final DestinacaoHospedagemEntityRepository destinacaoHospedagemRepo;
 	
-	@Autowired
-	private HospedagemEntityRepository hospedagemRepo;
+	private final HospedagemEntityRepository hospedagemRepo;
 	
-	@Autowired
-	private PessoaEntityRepository pessoaRepo;
+	private final PessoaEntityRepository pessoaRepo;
 	
-	@Autowired
-	private TipoHospedeEntityRepository tipoHospedeRepo;
+	private final TipoHospedeEntityRepository tipoHospedeRepo;
 	
-	@Autowired
-	private QuartoEntityRepository quartoRepo;
+	private final QuartoEntityRepository quartoRepo;
 	
-	@Autowired
-	private LeitoEntityRepository leitoRepo;
+	private final LeitoEntityRepository leitoRepo;
 	
-	@Autowired
-	private HospedeLeitoEntityRepository hospedeLeitoRepo;
+	private final HospedeLeitoEntityRepository hospedeLeitoRepo;
 	
-	@Autowired
-	private HospedeEntityRepository hospedeRepo;
+	private final HospedeEntityRepository hospedeRepo;
 	
-	@Autowired
-	private TipoServicoEntityRepository tipoServicoRepo;
+	private final TipoServicoEntityRepository tipoServicoRepo;
 	
-	@Autowired
-	private EntidadeEntityRepository entidadeRepo;
+	private final EntidadeEntityRepository entidadeRepo;
 	
-	@Autowired
-	private EncaminhadorEntityRepository encaminhadorRepo;
+	private final EncaminhadorEntityRepository encaminhadorRepo;
 	
-	@Autowired
-	private HospedagemTipoServicoEntityRepository hospedagemTipoServicoRepo;
+	private final HospedagemTipoServicoEntityRepository hospedagemTipoServicoRepo;
 	
-	@Autowired
-	private QuartoService quartoService;
+	private final QuartoService quartoService;
 
 	DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	

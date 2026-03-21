@@ -3,7 +3,7 @@ package br.com.itarocha.betesda.service;
 import br.com.itarocha.betesda.model.SelectValueVO;
 import br.com.itarocha.betesda.persistencia.model.TipoLeitoEntity;
 import br.com.itarocha.betesda.persistencia.repository.TipoLeitoEntityRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityManager;
@@ -12,13 +12,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class TipoLeitoService {
 
-	@Autowired
-	private EntityManager em;
+	private final EntityManager em;
 	
-	@Autowired
-	private TipoLeitoEntityRepository repositorio;
+	private final TipoLeitoEntityRepository repositorio;
 
 	public TipoLeitoEntity create(TipoLeitoEntity model) {
 		try{

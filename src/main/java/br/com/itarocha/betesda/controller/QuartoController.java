@@ -7,7 +7,7 @@ import br.com.itarocha.betesda.persistencia.model.QuartoEntity;
 import br.com.itarocha.betesda.persistencia.model.TipoLeitoEntity;
 import br.com.itarocha.betesda.service.*;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,28 +18,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/app/quarto")
+@RequiredArgsConstructor
 public class QuartoController {
 
-	@Autowired
-	private QuartoService service;
-
-	@Autowired
-	private TipoLeitoService tls;
-
-	@Autowired
-	private DestinacaoHospedagemService dhs;
-	
-	@Autowired
-	private SituacaoLeitoService sls;
-	
-	@Autowired
-	private TipoHospedeService ths;
-	
-	@Autowired
-	private TipoServicoService tss;
-	
-	@Autowired
-	private EntidadeService etds;
+	private final QuartoService service;
+	private final TipoLeitoService tls;
+	private final DestinacaoHospedagemService dhs;
+	private final SituacaoLeitoService sls;
+	private final TipoHospedeService ths;
+	private final TipoServicoService tss;
+	private final EntidadeService etds;
 	
 	@RequestMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")

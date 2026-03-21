@@ -11,7 +11,7 @@ import br.com.itarocha.betesda.service.PlanilhaGeralService;
 import br.com.itarocha.betesda.service.RelatorioGeralService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
 import br.com.itarocha.betesda.util.validation.ResultError;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -27,13 +27,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/app/hospedagem")
+@RequiredArgsConstructor
 public class HospedagemController {
 
-	@Autowired
-	private HospedagemService service;
-	
-	@Autowired
-	private RelatorioGeralService relatorioService;
+	private final HospedagemService service;
+	private final RelatorioGeralService relatorioService;
 	
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")

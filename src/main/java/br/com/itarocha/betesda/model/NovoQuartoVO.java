@@ -3,7 +3,11 @@ package br.com.itarocha.betesda.model;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
 public class NovoQuartoVO {
 
 	@NotNull(message="Número precisa ser informado")
@@ -14,8 +18,6 @@ public class NovoQuartoVO {
 	@Size(max = 255, message="Descrição não pode ter mais que 255 caracteres")
 	private String descricao;
 
-	//@NotNull(message="Destinação da Hospedagem é obrigatória")
-	//private Long destinacaoHospedagem;
 	private Long[] destinacoes;
 	
 	@NotNull(message="Quantidade de Leitos precisa ser informada")
@@ -27,65 +29,4 @@ public class NovoQuartoVO {
 	
 	@NotNull(message="Situação do Leito deve ser informada")
 	private Long situacao;
-	
-	public NovoQuartoVO() {
-	}
-	
-	public Integer getNumero() {
-		return this.numero;
-	}
-
-	public void setNumero(Integer numero) {
-		this.numero = numero;
-	}
-
-	public String getDescricao() {
-		return descricao;
-	}
-
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
-	}
-	
-	/*
-	public Long getDestinacaoHospedagem() {
-		return this.destinacaoHospedagem;
-	}
-
-	public void setDestinacaoHospedagem(Long destinacaoHospedagem) {
-		this.destinacaoHospedagem = destinacaoHospedagem;
-	}
-	*/
-	
-	public Integer getQuantidadeLeitos() {
-		return quantidadeLeitos;
-	}
-
-	public void setQuantidadeLeitos(Integer quantidadeLeitos) {
-		this.quantidadeLeitos = quantidadeLeitos;
-	}
-
-	public Long getTipoLeito() {
-		return tipoLeito;
-	}
-
-	public void setTipoLeito(Long tipoLeito) {
-		this.tipoLeito = tipoLeito;
-	}
-
-	public Long getSituacao() {
-		return situacao;
-	}
-
-	public void setSituacao(Long situacao) {
-		this.situacao = situacao;
-	}
-
-	public Long[] getDestinacoes() {
-		return destinacoes;
-	}
-
-	public void setDestinacoes(Long[] destinacoes) {
-		this.destinacoes = destinacoes;
-	}
 }

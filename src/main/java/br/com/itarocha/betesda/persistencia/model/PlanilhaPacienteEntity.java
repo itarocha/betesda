@@ -1,5 +1,8 @@
 package br.com.itarocha.betesda.persistencia.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.*;
@@ -7,6 +10,9 @@ import java.util.Date;
 
 
 @Entity(name="planilha_paciente")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PlanilhaPacienteEntity {
 	
 	@Id
@@ -72,167 +78,11 @@ public class PlanilhaPacienteEntity {
 	@DateTimeFormat(pattern="dd/MM/yyyy")
 	private Date dataCadastro;
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getCodigo() {
-		return codigo;
-	}
-
-	public void setCodigo(String codigo) {
-		this.codigo = codigo;
-	}
-
-	public String getCpf() {
-		return cpf;
-	}
-
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
-	}
-
-	public String getRg() {
-		return rg;
-	}
-
-	public void setRg(String rg) {
-		this.rg = rg;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public String getSobrenome() {
-		return sobrenome;
-	}
-
-	public void setSobrenome(String sobrenome) {
-		this.sobrenome = sobrenome;
-	}
-
-	public Date getDataNascimento() {
-		return dataNascimento;
-	}
-
-	public void setDataNascimento(Date dataNascimento) {
-		this.dataNascimento = dataNascimento;
-	}
-
-	public String getNaturalidade() {
-		return naturalidade;
-	}
-
-	public void setNaturalidade(String naturalidade) {
-		this.naturalidade = naturalidade;
-	}
-
-	public String getNacionalidade() {
-		return nacionalidade;
-	}
-
-	public void setNacionalidade(String nacionalidade) {
-		this.nacionalidade = nacionalidade;
-	}
-
-	public String getEstadoCivil() {
-		return estadoCivil;
-	}
-
-	public void setEstadoCivil(String estadoCivil) {
-		this.estadoCivil = estadoCivil;
-	}
-
-	public String getProfissao() {
-		return profissao;
-	}
-
-	public void setProfissao(String profissao) {
-		this.profissao = profissao;
-	}
-
-	public String getTelefone() {
-		return telefone;
-	}
-
-	public void setTelefone(String telefone) {
-		this.telefone = telefone;
-	}
-
-	public String getTelefone2() {
-		return telefone2;
-	}
-
-	public void setTelefone2(String telefone2) {
-		this.telefone2 = telefone2;
-	}
-
-	public String getEndereco() {
-		return endereco;
-	}
-
-	public void setEndereco(String endereco) {
-		this.endereco = endereco;
-	}
-
-	public String getNumero() {
-		return numero;
-	}
-
-	public void setNumero(String numero) {
-		this.numero = numero;
-	}
-
-	public String getBairro() {
-		return bairro;
-	}
-
-	public void setBairro(String bairro) {
-		this.bairro = bairro;
-	}
-
-	public String getCidade() {
-		return cidade;
-	}
-
-	public void setCidade(String cidade) {
-		this.cidade = cidade;
-	}
-
-	public String getUf() {
-		return uf;
-	}
-
-	public void setUf(String uf) {
-		this.uf = uf;
-	}
-
-	public String getCep() {
-		return cep;
-	}
-
 	public void setCep(String cep) {
 		String xcep = cep; 
 		if (cep.length() > 16 ) {
 			xcep = cep.substring(0,15);
 		}
 		this.cep = xcep;
-	}
-
-	public Date getDataCadastro() {
-		return dataCadastro;
-	}
-
-	public void setDataCadastro(Date dataCadastro) {
-		this.dataCadastro = dataCadastro;
 	}
 }

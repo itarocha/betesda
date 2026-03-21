@@ -10,12 +10,16 @@ import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
 @Table(name="pessoa")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Data
+@AllArgsConstructor
 public class PessoaEntity extends UserDateAudit implements Serializable {
 	
 	private static final long serialVersionUID = 615363304475476825L;
@@ -85,142 +89,6 @@ public class PessoaEntity extends UserDateAudit implements Serializable {
 		this.sexo = Sexo.F;
 	}
 	
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public LocalDate getDataNascimento() {
-		return dataNascimento;
-	}
-
-	public void setDataNascimento(LocalDate dataNascimento) {
-		this.dataNascimento = dataNascimento;
-	}
-
-	public Sexo getSexo() {
-		return sexo;
-	}
-
-	public void setSexo(Sexo sexo) {
-		this.sexo = sexo;
-	}
-
-	public EstadoCivil getEstadoCivil() {
-		return estadoCivil;
-	}
-
-	public void setEstadoCivil(EstadoCivil estadoCivil) {
-		this.estadoCivil = estadoCivil;
-	}
-
-	public String getCpf() {
-		return cpf;
-	}
-
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
-	}
-
-	public String getCartaoSus() {
-		return cartaoSus;
-	}
-
-	public void setCartaoSus(String cartaoSus) {
-		this.cartaoSus = cartaoSus;
-	}
-
-	public String getRg() {
-		return rg;
-	}
-
-	public void setRg(String rg) {
-		this.rg = rg;
-	}
-
-	public String getNaturalidadeCidade() {
-		return naturalidadeCidade;
-	}
-
-	public void setNaturalidadeCidade(String naturalidadeCidade) {
-		this.naturalidadeCidade = naturalidadeCidade;
-	}
-
-	public UnidadeFederacao getNaturalidadeUf() {
-		return naturalidadeUf;
-	}
-
-	public void setNaturalidadeUf(UnidadeFederacao naturalidadeUf) {
-		this.naturalidadeUf = naturalidadeUf;
-	}
-
-	public String getNacionalidade() {
-		return nacionalidade;
-	}
-
-	public void setNacionalidade(String nacionalidade) {
-		this.nacionalidade = nacionalidade;
-	}
-
-	public String getProfissao() {
-		return profissao;
-	}
-
-	public void setProfissao(String profissao) {
-		this.profissao = profissao;
-	}
-
-	public EnderecoEntity getEndereco() {
-		return endereco;
-	}
-
-	public void setEndereco(EnderecoEntity endereco) {
-		this.endereco = endereco;
-	}
-
-	public String getTelefone() {
-		return telefone;
-	}
-
-	public void setTelefone(String telefone) {
-		this.telefone = telefone;
-	}
-
-	public String getTelefone2() {
-		return telefone2;
-	}
-
-	public void setTelefone2(String telefone2) {
-		this.telefone2 = telefone2;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getObservacoes() {
-		return observacoes;
-	}
-
-	public void setObservacoes(String observacoes) {
-		this.observacoes = observacoes;
-	}
-
 	@Override
     public String toString() {
         return String.format("Pessoa[id=%d, nome='%s']",id, nome);

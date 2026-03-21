@@ -8,10 +8,13 @@ import br.com.itarocha.betesda.persistencia.model.HospedeEntity;
 import br.com.itarocha.betesda.persistencia.model.TipoServicoEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import lombok.Data;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class HospedagemFullVO {
 
@@ -31,101 +34,5 @@ public class HospedagemFullVO {
 	
 	public HospedagemFullVO() {
 		this.tipoUtilizacao = TipoUtilizacaoHospedagem.T;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public EntidadeEntity getEntidade() {
-		return this.entidade;
-	}
-
-	public void setEntidade(EntidadeEntity entidade) {
-		this.entidade = entidade;
-	}
-
-	public EncaminhadorEntity getEncaminhador() {
-		return this.encaminhador;
-	}
-
-	public void setEncaminhador(EncaminhadorEntity encaminhador) {
-		this.encaminhador = encaminhador;
-	}
-
-	public LocalDate getDataEntrada() {
-		return this.dataEntrada;
-	}
-
-	public void setDataEntrada(LocalDate dataEntrada) {
-		this.dataEntrada = dataEntrada;
-	}
-
-	public LocalDate getDataPrevistaSaida() {
-		return this.dataPrevistaSaida;
-	}
-
-	public void setDataPrevistaSaida(LocalDate dataPrevistaSaida) {
-		this.dataPrevistaSaida = dataPrevistaSaida;
-	}
-
-	public LocalDate getDataEfetivaSaida() {
-		return dataEfetivaSaida;
-	}
-
-	public void setDataEfetivaSaida(LocalDate dataEfetivaSaida) {
-		this.dataEfetivaSaida = dataEfetivaSaida;
-	}
-
-	public String getObservacoes() {
-		return this.observacoes;
-	}
-
-	public void setObservacoes(String observacoes) {
-		this.observacoes = observacoes;
-	}
-
-	public DestinacaoHospedagemEntity getDestinacaoHospedagem() {
-		return destinacaoHospedagem;
-	}
-
-	public void setDestinacaoHospedagem(DestinacaoHospedagemEntity destinacaoHospedagem) {
-		this.destinacaoHospedagem = destinacaoHospedagem;
-	}
-
-	public TipoUtilizacaoHospedagem getTipoUtilizacao() {
-		return tipoUtilizacao;
-	}
-
-	public void setTipoUtilizacao(TipoUtilizacaoHospedagem tipoUtilizacao) {
-		this.tipoUtilizacao = tipoUtilizacao;
-	}
-
-	public List<HospedeEntity> getHospedes() {
-		return this.hospedes;
-	}
-
-	public void setHospedes(List<HospedeEntity> hospedes) {
-		this.hospedes = hospedes;
-	}
-
-	public List<TipoServicoEntity> getServicos() {
-		return servicos;
-	}
-
-	public void setServicos(List<TipoServicoEntity> servicos) {
-		this.servicos = servicos;
-	}
-
-	public CellStatusHospedagem getStatus() {
-		return this.status;
-	}
-	
-	public void setStatus(CellStatusHospedagem status) {
-		this.status = status;
 	}
 }
