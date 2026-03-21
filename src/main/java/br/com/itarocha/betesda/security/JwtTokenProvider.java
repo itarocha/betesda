@@ -1,12 +1,14 @@
 package br.com.itarocha.betesda.security;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -28,40 +30,43 @@ public class JwtTokenProvider {
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-        //FIXME LocalDate? 
         Date now = new Date();
-        Date expiryDate = toDate(LocalDateTime.now().plusHours(5L)); //new Date(now.getTime() + jwtExpirationInMs); .plusMinutes(60L)
+        Date expiryDate = toDate(LocalDateTime.now().plusHours(5L));
         
-        //https://www.programcreek.com/java-api-examples/?api=io.jsonwebtoken.Jwts
         Map<String, Object> data = new HashMap<>();
         data.put("sub", userPrincipal.getId());
         data.put("username", userPrincipal.getUsername());
         data.put("name", userPrincipal.getName());
         data.put("authorities", userPrincipal.getAuthorities());
         
+        SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        
         return Jwts.builder()
-                //.setSubject(Long.toString(userPrincipal.getId()))
-                .setClaims(data)
-                .setIssuedAt(new Date())
-                .setExpiration(expiryDate)
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .claims(data)
+                .issuedAt(new Date())
+                .expiration(expiryDate)
+                .signWith(key, Jwts.SIG.HS512)
                 .compact();
     }
 
     public Long getUserIdFromJWT(String token) {
+        SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        
         Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
 
         return Long.parseLong(claims.getSubject());
     }
 
     public boolean validateToken(String authToken) {
         try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
+            SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+            Jwts.parser().verifyWith(key).build().parseSignedClaims(authToken);
             return true;
-        } catch (SignatureException ex) {
+        } catch (SecurityException ex) {
             logger.error("Invalid JWT signature");
         } catch (MalformedJwtException ex) {
             logger.error("Invalid JWT token");
