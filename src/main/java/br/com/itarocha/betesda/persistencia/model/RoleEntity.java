@@ -3,6 +3,7 @@ package br.com.itarocha.betesda.persistencia.model;
 import br.com.itarocha.betesda.model.RoleName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NaturalId;
 
 import jakarta.persistence.*;
@@ -10,6 +11,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "roles")
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class RoleEntity {
     @Id

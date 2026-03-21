@@ -3,6 +3,7 @@ package br.com.itarocha.betesda.persistencia.model;
 import br.com.itarocha.betesda.persistencia.model.audit.DateAudit;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NaturalId;
 
 import jakarta.persistence.*;
@@ -18,6 +19,7 @@ import java.util.Set;
 		@UniqueConstraint(columnNames = {"email"})
 })
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class UserEntity extends DateAudit {
 

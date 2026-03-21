@@ -3,7 +3,7 @@ package br.com.itarocha.betesda.security;
 import br.com.itarocha.betesda.exception.ResourceNotFoundException;
 import br.com.itarocha.betesda.persistencia.model.UserEntity;
 import br.com.itarocha.betesda.persistencia.repository.UserEntityRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,10 +12,10 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    UserEntityRepository userRepository;
+    private final UserEntityRepository userRepository;
 
     @Override
     @Transactional

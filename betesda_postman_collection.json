@@ -1,0 +1,1671 @@
+{
+  "info": {
+    "name": "Betesda API",
+    "description": "API de Gestão de Hospedagem - Betesda\n\nEndpoints organizados por domínio:\n- Auth: Autenticação e criação de usuários\n- Check: Health check\n- Hospedagem: Gestão de hospedagens e mapas\n- Quarto: Gerenciamento de quartos e leitos\n- Pessoas: Cadastro de pessoas/hóspedes\n- Entidades: Cadastro de entidades parceiras\n- Encaminhadores: Gestão de encaminhadores\n- Tipos: Tipo de Hóspede, Tipo de Leito, Tipo de Serviço, Situação de Leito, Destinação de Hospedagem",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8088",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Auth",
+      "item": [
+        {
+          "name": "POST Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Assinar (Criar usuário) - REQUER ROOT",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Novo Usuário\",\n  \"username\": \"novousuario\",\n  \"email\": \"email@exemplo.com\",\n  \"password\": \"123456\",\n  \"roleName\": \"USER\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/assinar",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "assinar"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Check",
+      "item": [
+        {
+          "name": "GET Health Check",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/check",
+              "host": ["{{base_url}}"],
+              "path": ["api", "check"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Destinação Hospedagem",
+      "item": [
+        {
+          "name": "GET Listar Todos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/destinacao_hospedagem",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "destinacao_hospedagem"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Buscar por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/destinacao_hospedagem/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "destinacao_hospedagem", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Criar",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descricao\": \"Nova Destinação\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/destinacao_hospedagem",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "destinacao_hospedagem"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE Excluir",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/destinacao_hospedagem/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "destinacao_hospedagem", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. Encaminhadores",
+      "item": [
+        {
+          "name": "GET Buscar por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/encaminhadores/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "encaminhadores", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Por Entidade",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/encaminhadores/por_encaminhador/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "encaminhadores", "por_encaminhador", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Criar",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Novo Encaminhador\",\n  \"entidade\": {\n    \"id\": 1\n  },\n  \"ativo\": \"S\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/encaminhadores",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "encaminhadores"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE Excluir",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/encaminhadores/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "encaminhadores", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Lista por Entidade",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/encaminhadores/lista/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "encaminhadores", "lista", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "5. Entidades",
+      "item": [
+        {
+          "name": "GET Buscar por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/entidades/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "entidades", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Listar Todos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/entidades",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "entidades"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Consultar por Texto",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/entidades/consultar/betesda",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "entidades", "consultar", "betesda"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Criar",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Nova Entidade\",\n  \"cnpj\": \"12.345.678/0001-90\",\n  \"telefone\": \"(11) 99999-9999\",\n  \"email\": \"entidade@email.com\",\n  \"ativo\": \"S\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/entidades",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "entidades"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE Excluir",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/entidades/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "entidades", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "6. Hospedagem",
+      "item": [
+        {
+          "name": "POST Criar Hospedagem",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"entidadeId\": 1,\n  \"encaminhadorId\": 1,\n  \"dataEntrada\": \"2026-01-01\",\n  \"dataPrevistaSaida\": \"2026-01-05\",\n  \"destinacaoHospedagemId\": 1,\n  \"tipoUtilizacao\": \"T\",\n  \"servicos\": []\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/hospedagem",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "hospedagem"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Mapa Geral",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dataIni\": \"2026-01-01\",\n  \"dataFim\": \"2026-01-31\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/hospedagem/mapa",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "hospedagem", "mapa"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Mapa Linhas",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dataIni\": \"2026-01-01\",\n  \"dataFim\": \"2026-01-31\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/hospedagem/mapa/linhas",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "hospedagem", "mapa", "linhas"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Mapa Hospedes",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dataIni\": \"2026-01-01\",\n  \"dataFim\": \"2026-01-31\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/hospedagem/mapa/hospedes",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "hospedagem", "mapa", "hospedes"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Mapa Cidades",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dataIni\": \"2026-01-01\",\n  \"dataFim\": \"2026-01-31\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/hospedagem/mapa/cidades",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "hospedagem", "mapa", "cidades"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Mapa Quadro",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dataIni\": \"2026-01-01\",\n  \"dataFim\": \"2026-01-31\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/hospedagem/mapa/quadro",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "hospedagem", "mapa", "quadro"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Planilha Geral",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dataIni\": \"2026-01-01\",\n  \"dataFim\": \"2026-01-31\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/hospedagem/planilha_geral",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "hospedagem", "planilha_geral"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Planilha Geral Arquivo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dataIni\": \"2026-01-01\",\n  \"dataFim\": \"2026-01-31\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/hospedagem/planilha_geral_arquivo",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "hospedagem", "planilha_geral_arquivo"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Leitos Ocupados",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dataIni\": \"2026-01-01\",\n  \"dataFim\": \"2026-01-31\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/hospedagem/leitos_ocupados",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "hospedagem", "leitos_ocupados"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Alterar Hóspede",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hospedeLeitoId\": 1,\n  \"hospedagemId\": 1,\n  \"dataEntrada\": \"2026-01-01\",\n  \"dataSaida\": \"2026-01-05\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/hospedagem/mapa/alterar_hospede",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "hospedagem", "mapa", "alterar_hospede"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Encerramento",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hospedagemId\": 1,\n  \"dataSaida\": \"2026-01-15\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/hospedagem/mapa/encerramento",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "hospedagem", "mapa", "encerramento"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Renovação",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hospedagemId\": 1,\n  \"novaDataPrevistaSaida\": \"2026-02-15\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/hospedagem/mapa/renovacao",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "hospedagem", "mapa", "renovacao"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Remover Hóspede",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hospedeLeitoId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/hospedagem/remover_hospede",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "hospedagem", "remover_hospede"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Baixar",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hospedeLeitoId\": 1,\n  \"dataSaida\": \"2026-01-10\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/hospedagem/mapa/baixar",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "hospedagem", "mapa", "baixar"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Transferir",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hospedeLeitoId\": 1,\n  \"leitoIdDestino\": 2,\n  \"dataTransferencia\": \"2026-01-05\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/hospedagem/mapa/transferir",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "hospedagem", "mapa", "transferir"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Adicionar Hóspede",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hospedagemId\": 1,\n  \"hospedeId\": 1,\n  \"leitoId\": 1,\n  \"dataEntrada\": \"2026-01-01\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/hospedagem/mapa/adicionar",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "hospedagem", "mapa", "adicionar"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Hospedagem Info",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hospedagemId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/hospedagem/mapa/hospedagem_info",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "hospedagem", "mapa", "hospedagem_info"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE Excluir Hospedagem",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/hospedagem/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "hospedagem", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "7. Pessoas",
+      "item": [
+        {
+          "name": "GET Buscar por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/pessoas/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "pessoas", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Filtrar",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fieldName\": \"nome\",\n  \"value\": \"João\",\n  \"operator\": \"like\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/pessoas/filtrar",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "pessoas", "filtrar"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Listar Todos (Deprecated)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/pessoas",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "pessoas"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Consultar por Texto",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/pessoas/consultar/joao",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "pessoas", "consultar", "joao"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Criar",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"João Silva\",\n  \"cpf\": \"123.456.789-00\",\n  \"dataNascimento\": \"1990-01-15\",\n  \"sexo\": \"M\",\n  \"estadoCivil\": \"S\",\n  \"telefone\": \"(11) 99999-9999\",\n  \"email\": \"joao@email.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/pessoas",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "pessoas"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE Excluir",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/pessoas/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "pessoas", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "8. Quarto",
+      "item": [
+        {
+          "name": "GET Listar Todos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/quarto",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "quarto"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Buscar por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/quarto/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "quarto", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Buscar Leito",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/quarto/leito/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "quarto", "leito", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Por Destinação",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/quarto/por_destinacao_hospedagem/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "quarto", "por_destinacao_hospedagem", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Listar Leitos do Quarto",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/quarto/1/leitos",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "quarto", "1", "leitos"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Leitos Disponíveis",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/quarto/leitos_disponiveis",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "quarto", "leitos_disponiveis"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Criar Quarto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numero\": 101,\n  \"descricao\": \"Quarto Individual\",\n  \"destinacoes\": [1],\n  \"quantidadeLeitos\": 1,\n  \"tipoLeito\": 1,\n  \"situacao\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/quarto",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "quarto"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Alterar Quarto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"numero\": 101,\n  \"descricao\": \"Quarto Alterado\",\n  \"destinacoes\": [1]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/quarto/alterar",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "quarto", "alterar"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Criar Leito",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quartoId\": 1,\n  \"numero\": 1,\n  \"tipoLeito\": 1,\n  \"situacao\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/quarto/leito",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "quarto", "leito"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE Excluir Quarto",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/quarto/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "quarto", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE Excluir Leito",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/quarto/leito/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "quarto", "leito", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Listas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/quarto/listas",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "quarto", "listas"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "9. Situação Leito",
+      "item": [
+        {
+          "name": "GET Listar Todos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/situacao_leito",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "situacao_leito"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Buscar por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/situacao_leito/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "situacao_leito", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Criar",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descricao\": \"Novo Status\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/situacao_leito",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "situacao_leito"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE Excluir",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/situacao_leito/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "situacao_leito", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "10. Tipo Hóspede",
+      "item": [
+        {
+          "name": "GET Listar Todos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/tipo_hospede",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "tipo_hospede"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Buscar por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/tipo_hospede/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "tipo_hospede", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Criar",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descricao\": \"Novo Tipo de Hóspede\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/tipo_hospede",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "tipo_hospede"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE Excluir",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/tipo_hospede/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "tipo_hospede", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "11. Tipo Leito",
+      "item": [
+        {
+          "name": "GET Listar Todos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/tipo_leito",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "tipo_leito"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Buscar por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/tipo_leito/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "tipo_leito", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Criar",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descricao\": \"Novo Tipo de Leito\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/tipo_leito",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "tipo_leito"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE Excluir",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/tipo_leito/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "tipo_leito", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "12. Tipo Serviço",
+      "item": [
+        {
+          "name": "GET Listar Todos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/tipo_servico",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "tipo_servico"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Buscar por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/tipo_servico/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "tipo_servico", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Criar",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descricao\": \"Novo Tipo de Serviço\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/app/tipo_servico",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "tipo_servico"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE Excluir",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app/tipo_servico/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "app", "tipo_servico", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

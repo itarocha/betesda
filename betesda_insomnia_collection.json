@@ -1,0 +1,1416 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "_import_export_format_version": "4",
+  "resources": [
+    {
+      "_id": "wrk_betesda",
+      "name": "Betesda API",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_betesda",
+      "name": "Betesda Environment",
+      "parentId": "wrk_betesda",
+      "variables": [
+        {
+          "key": "base_url",
+          "value": "http://localhost:8088",
+          "type": "string"
+        },
+        {
+          "key": "token",
+          "value": "",
+          "type": "string"
+        }
+      ],
+      "_type": "environment"
+    },
+    {
+      "_id": "fld_auth",
+      "name": "1. Auth",
+      "parentId": "wrk_betesda",
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_login",
+      "name": "POST Login",
+      "parentId": "fld_auth",
+      "method": "POST",
+      "url": "{{base_url}}/api/auth/login",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"username\": \"admin\",\n  \"password\": \"123456\"\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_assinar",
+      "name": "POST Assinar (Criar usuário)",
+      "parentId": "fld_auth",
+      "method": "POST",
+      "url": "{{base_url}}/api/auth/assinar",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"name\": \"Novo Usuário\",\n  \"username\": \"novousuario\",\n  \"email\": \"email@exemplo.com\",\n  \"password\": \"123456\",\n  \"roleName\": \"USER\"\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "fld_check",
+      "name": "2. Check",
+      "parentId": "wrk_betesda",
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_check",
+      "name": "GET Health Check",
+      "parentId": "fld_check",
+      "method": "GET",
+      "url": "{{base_url}}/api/check",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "fld_destinacao",
+      "name": "3. Destinação Hospedagem",
+      "parentId": "wrk_betesda",
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_dest_get_all",
+      "name": "GET Listar Todos",
+      "parentId": "fld_destinacao",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/destinacao_hospedagem",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_dest_get_id",
+      "name": "GET Buscar por ID",
+      "parentId": "fld_destinacao",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/destinacao_hospedagem/1",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_dest_create",
+      "name": "POST Criar",
+      "parentId": "fld_destinacao",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/destinacao_hospedagem",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"descricao\": \"Nova Destinação\"\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_dest_delete",
+      "name": "DELETE Excluir",
+      "parentId": "fld_destinacao",
+      "method": "DELETE",
+      "url": "{{base_url}}/api/app/destinacao_hospedagem/1",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "fld_encaminhadores",
+      "name": "4. Encaminhadores",
+      "parentId": "wrk_betesda",
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_enc_get_id",
+      "name": "GET Buscar por ID",
+      "parentId": "fld_encaminhadores",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/encaminhadores/1",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_enc_get_por_entidade",
+      "name": "GET Por Entidade",
+      "parentId": "fld_encaminhadores",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/encaminhadores/por_encaminhador/1",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_enc_create",
+      "name": "POST Criar",
+      "parentId": "fld_encaminhadores",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/encaminhadores",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"nome\": \"Novo Encaminhador\",\n  \"entidade\": {\n    \"id\": 1\n  },\n  \"ativo\": \"S\"\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_enc_delete",
+      "name": "DELETE Excluir",
+      "parentId": "fld_encaminhadores",
+      "method": "DELETE",
+      "url": "{{base_url}}/api/app/encaminhadores/1",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_enc_lista",
+      "name": "GET Lista por Entidade",
+      "parentId": "fld_encaminhadores",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/encaminhadores/lista/1",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "fld_entidades",
+      "name": "5. Entidades",
+      "parentId": "wrk_betesda",
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_ent_get_id",
+      "name": "GET Buscar por ID",
+      "parentId": "fld_entidades",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/entidades/1",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_ent_get_all",
+      "name": "GET Listar Todos",
+      "parentId": "fld_entidades",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/entidades",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_ent_consultar",
+      "name": "GET Consultar por Texto",
+      "parentId": "fld_entidades",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/entidades/consultar/betesda",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_ent_create",
+      "name": "POST Criar",
+      "parentId": "fld_entidades",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/entidades",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"nome\": \"Nova Entidade\",\n  \"cnpj\": \"12.345.678/0001-90\",\n  \"telefone\": \"(11) 99999-9999\",\n  \"email\": \"entidade@email.com\",\n  \"ativo\": \"S\"\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_ent_delete",
+      "name": "DELETE Excluir",
+      "parentId": "fld_entidades",
+      "method": "DELETE",
+      "url": "{{base_url}}/api/app/entidades/1",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "fld_hospedagem",
+      "name": "6. Hospedagem",
+      "parentId": "wrk_betesda",
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_hosp_create",
+      "name": "POST Criar Hospedagem",
+      "parentId": "fld_hospedagem",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/hospedagem",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"entidadeId\": 1,\n  \"encaminhadorId\": 1,\n  \"dataEntrada\": \"2026-01-01\",\n  \"dataPrevistaSaida\": \"2026-01-05\",\n  \"destinacaoHospedagemId\": 1,\n  \"tipoUtilizacao\": \"T\",\n  \"servicos\": []\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_hosp_mapa",
+      "name": "POST Mapa Geral",
+      "parentId": "fld_hospedagem",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/hospedagem/mapa",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"dataIni\": \"2026-01-01\",\n  \"dataFim\": \"2026-01-31\"\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_hosp_mapa_linhas",
+      "name": "POST Mapa Linhas",
+      "parentId": "fld_hospedagem",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/hospedagem/mapa/linhas",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"dataIni\": \"2026-01-01\",\n  \"dataFim\": \"2026-01-31\"\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_hosp_mapa_hospedes",
+      "name": "POST Mapa Hospedes",
+      "parentId": "fld_hospedagem",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/hospedagem/mapa/hospedes",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"dataIni\": \"2026-01-01\",\n  \"dataFim\": \"2026-01-31\"\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_hosp_mapa_cidades",
+      "name": "POST Mapa Cidades",
+      "parentId": "fld_hospedagem",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/hospedagem/mapa/cidades",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"dataIni\": \"2026-01-01\",\n  \"dataFim\": \"2026-01-31\"\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_hosp_mapa_quadro",
+      "name": "POST Mapa Quadro",
+      "parentId": "fld_hospedagem",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/hospedagem/mapa/quadro",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"dataIni\": \"2026-01-01\",\n  \"dataFim\": \"2026-01-31\"\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_hosp_planilha_geral",
+      "name": "POST Planilha Geral",
+      "parentId": "fld_hospedagem",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/hospedagem/planilha_geral",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"dataIni\": \"2026-01-01\",\n  \"dataFim\": \"2026-01-31\"\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_hosp_planilha_arquivo",
+      "name": "POST Planilha Geral Arquivo",
+      "parentId": "fld_hospedagem",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/hospedagem/planilha_geral_arquivo",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"dataIni\": \"2026-01-01\",\n  \"dataFim\": \"2026-01-31\"\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_hosp_leitos_ocupados",
+      "name": "POST Leitos Ocupados",
+      "parentId": "fld_hospedagem",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/hospedagem/leitos_ocupados",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"dataIni\": \"2026-01-01\",\n  \"dataFim\": \"2026-01-31\"\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_hosp_alterar_hospede",
+      "name": "POST Alterar Hóspede",
+      "parentId": "fld_hospedagem",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/hospedagem/mapa/alterar_hospede",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"hospedeLeitoId\": 1,\n  \"hospedagemId\": 1,\n  \"dataEntrada\": \"2026-01-01\",\n  \"dataSaida\": \"2026-01-05\"\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_hosp_encerramento",
+      "name": "POST Encerramento",
+      "parentId": "fld_hospedagem",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/hospedagem/mapa/encerramento",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"hospedagemId\": 1,\n  \"dataSaida\": \"2026-01-15\"\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_hosp_renovacao",
+      "name": "POST Renovação",
+      "parentId": "fld_hospedagem",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/hospedagem/mapa/renovacao",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"hospedagemId\": 1,\n  \"novaDataPrevistaSaida\": \"2026-02-15\"\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_hosp_remover_hospede",
+      "name": "POST Remover Hóspede",
+      "parentId": "fld_hospedagem",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/hospedagem/remover_hospede",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"hospedeLeitoId\": 1\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_hosp_baixar",
+      "name": "POST Baixar",
+      "parentId": "fld_hospedagem",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/hospedagem/mapa/baixar",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"hospedeLeitoId\": 1,\n  \"dataSaida\": \"2026-01-10\"\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_hosp_transferir",
+      "name": "POST Transferir",
+      "parentId": "fld_hospedagem",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/hospedagem/mapa/transferir",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"hospedeLeitoId\": 1,\n  \"leitoIdDestino\": 2,\n  \"dataTransferencia\": \"2026-01-05\"\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_hosp_adicionar",
+      "name": "POST Adicionar Hóspede",
+      "parentId": "fld_hospedagem",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/hospedagem/mapa/adicionar",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"hospedagemId\": 1,\n  \"hospedeId\": 1,\n  \"leitoId\": 1,\n  \"dataEntrada\": \"2026-01-01\"\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_hosp_info",
+      "name": "POST Hospedagem Info",
+      "parentId": "fld_hospedagem",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/hospedagem/mapa/hospedagem_info",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"hospedagemId\": 1\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_hosp_delete",
+      "name": "DELETE Excluir Hospedagem",
+      "parentId": "fld_hospedagem",
+      "method": "DELETE",
+      "url": "{{base_url}}/api/app/hospedagem/1",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "fld_pessoas",
+      "name": "7. Pessoas",
+      "parentId": "wrk_betesda",
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_pes_get_id",
+      "name": "GET Buscar por ID",
+      "parentId": "fld_pessoas",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/pessoas/1",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_pes_filtrar",
+      "name": "POST Filtrar",
+      "parentId": "fld_pessoas",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/pessoas/filtrar",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"fieldName\": \"nome\",\n  \"value\": \"João\",\n  \"operator\": \"like\"\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_pes_get_all",
+      "name": "GET Listar Todos (Deprecated)",
+      "parentId": "fld_pessoas",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/pessoas",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_pes_consultar",
+      "name": "GET Consultar por Texto",
+      "parentId": "fld_pessoas",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/pessoas/consultar/joao",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_pes_create",
+      "name": "POST Criar",
+      "parentId": "fld_pessoas",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/pessoas",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"nome\": \"João Silva\",\n  \"cpf\": \"123.456.789-00\",\n  \"dataNascimento\": \"1990-01-15\",\n  \"sexo\": \"M\",\n  \"estadoCivil\": \"S\",\n  \"telefone\": \"(11) 99999-9999\",\n  \"email\": \"joao@email.com\"\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_pes_delete",
+      "name": "DELETE Excluir",
+      "parentId": "fld_pessoas",
+      "method": "DELETE",
+      "url": "{{base_url}}/api/app/pessoas/1",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "fld_quarto",
+      "name": "8. Quarto",
+      "parentId": "wrk_betesda",
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_quarto_get_all",
+      "name": "GET Listar Todos",
+      "parentId": "fld_quarto",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/quarto",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_quarto_get_id",
+      "name": "GET Buscar por ID",
+      "parentId": "fld_quarto",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/quarto/1",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_quarto_get_leito",
+      "name": "GET Buscar Leito",
+      "parentId": "fld_quarto",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/quarto/leito/1",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_quarto_por_destinacao",
+      "name": "GET Por Destinação",
+      "parentId": "fld_quarto",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/quarto/por_destinacao_hospedagem/1",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_quarto_leitos",
+      "name": "GET Listar Leitos do Quarto",
+      "parentId": "fld_quarto",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/quarto/1/leitos",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_quarto_leitos_disp",
+      "name": "GET Leitos Disponíveis",
+      "parentId": "fld_quarto",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/quarto/leitos_disponiveis",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_quarto_create",
+      "name": "POST Criar Quarto",
+      "parentId": "fld_quarto",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/quarto",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"numero\": 101,\n  \"descricao\": \"Quarto Individual\",\n  \"destinacoes\": [1],\n  \"quantidadeLeitos\": 1,\n  \"tipoLeito\": 1,\n  \"situacao\": 1\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_quarto_alterar",
+      "name": "POST Alterar Quarto",
+      "parentId": "fld_quarto",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/quarto/alterar",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"id\": 1,\n  \"numero\": 101,\n  \"descricao\": \"Quarto Alterado\",\n  \"destinacoes\": [1]\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_quarto_leito_create",
+      "name": "POST Criar Leito",
+      "parentId": "fld_quarto",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/quarto/leito",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"quartoId\": 1,\n  \"numero\": 1,\n  \"tipoLeito\": 1,\n  \"situacao\": 1\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_quarto_delete",
+      "name": "DELETE Excluir Quarto",
+      "parentId": "fld_quarto",
+      "method": "DELETE",
+      "url": "{{base_url}}/api/app/quarto/1",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_quarto_leito_delete",
+      "name": "DELETE Excluir Leito",
+      "parentId": "fld_quarto",
+      "method": "DELETE",
+      "url": "{{base_url}}/api/app/quarto/leito/1",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_quarto_listas",
+      "name": "GET Listas",
+      "parentId": "fld_quarto",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/quarto/listas",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "fld_situacao_leito",
+      "name": "9. Situação Leito",
+      "parentId": "wrk_betesda",
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_sl_get_all",
+      "name": "GET Listar Todos",
+      "parentId": "fld_situacao_leito",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/situacao_leito",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_sl_get_id",
+      "name": "GET Buscar por ID",
+      "parentId": "fld_situacao_leito",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/situacao_leito/1",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_sl_create",
+      "name": "POST Criar",
+      "parentId": "fld_situacao_leito",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/situacao_leito",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"descricao\": \"Novo Status\"\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_sl_delete",
+      "name": "DELETE Excluir",
+      "parentId": "fld_situacao_leito",
+      "method": "DELETE",
+      "url": "{{base_url}}/api/app/situacao_leito/1",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "fld_tipo_hospede",
+      "name": "10. Tipo Hóspede",
+      "parentId": "wrk_betesda",
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_th_get_all",
+      "name": "GET Listar Todos",
+      "parentId": "fld_tipo_hospede",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/tipo_hospede",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_th_get_id",
+      "name": "GET Buscar por ID",
+      "parentId": "fld_tipo_hospede",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/tipo_hospede/1",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_th_create",
+      "name": "POST Criar",
+      "parentId": "fld_tipo_hospede",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/tipo_hospede",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"descricao\": \"Novo Tipo de Hóspede\"\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_th_delete",
+      "name": "DELETE Excluir",
+      "parentId": "fld_tipo_hospede",
+      "method": "DELETE",
+      "url": "{{base_url}}/api/app/tipo_hospede/1",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "fld_tipo_leito",
+      "name": "11. Tipo Leito",
+      "parentId": "wrk_betesda",
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_tl_get_all",
+      "name": "GET Listar Todos",
+      "parentId": "fld_tipo_leito",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/tipo_leito",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_tl_get_id",
+      "name": "GET Buscar por ID",
+      "parentId": "fld_tipo_leito",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/tipo_leito/1",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_tl_create",
+      "name": "POST Criar",
+      "parentId": "fld_tipo_leito",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/tipo_leito",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"descricao\": \"Novo Tipo de Leito\"\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_tl_delete",
+      "name": "DELETE Excluir",
+      "parentId": "fld_tipo_leito",
+      "method": "DELETE",
+      "url": "{{base_url}}/api/app/tipo_leito/1",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "fld_tipo_servico",
+      "name": "12. Tipo Serviço",
+      "parentId": "wrk_betesda",
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_ts_get_all",
+      "name": "GET Listar Todos",
+      "parentId": "fld_tipo_servico",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/tipo_servico",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_ts_get_id",
+      "name": "GET Buscar por ID",
+      "parentId": "fld_tipo_servico",
+      "method": "GET",
+      "url": "{{base_url}}/api/app/tipo_servico/1",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_ts_create",
+      "name": "POST Criar",
+      "parentId": "fld_tipo_servico",
+      "method": "POST",
+      "url": "{{base_url}}/api/app/tipo_servico",
+      "body": {
+        "mode": "json",
+        "json": "{\n  \"descricao\": \"Novo Tipo de Serviço\"\n}"
+      },
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_ts_delete",
+      "name": "DELETE Excluir",
+      "parentId": "fld_tipo_servico",
+      "method": "DELETE",
+      "url": "{{base_url}}/api/app/tipo_servico/1",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "_type": "request"
+    }
+  ]
+}

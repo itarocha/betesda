@@ -64,22 +64,14 @@ public class SecurityConfig {
             .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/",
-                    "/favicon.ico",
-                    "/**/*.png",
-                    "/**/*.gif",
-                    "/**/*.svg",
-                    "/**/*.jpg",
-                    "/**/*.xlsx",
-                    "/**/*.xls",
-                    "/**/*.html",
-                    "/**/*.css",
-                    "/**/*.js"
-                ).permitAll()
+                .requestMatchers("/").permitAll()
+                .requestMatchers("/favicon.ico").permitAll()
+                .requestMatchers("/api/check").permitAll()
                 .requestMatchers("/api/check/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/user/checkUsernameAvailability", "/api/user/checkEmailAvailability").permitAll()
+                .requestMatchers("/api/user/checkUsernameAvailability").permitAll()
+                .requestMatchers("/api/user/checkEmailAvailability").permitAll()
+                .requestMatchers("/error").permitAll()
                 .anyRequest().authenticated()
             );
 

@@ -34,10 +34,10 @@ public class JwtTokenProvider {
         Date expiryDate = toDate(LocalDateTime.now().plusHours(5L));
         
         Map<String, Object> data = new HashMap<>();
-        data.put("sub", userPrincipal.getId());
+        data.put("sub", userPrincipal.getId().toString());
         data.put("username", userPrincipal.getUsername());
         data.put("name", userPrincipal.getName());
-        data.put("authorities", userPrincipal.getAuthorities());
+        data.put("authorities", userPrincipal.getAuthorities().toString());
         
         SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
         
@@ -45,7 +45,7 @@ public class JwtTokenProvider {
                 .claims(data)
                 .issuedAt(new Date())
                 .expiration(expiryDate)
-                .signWith(key, Jwts.SIG.HS512)
+                .signWith(key)
                 .compact();
     }
 
