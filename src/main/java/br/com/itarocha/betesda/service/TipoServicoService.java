@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.service;
 
 import br.com.itarocha.betesda.model.SelectValueVO;
-import br.com.itarocha.betesda.model.TipoServicoEntity;
-import br.com.itarocha.betesda.repository.TipoServicoEntityRepository;
+import br.com.itarocha.betesda.persistencia.model.TipoServicoEntity;
+import br.com.itarocha.betesda.persistencia.repository.TipoServicoEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

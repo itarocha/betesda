@@ -1,15 +1,15 @@
 package br.com.itarocha.betesda.controller;
 
 import br.com.itarocha.betesda.exception.AppException;
-import br.com.itarocha.betesda.model.RoleEntity;
+import br.com.itarocha.betesda.persistencia.model.RoleEntity;
 import br.com.itarocha.betesda.model.RoleName;
-import br.com.itarocha.betesda.model.UserEntity;
+import br.com.itarocha.betesda.persistencia.model.UserEntity;
 import br.com.itarocha.betesda.payload.ApiResponse;
 import br.com.itarocha.betesda.payload.JwtAuthenticationResponse;
 import br.com.itarocha.betesda.payload.LoginRequest;
 import br.com.itarocha.betesda.payload.SignUpRequest;
-import br.com.itarocha.betesda.repository.RoleEntityRepository;
-import br.com.itarocha.betesda.repository.UserEntityRepository;
+import br.com.itarocha.betesda.persistencia.repository.RoleEntityRepository;
+import br.com.itarocha.betesda.persistencia.repository.UserEntityRepository;
 import br.com.itarocha.betesda.security.JwtTokenProvider;
 import br.com.itarocha.betesda.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;

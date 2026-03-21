@@ -1,7 +1,12 @@
 package br.com.itarocha.betesda.service;
 
 import br.com.itarocha.betesda.model.*;
-import br.com.itarocha.betesda.repository.*;
+import br.com.itarocha.betesda.persistencia.model.DestinacaoHospedagemEntity;
+import br.com.itarocha.betesda.persistencia.model.LeitoEntity;
+import br.com.itarocha.betesda.persistencia.model.QuartoEntity;
+import br.com.itarocha.betesda.persistencia.model.SituacaoLeitoEntity;
+import br.com.itarocha.betesda.persistencia.model.TipoLeitoEntity;
+import br.com.itarocha.betesda.persistencia.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

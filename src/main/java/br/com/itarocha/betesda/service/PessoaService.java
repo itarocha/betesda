@@ -1,10 +1,10 @@
 package br.com.itarocha.betesda.service;
 
 import br.com.itarocha.betesda.exception.ValidationException;
-import br.com.itarocha.betesda.model.EnderecoEntity;
-import br.com.itarocha.betesda.model.PessoaEntity;
-import br.com.itarocha.betesda.repository.EnderecoEntityRepository;
-import br.com.itarocha.betesda.repository.PessoaEntityRepository;
+import br.com.itarocha.betesda.persistencia.model.EnderecoEntity;
+import br.com.itarocha.betesda.persistencia.model.PessoaEntity;
+import br.com.itarocha.betesda.persistencia.repository.EnderecoEntityRepository;
+import br.com.itarocha.betesda.persistencia.repository.PessoaEntityRepository;
 import br.com.itarocha.betesda.util.validation.ResultError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;

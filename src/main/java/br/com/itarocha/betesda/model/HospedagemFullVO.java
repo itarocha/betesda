@@ -1,6 +1,11 @@
 package br.com.itarocha.betesda.model;
 
 import br.com.itarocha.betesda.model.hospedagem.CellStatusHospedagem;
+import br.com.itarocha.betesda.persistencia.model.DestinacaoHospedagemEntity;
+import br.com.itarocha.betesda.persistencia.model.EncaminhadorEntity;
+import br.com.itarocha.betesda.persistencia.model.EntidadeEntity;
+import br.com.itarocha.betesda.persistencia.model.HospedeEntity;
+import br.com.itarocha.betesda.persistencia.model.TipoServicoEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDate;

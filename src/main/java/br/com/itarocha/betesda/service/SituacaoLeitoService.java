@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.service;
 
 import br.com.itarocha.betesda.model.SelectValueVO;
-import br.com.itarocha.betesda.model.SituacaoLeitoEntity;
-import br.com.itarocha.betesda.repository.SituacaoLeitoEntityRepository;
+import br.com.itarocha.betesda.persistencia.model.SituacaoLeitoEntity;
+import br.com.itarocha.betesda.persistencia.repository.SituacaoLeitoEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

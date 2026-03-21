@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.service;
 
-import br.com.itarocha.betesda.model.DestinacaoHospedagemEntity;
+import br.com.itarocha.betesda.persistencia.model.DestinacaoHospedagemEntity;
 import br.com.itarocha.betesda.model.SelectValueVO;
-import br.com.itarocha.betesda.repository.DestinacaoHospedagemEntityRepository;
+import br.com.itarocha.betesda.persistencia.repository.DestinacaoHospedagemEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

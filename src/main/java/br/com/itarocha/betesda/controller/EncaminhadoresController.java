@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.controller;
 
-import br.com.itarocha.betesda.model.EncaminhadorEntity;
+import br.com.itarocha.betesda.persistencia.model.EncaminhadorEntity;
 import br.com.itarocha.betesda.model.SelectValueVO;
 import br.com.itarocha.betesda.service.EncaminhadorService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;

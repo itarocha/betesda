@@ -1,8 +1,0 @@
-package br.com.itarocha.betesda.repository;
-
-import br.com.itarocha.betesda.model.HospedeEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
-
-public interface HospedeEntityRepository extends JpaRepository<HospedeEntity, Long> {
-
-}

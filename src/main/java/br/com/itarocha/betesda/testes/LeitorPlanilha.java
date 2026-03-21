@@ -1,5 +1,6 @@
 package br.com.itarocha.betesda.testes;
 
+import br.com.itarocha.betesda.persistencia.model.PlanilhaPacienteEntity;
 import br.com.itarocha.betesda.utils.ValidadorCpf;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;

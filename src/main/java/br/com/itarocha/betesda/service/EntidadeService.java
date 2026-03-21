@@ -1,10 +1,10 @@
 package br.com.itarocha.betesda.service;
 
 import br.com.itarocha.betesda.exception.ValidationException;
-import br.com.itarocha.betesda.model.EntidadeEntity;
+import br.com.itarocha.betesda.persistencia.model.EntidadeEntity;
 import br.com.itarocha.betesda.model.SelectValueVO;
-import br.com.itarocha.betesda.repository.EnderecoEntityRepository;
-import br.com.itarocha.betesda.repository.EntidadeEntityRepository;
+import br.com.itarocha.betesda.persistencia.repository.EnderecoEntityRepository;
+import br.com.itarocha.betesda.persistencia.repository.EntidadeEntityRepository;
 import br.com.itarocha.betesda.util.validation.ResultError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

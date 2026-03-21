@@ -1,5 +1,7 @@
 package br.com.itarocha.betesda.model;
 
+import br.com.itarocha.betesda.persistencia.model.EncaminhadorEntity;
+import br.com.itarocha.betesda.persistencia.model.EntidadeEntity;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;

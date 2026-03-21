@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.controller;
 
-import br.com.itarocha.betesda.model.TipoLeitoEntity;
+import br.com.itarocha.betesda.persistencia.model.TipoLeitoEntity;
 import br.com.itarocha.betesda.service.TipoLeitoService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
 import org.springframework.beans.factory.annotation.Autowired;
