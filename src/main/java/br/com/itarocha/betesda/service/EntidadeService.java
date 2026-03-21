@@ -1,10 +1,10 @@
 package br.com.itarocha.betesda.service;
 
 import br.com.itarocha.betesda.exception.ValidationException;
-import br.com.itarocha.betesda.model.Entidade;
+import br.com.itarocha.betesda.model.EntidadeEntity;
 import br.com.itarocha.betesda.model.SelectValueVO;
-import br.com.itarocha.betesda.repository.EnderecoRepository;
-import br.com.itarocha.betesda.repository.EntidadeRepository;
+import br.com.itarocha.betesda.repository.EnderecoEntityRepository;
+import br.com.itarocha.betesda.repository.EntidadeEntityRepository;
 import br.com.itarocha.betesda.util.validation.ResultError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,15 +22,15 @@ public class EntidadeService {
 	private EntityManager em;
 
 	@Autowired
-	private EntidadeRepository repositorio;
+	private EntidadeEntityRepository repositorio;
 
 	@Autowired
-	private EnderecoRepository enderecoRepo;
+	private EnderecoEntityRepository enderecoRepo;
 
 	public EntidadeService() {
 	}
 
-	public Entidade create(Entidade model) throws ValidationException {
+	public EntidadeEntity create(EntidadeEntity model) throws ValidationException {
 		try{
 			
 			Long id = model.getId() == null ? 0L : model.getId();
@@ -50,37 +50,37 @@ public class EntidadeService {
 	}
 
 	public void remove(Long id) {
-		Optional<Entidade> model = find(id);
+		Optional<EntidadeEntity> model = find(id);
 		if (model.isPresent()) {
 			repositorio.delete(model.get());
 		}
 	}
 
-	public Entidade update(Entidade model) {
-		Optional<Entidade> obj = find(model.getId());
+	public EntidadeEntity update(EntidadeEntity model) {
+		Optional<EntidadeEntity> obj = find(model.getId());
 		if (obj.isPresent()) {
 			return repositorio.save(model);
 		}
 		return model;
 	}
 
-	public Optional<Entidade> find(Long id) {
+	public Optional<EntidadeEntity> find(Long id) {
 		return repositorio.findById(id);
 	}
 
-	public List<Entidade> findAll() {
-		return em.createQuery("SELECT model FROM Entidade model ORDER BY model.nome", Entidade.class).getResultList();
+	public List<EntidadeEntity> findAll() {
+		return em.createQuery("SELECT model FROM EntidadeEntity model ORDER BY model.nome", EntidadeEntity.class).getResultList();
 	}
 
-	public List<Entidade> consultar(String texto) {
-		return em.createQuery("SELECT model FROM Entidade model WHERE lower(model.nome) LIKE :texto ORDER BY model.nome", Entidade.class)
+	public List<EntidadeEntity> consultar(String texto) {
+		return em.createQuery("SELECT model FROM EntidadeEntity model WHERE lower(model.nome) LIKE :texto ORDER BY model.nome", EntidadeEntity.class)
 				.setParameter("texto", "%"+texto.toLowerCase()+"%")
 				.getResultList();
 	}
 
 	public List<SelectValueVO> listSelect() {
 		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
-		em.createQuery("SELECT e FROM Entidade e ORDER BY e.nome",Entidade.class)
+		em.createQuery("SELECT e FROM EntidadeEntity e ORDER BY e.nome",EntidadeEntity.class)
 			.getResultList()
 			.forEach(x -> retorno.add(new SelectValueVO(x.getId(), x.getNome())));
 		return retorno;

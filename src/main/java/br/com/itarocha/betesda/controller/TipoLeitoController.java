@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.controller;
 
-import br.com.itarocha.betesda.model.TipoLeito;
+import br.com.itarocha.betesda.model.TipoLeitoEntity;
 import br.com.itarocha.betesda.service.TipoLeitoService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +21,15 @@ public class TipoLeitoController {
 	@RequestMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
-		List<TipoLeito> lista = service.findAll();
-	    return new ResponseEntity<List<TipoLeito>>(lista, HttpStatus.OK);
+		List<TipoLeitoEntity> lista = service.findAll();
+	    return new ResponseEntity<List<TipoLeitoEntity>>(lista, HttpStatus.OK);
 	}
 
 	@RequestMapping(value="{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		try {
-			TipoLeito model = service.find(id);
+			TipoLeitoEntity model = service.find(id);
 			if (model != null) {
 				return new ResponseEntity<>(model, HttpStatus.OK);
 			} else {
@@ -42,17 +42,17 @@ public class TipoLeitoController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody TipoLeito model) {
-		ItaValidator<TipoLeito> v = new ItaValidator<TipoLeito>(model);
+	public ResponseEntity<?> gravar(@RequestBody TipoLeitoEntity model) {
+		ItaValidator<TipoLeitoEntity> v = new ItaValidator<TipoLeitoEntity>(model);
 		v.validate();
 		if (!v.hasErrors() ) {
 			return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
 		}
 		
 		try {
-			TipoLeito saved = null;
+			TipoLeitoEntity saved = null;
 			saved = service.create(model);
-		    return new ResponseEntity<TipoLeito>(saved, HttpStatus.OK);
+		    return new ResponseEntity<TipoLeitoEntity>(saved, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

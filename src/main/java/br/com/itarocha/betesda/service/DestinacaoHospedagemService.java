@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.service;
 
-import br.com.itarocha.betesda.model.DestinacaoHospedagem;
+import br.com.itarocha.betesda.model.DestinacaoHospedagemEntity;
 import br.com.itarocha.betesda.model.SelectValueVO;
-import br.com.itarocha.betesda.repository.DestinacaoHospedagemRepository;
+import br.com.itarocha.betesda.repository.DestinacaoHospedagemEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +19,9 @@ public class DestinacaoHospedagemService {
 	private EntityManager em;
 	
 	@Autowired
-	private DestinacaoHospedagemRepository repositorio;
+	private DestinacaoHospedagemEntityRepository repositorio;
 
-	public DestinacaoHospedagem create(DestinacaoHospedagem model) {
+	public DestinacaoHospedagemEntity create(DestinacaoHospedagemEntity model) {
 		try{
 			return repositorio.save(model);
 		}catch(Exception e){
@@ -30,14 +30,14 @@ public class DestinacaoHospedagemService {
 	}
 
 	public void remove(Long id) {
-		DestinacaoHospedagem model = find(id);
+		DestinacaoHospedagemEntity model = find(id);
 		if (model != null) {
 			repositorio.delete(model);
 		}
 	}
 	
-	public DestinacaoHospedagem find(Long id) {
-		Optional<DestinacaoHospedagem> retorno = repositorio.findById(id);
+	public DestinacaoHospedagemEntity find(Long id) {
+		Optional<DestinacaoHospedagemEntity> retorno = repositorio.findById(id);
 		if (retorno.isPresent()) {
 			return retorno.get(); 
 		} else {
@@ -45,14 +45,14 @@ public class DestinacaoHospedagemService {
 		}
 	}
 
-	public List<DestinacaoHospedagem> findAll() {
-		TypedQuery query = em.createQuery("SELECT model FROM DestinacaoHospedagem model ORDER BY model.descricao", DestinacaoHospedagem.class);
+	public List<DestinacaoHospedagemEntity> findAll() {
+		TypedQuery query = em.createQuery("SELECT model FROM DestinacaoHospedagemEntity model ORDER BY model.descricao", DestinacaoHospedagemEntity.class);
 		return query.getResultList();
 	}
 
 	public List<SelectValueVO> listSelect() {
 		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
-		em.createQuery("SELECT model FROM DestinacaoHospedagem model ORDER BY model.descricao", DestinacaoHospedagem.class)
+		em.createQuery("SELECT model FROM DestinacaoHospedagemEntity model ORDER BY model.descricao", DestinacaoHospedagemEntity.class)
 		.getResultList()
 		.forEach(x -> retorno.add(new SelectValueVO(x.getId(), x.getDescricao())));
 		return retorno;

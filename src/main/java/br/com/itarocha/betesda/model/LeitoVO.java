@@ -10,13 +10,13 @@ public class LeitoVO {
 
 	private Integer quartoNumero;
 	
-	private TipoLeito tipoLeito;
+	private TipoLeitoEntity tipoLeito;
 	
 	public LeitoVO() {
 		
 	}
 	
-	public LeitoVO(Long id, Integer numero, Long quartoId, Integer quartoNumero, TipoLeito tipoLeito) {
+	public LeitoVO(Long id, Integer numero, Long quartoId, Integer quartoNumero, TipoLeitoEntity tipoLeito) {
 		this.id = id;
 		this.numero = numero;
 		this.quartoId = quartoId;
@@ -56,11 +56,11 @@ public class LeitoVO {
 		this.quartoNumero = quartoNumero;
 	}
 
-	public TipoLeito getTipoLeito() {
+	public TipoLeitoEntity getTipoLeito() {
 		return tipoLeito;
 	}
 
-	public void setTipoLeito(TipoLeito tipoLeito) {
+	public void setTipoLeito(TipoLeitoEntity tipoLeito) {
 		this.tipoLeito = tipoLeito;
 	}
 

@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.report;
 
-import br.com.itarocha.betesda.model.Hospedagem;
-import br.com.itarocha.betesda.model.Hospede;
-import br.com.itarocha.betesda.model.Pessoa;
+import br.com.itarocha.betesda.model.HospedagemEntity;
+import br.com.itarocha.betesda.model.HospedeEntity;
+import br.com.itarocha.betesda.model.PessoaEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDate;
@@ -17,9 +17,9 @@ public class HospedePermanencia {
 	private LocalDate dataSaida;
 	private String tipoUtilizacao;
 	private Integer diasPermanencia;
-	private Pessoa pessoa;
-	private Hospedagem hospedagem;
-	private Hospede hospede;
+	private PessoaEntity pessoa;
+	private HospedagemEntity hospedagem;
+	private HospedeEntity hospede;
 	
 	public HospedePermanencia(
 			Long pessoaId, 
@@ -28,9 +28,9 @@ public class HospedePermanencia {
 			LocalDate dataEntrada, 
 			LocalDate dataSaida, 
 			String tipoUtilizacao, 
-			Hospedagem hospedagem,
-			Hospede hospede,
-			Pessoa pessoa) {
+			HospedagemEntity hospedagem,
+			HospedeEntity hospede,
+			PessoaEntity pessoa) {
 		
 		this.pessoaId = pessoaId;
 		this.hospedagemId = hospedagemId;
@@ -99,27 +99,27 @@ public class HospedePermanencia {
 		this.diasPermanencia = diasPermanencia;
 	}
 
-	public Pessoa getPessoa() {
+	public PessoaEntity getPessoa() {
 		return pessoa;
 	}
 
-	public void setPessoa(Pessoa pessoa) {
+	public void setPessoa(PessoaEntity pessoa) {
 		this.pessoa = pessoa;
 	}
 
-	public Hospedagem getHospedagem() {
+	public HospedagemEntity getHospedagem() {
 		return hospedagem;
 	}
 
-	public void setHospedagem(Hospedagem hospedagem) {
+	public void setHospedagem(HospedagemEntity hospedagem) {
 		this.hospedagem = hospedagem;
 	}
 
-	public Hospede getHospede() {
+	public HospedeEntity getHospede() {
 		return hospede;
 	}
 
-	public void setHospede(Hospede hospede) {
+	public void setHospede(HospedeEntity hospede) {
 		this.hospede = hospede;
 	}
 

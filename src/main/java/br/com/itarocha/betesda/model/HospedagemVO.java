@@ -12,12 +12,12 @@ public class HospedagemVO {
 	@NotNull(message="Entidade precisa ser informada")
 	private Long entidadeId;
 	
-	private Entidade entidade;
+	private EntidadeEntity entidade;
 
 	@NotNull(message="Encaminhador precisa ser informado")
 	private Long encaminhadorId;
 	
-	private Encaminhador encaminhador;
+	private EncaminhadorEntity encaminhador;
 	
 	@NotNull(message="Data de Entrada precisa ser informada")
 	private LocalDate dataEntrada;
@@ -55,11 +55,11 @@ public class HospedagemVO {
 		this.entidadeId = entidadeId;
 	}
 
-	public Entidade getEntidade() {
+	public EntidadeEntity getEntidade() {
 		return entidade;
 	}
 
-	public void setEntidade(Entidade entidade) {
+	public void setEntidade(EntidadeEntity entidade) {
 		this.entidade = entidade;
 	}
 
@@ -71,11 +71,11 @@ public class HospedagemVO {
 		this.encaminhadorId = encaminhadorId;
 	}
 
-	public Encaminhador getEncaminhador() {
+	public EncaminhadorEntity getEncaminhador() {
 		return encaminhador;
 	}
 
-	public void setEncaminhador(Encaminhador encaminhador) {
+	public void setEncaminhador(EncaminhadorEntity encaminhador) {
 		this.encaminhador = encaminhador;
 	}
 

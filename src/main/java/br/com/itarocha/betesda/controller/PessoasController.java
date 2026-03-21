@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.controller;
 
 import br.com.itarocha.betesda.exception.ValidationException;
-import br.com.itarocha.betesda.model.Pessoa;
+import br.com.itarocha.betesda.model.PessoaEntity;
 import br.com.itarocha.betesda.model.SearchRequest;
 import br.com.itarocha.betesda.service.PessoaService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
@@ -27,9 +27,9 @@ public class PessoasController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		try {
-			Optional<Pessoa> model = service.find(id);
+			Optional<PessoaEntity> model = service.find(id);
 			if (model.isPresent()) {
-				return new ResponseEntity<Pessoa>(model.get(), HttpStatus.OK);
+				return new ResponseEntity<PessoaEntity>(model.get(), HttpStatus.OK);
 			} else {
 				return new ResponseEntity<String>("não encontrado", HttpStatus.NOT_FOUND);
 			}
@@ -42,36 +42,36 @@ public class PessoasController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listarComCriterio(@RequestBody SearchRequest search) {
 		
-		List<Pessoa> lista = new ArrayList<>();
+		List<PessoaEntity> lista = new ArrayList<>();
 		if (search.getValue().length() >= 3) {
 			lista = service.findByFieldNameAndValue(search.getFieldName(), "%"+search.getValue()+"%");
 		}
 		
-		//List<Pessoa> lista = service.findByFieldNameAndValue("cpf", "%282%");
-		return new ResponseEntity<List<Pessoa>>(lista, HttpStatus.OK);
+		//List<PessoaEntity> lista = service.findByFieldNameAndValue("cpf", "%282%");
+		return new ResponseEntity<List<PessoaEntity>>(lista, HttpStatus.OK);
 	}
 	
 	@Deprecated
 	@RequestMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
-		//List<Pessoa> lista = service.findAll();
+		//List<PessoaEntity> lista = service.findAll();
 		
-		List<Pessoa> lista = service.findByFieldNameAndValue("nome", "%MAR%");
-		//List<Pessoa> lista = service.findByFieldNameAndValue("cpf", "%282%");
-		return new ResponseEntity<List<Pessoa>>(lista, HttpStatus.OK);
+		List<PessoaEntity> lista = service.findByFieldNameAndValue("nome", "%MAR%");
+		//List<PessoaEntity> lista = service.findByFieldNameAndValue("cpf", "%282%");
+		return new ResponseEntity<List<PessoaEntity>>(lista, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/consultar/{texto}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> consultar(@PathVariable("texto") String texto) {
-		List<Pessoa> lista = service.consultar(texto);
-		return new ResponseEntity<List<Pessoa>>(lista, HttpStatus.OK);
+		List<PessoaEntity> lista = service.consultar(texto);
+		return new ResponseEntity<List<PessoaEntity>>(lista, HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody Pessoa model) {
+	public ResponseEntity<?> gravar(@RequestBody PessoaEntity model) {
 		if (model.getCartaoSus() != null) {
 			model.setCartaoSus(model.getCartaoSus().replaceAll("\\.", ""));
 		}
@@ -82,7 +82,7 @@ public class PessoasController {
 			model.getEndereco().setCep((model.getEndereco().getCep().replaceAll("\\-", "")));
 		}
 		
-		ItaValidator<Pessoa> v = new ItaValidator<Pessoa>(model);
+		ItaValidator<PessoaEntity> v = new ItaValidator<PessoaEntity>(model);
 		v.validate();
 		
 		if (model.getCpf() != null && model.getCpf() != "") {
@@ -96,9 +96,9 @@ public class PessoasController {
 		}
 		
 		try {
-			Pessoa saved = null;
+			PessoaEntity saved = null;
 			saved = service.create(model);
-		    return new ResponseEntity<Pessoa>(saved, HttpStatus.OK);
+		    return new ResponseEntity<PessoaEntity>(saved, HttpStatus.OK);
 		} catch (ValidationException e) {
 			ResponseEntity<?> re = new ResponseEntity<>(e.getRe(), HttpStatus.BAD_REQUEST); 
 			return re;

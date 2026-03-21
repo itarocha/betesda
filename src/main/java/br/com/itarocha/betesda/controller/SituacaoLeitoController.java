@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.controller;
 
-import br.com.itarocha.betesda.model.SituacaoLeito;
+import br.com.itarocha.betesda.model.SituacaoLeitoEntity;
 import br.com.itarocha.betesda.service.SituacaoLeitoService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +21,15 @@ public class SituacaoLeitoController {
 	@RequestMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
-		List<SituacaoLeito> lista = service.findAll();
-	    return new ResponseEntity<List<SituacaoLeito>>(lista, HttpStatus.OK);
+		List<SituacaoLeitoEntity> lista = service.findAll();
+	    return new ResponseEntity<List<SituacaoLeitoEntity>>(lista, HttpStatus.OK);
 	}
 
 	@RequestMapping(value="{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		try {
-			SituacaoLeito model = service.find(id);
+			SituacaoLeitoEntity model = service.find(id);
 			if (model != null) {
 				return new ResponseEntity<>(model, HttpStatus.OK);
 			} else {
@@ -42,17 +42,17 @@ public class SituacaoLeitoController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody SituacaoLeito model) {
-		ItaValidator<SituacaoLeito> v = new ItaValidator<SituacaoLeito>(model);
+	public ResponseEntity<?> gravar(@RequestBody SituacaoLeitoEntity model) {
+		ItaValidator<SituacaoLeitoEntity> v = new ItaValidator<SituacaoLeitoEntity>(model);
 		v.validate();
 		if (!v.hasErrors() ) {
 			return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
 		}
 		
 		try {
-			SituacaoLeito saved = null;
+			SituacaoLeitoEntity saved = null;
 			saved = service.create(model);
-		    return new ResponseEntity<SituacaoLeito>(saved, HttpStatus.OK);
+		    return new ResponseEntity<SituacaoLeitoEntity>(saved, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

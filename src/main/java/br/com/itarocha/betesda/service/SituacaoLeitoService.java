@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.service;
 
 import br.com.itarocha.betesda.model.SelectValueVO;
-import br.com.itarocha.betesda.model.SituacaoLeito;
-import br.com.itarocha.betesda.repository.SituacaoLeitoRepository;
+import br.com.itarocha.betesda.model.SituacaoLeitoEntity;
+import br.com.itarocha.betesda.repository.SituacaoLeitoEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +14,9 @@ import java.util.Optional;
 public class SituacaoLeitoService {
 
 	@Autowired
-	private SituacaoLeitoRepository repositorio;
+	private SituacaoLeitoEntityRepository repositorio;
 
-	public SituacaoLeito create(SituacaoLeito model) {
+	public SituacaoLeitoEntity create(SituacaoLeitoEntity model) {
 		try{
 			return repositorio.save(model);
 		}catch(Exception e){
@@ -25,14 +25,14 @@ public class SituacaoLeitoService {
 	}
 
 	public void remove(Long id) {
-		SituacaoLeito model = find(id);
+		SituacaoLeitoEntity model = find(id);
 		if (model != null) {
 			repositorio.delete(model);
 		}		
 	}
 
-	public SituacaoLeito find(Long id) {
-		Optional<SituacaoLeito> retorno = repositorio.findById(id);
+	public SituacaoLeitoEntity find(Long id) {
+		Optional<SituacaoLeitoEntity> retorno = repositorio.findById(id);
 		if (retorno.isPresent()) {
 			return retorno.get(); 
 		} else {
@@ -40,13 +40,13 @@ public class SituacaoLeitoService {
 		}
 	}
 
-	public List<SituacaoLeito> findAll() {
+	public List<SituacaoLeitoEntity> findAll() {
 		return repositorio.findAllOrderByDescricao();
 	}
 	
 	public List<SelectValueVO> listSelect() {
 		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
-		List<SituacaoLeito> lst = repositorio.findAllOrderByDescricao();
+		List<SituacaoLeitoEntity> lst = repositorio.findAllOrderByDescricao();
 		lst.forEach(x -> retorno.add(new SelectValueVO(x.getId(), x.getDescricao())));
 		return retorno;
 	}

@@ -1,15 +1,15 @@
 package br.com.itarocha.betesda.controller;
 
 import br.com.itarocha.betesda.exception.AppException;
-import br.com.itarocha.betesda.model.Role;
+import br.com.itarocha.betesda.model.RoleEntity;
 import br.com.itarocha.betesda.model.RoleName;
-import br.com.itarocha.betesda.model.User;
+import br.com.itarocha.betesda.model.UserEntity;
 import br.com.itarocha.betesda.payload.ApiResponse;
 import br.com.itarocha.betesda.payload.JwtAuthenticationResponse;
 import br.com.itarocha.betesda.payload.LoginRequest;
 import br.com.itarocha.betesda.payload.SignUpRequest;
-import br.com.itarocha.betesda.repository.RoleRepository;
-import br.com.itarocha.betesda.repository.UserRepository;
+import br.com.itarocha.betesda.repository.RoleEntityRepository;
+import br.com.itarocha.betesda.repository.UserEntityRepository;
 import br.com.itarocha.betesda.security.JwtTokenProvider;
 import br.com.itarocha.betesda.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +39,10 @@ public class AuthController {
     AuthenticationManager authenticationManager;
 
     @Autowired
-    UserRepository userRepository;
+    UserEntityRepository userRepository;
 
     @Autowired
-    RoleRepository roleRepository;
+    RoleEntityRepository roleRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -86,16 +86,16 @@ public class AuthController {
         }
 
         // Creating user's account
-        User user = new User(signUpRequest.getName(), signUpRequest.getUsername(), signUpRequest.getEmail(), signUpRequest.getPassword());
+        UserEntity user = new UserEntity(signUpRequest.getName(), signUpRequest.getUsername(), signUpRequest.getEmail(), signUpRequest.getPassword());
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
+        RoleEntity userRole = roleRepository.findByName(RoleName.ROLE_USER)
                 .orElseThrow(() -> new AppException("User Role not set."));
 
         user.setRoles(Collections.singleton(userRole));
 
-        User result = userRepository.save(user);
+        UserEntity result = userRepository.save(user);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/api/users/{username}")

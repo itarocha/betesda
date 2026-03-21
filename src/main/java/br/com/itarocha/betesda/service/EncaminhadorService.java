@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.service;
 
-import br.com.itarocha.betesda.model.Encaminhador;
+import br.com.itarocha.betesda.model.EncaminhadorEntity;
 import br.com.itarocha.betesda.model.SelectValueVO;
-import br.com.itarocha.betesda.repository.EncaminhadorRepository;
+import br.com.itarocha.betesda.repository.EncaminhadorEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,13 +18,13 @@ public class EncaminhadorService {
 	private EntityManager em;
 
 	@Autowired
-	private EncaminhadorRepository repositorio;
+	private EncaminhadorEntityRepository repositorio;
 
 	
 	public EncaminhadorService() {
 	}
 
-	public Encaminhador create(Encaminhador model) {
+	public EncaminhadorEntity create(EncaminhadorEntity model) {
 		try{
 			repositorio.save(model);
 		}catch(Exception e){
@@ -34,26 +34,26 @@ public class EncaminhadorService {
 	}
 
 	public void remove(Long id) {
-		Optional<Encaminhador> model = find(id);
+		Optional<EncaminhadorEntity> model = find(id);
 		if (model.isPresent()) {
 			repositorio.delete(model.get());
 		}
 	}
 
-	public Encaminhador update(Encaminhador model) {
-		Optional<Encaminhador> obj = find(model.getId());
+	public EncaminhadorEntity update(EncaminhadorEntity model) {
+		Optional<EncaminhadorEntity> obj = find(model.getId());
 		if (obj.isPresent()) {
 			return repositorio.save(model);
 		}
 		return model;
 	}
 
-	public Optional<Encaminhador> find(Long id) {
+	public Optional<EncaminhadorEntity> find(Long id) {
 		return repositorio.findById(id);
 	}
 
-	public List<Encaminhador> findAll(Long entidadeId) {
-		return em.createQuery("SELECT model FROM Encaminhador model WHERE model.entidade.id = :entidadeId ORDER BY model.nome", Encaminhador.class)
+	public List<EncaminhadorEntity> findAll(Long entidadeId) {
+		return em.createQuery("SELECT model FROM EncaminhadorEntity model WHERE model.entidade.id = :entidadeId ORDER BY model.nome", EncaminhadorEntity.class)
 				.setParameter("entidadeId", entidadeId)
 				.getResultList();
 	}
@@ -61,7 +61,7 @@ public class EncaminhadorService {
 	//TODO Por código da entidade
 	public List<SelectValueVO> listSelect(Long entidadeId) {
 		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
-		em.createQuery("SELECT model FROM Encaminhador model WHERE model.entidade.id = :entidadeId AND model.ativo = 'S' ORDER BY model.nome",Encaminhador.class)
+		em.createQuery("SELECT model FROM EncaminhadorEntity model WHERE model.entidade.id = :entidadeId AND model.ativo = 'S' ORDER BY model.nome",EncaminhadorEntity.class)
 			.setParameter("entidadeId", entidadeId)
 			.getResultList()
 			.forEach(x -> retorno.add(new SelectValueVO(x.getId(), x.getNome())));

@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.controller;
 
-import br.com.itarocha.betesda.model.DestinacaoHospedagem;
+import br.com.itarocha.betesda.model.DestinacaoHospedagemEntity;
 import br.com.itarocha.betesda.service.DestinacaoHospedagemService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +21,15 @@ public class DestinacaoHospedagemController {
 	@RequestMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
-		List<DestinacaoHospedagem> lista = service.findAll();
-	    return new ResponseEntity<List<DestinacaoHospedagem>>(lista, HttpStatus.OK);
+		List<DestinacaoHospedagemEntity> lista = service.findAll();
+	    return new ResponseEntity<List<DestinacaoHospedagemEntity>>(lista, HttpStatus.OK);
 	}
 
 	@RequestMapping(value="{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		try {
-			DestinacaoHospedagem model = service.find(id);
+			DestinacaoHospedagemEntity model = service.find(id);
 			if (model != null) {
 				return new ResponseEntity<>(model, HttpStatus.OK);
 			} else {
@@ -42,17 +42,17 @@ public class DestinacaoHospedagemController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody DestinacaoHospedagem model) {
-		ItaValidator<DestinacaoHospedagem> v = new ItaValidator<DestinacaoHospedagem>(model);
+	public ResponseEntity<?> gravar(@RequestBody DestinacaoHospedagemEntity model) {
+		ItaValidator<DestinacaoHospedagemEntity> v = new ItaValidator<DestinacaoHospedagemEntity>(model);
 		v.validate();
 		if (!v.hasErrors() ) {
 			return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
 		}
 		
 		try {
-			DestinacaoHospedagem saved = null;
+			DestinacaoHospedagemEntity saved = null;
 			saved = service.create(model);
-		    return new ResponseEntity<DestinacaoHospedagem>(saved, HttpStatus.OK);
+		    return new ResponseEntity<DestinacaoHospedagemEntity>(saved, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

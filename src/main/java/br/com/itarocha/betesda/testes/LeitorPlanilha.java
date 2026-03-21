@@ -17,12 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/*
-import br.itarocha.hotelaria.model.PlanilhaEstadia;
-import br.itarocha.hotelaria.model.PlanilhaPaciente;
-import br.itarocha.hotelaria.repository.PlanilhaEstadiaRepository;
-import br.itarocha.hotelaria.repository.PlanilhaPacienteRepository;
-*/
+
 
 @Component
 public class LeitorPlanilha {
@@ -30,7 +25,7 @@ public class LeitorPlanilha {
 	private static final String FILE_NAME = "/home/itamar/projetos_spring/betesda/planilha/betesda122018.xlsm";
 	
 	//@Autowired
-	//private PlanilhaPacienteRepository repoPaciente;
+	//private PlanilhaPacienteEntityRepository repoPaciente;
 	
 	//@Autowired
 	//private PlanilhaEstadiaRepository repoEstadia;
@@ -55,7 +50,7 @@ public class LeitorPlanilha {
 	}
 	
 	private void go(TipoPlanilha tipo) {
-		List<PlanilhaPaciente> lista = new ArrayList<>();
+		List<PlanilhaPacienteEntity> lista = new ArrayList<>();
 		
         try {
             FileInputStream excelFile = new FileInputStream(new File(FILE_NAME));
@@ -78,7 +73,7 @@ public class LeitorPlanilha {
             for (Row row: datatypeSheet) {
             	if (TipoPlanilha.PACIENTE.equals(tipo)) {
             		i++;
-            		PlanilhaPaciente p = extractPlanilhaPaciente(row);
+            		PlanilhaPacienteEntity p = extractPlanilhaPacienteEntity(row);
             		lista.add(p);
             		System.out.println(String.format("%d - %s %s", i, p.getNome(), p.getSobrenome() ) );
             	} else if (TipoPlanilha.ESTADIA.equals(tipo)) {
@@ -99,13 +94,13 @@ public class LeitorPlanilha {
         }	
         System.out.println("PRONTO!!! ");
         
-        PlanilhaPacienteBuilder.make(lista);
+        PlanilhaPacienteEntityBuilder.make(lista);
 	}
 	
-	private PlanilhaPaciente extractPlanilhaPaciente(Row row) {
+	private PlanilhaPacienteEntity extractPlanilhaPacienteEntity(Row row) {
 		DataFormatter formatter = new DataFormatter();
 
-		PlanilhaPaciente p = new PlanilhaPaciente();
+		PlanilhaPacienteEntity p = new PlanilhaPacienteEntity();
 		//System.out.println("LINHA #" + row.getRowNum());
 		
 		p.setCodigo( formatter.formatCellValue(row.getCell(0)) );
@@ -258,7 +253,7 @@ public class LeitorPlanilha {
 					System.out.println(String.format("%s - %s",conteudo, text));
 					
 				}
-				inserirPlanilhaPaciente(row);
+				inserirPlanilhaPacienteEntity(row);
 			}
 
 			// DO STUF WITH WORKBOOK
@@ -278,10 +273,10 @@ public class LeitorPlanilha {
 	}
 	
 
-	private void inserirPlanilhaPaciente(Row row) {
+	private void inserirPlanilhaPacienteEntity(Row row) {
 		DataFormatter formatter = new DataFormatter();
 
-		PlanilhaPaciente p = new PlanilhaPaciente();
+		PlanilhaPacienteEntity p = new PlanilhaPacienteEntityEntity();
 		//System.out.println("LINHA #" + row.getRowNum());
 		
 		p.setCodigo( formatter.formatCellValue(row.getCell(0)) );
@@ -325,7 +320,7 @@ public class LeitorPlanilha {
 	private void inserirPlanilhaEstadia(Row row) {
 		DataFormatter formatter = new DataFormatter();
 
-		PlanilhaEstadia p = new PlanilhaEstadia();
+		PlanilhaEstadia p = new PlanilhaEstadiaEntity();
 		//System.out.println("LINHA #" + row.getRowNum());
 		
 		p.setCodigo( formatter.formatCellValue(row.getCell(0)) );

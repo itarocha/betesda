@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.controller;
 
-import br.com.itarocha.betesda.model.TipoHospede;
+import br.com.itarocha.betesda.model.TipoHospedeEntity;
 import br.com.itarocha.betesda.service.TipoHospedeService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +21,15 @@ public class TipoHospedeController {
 	@RequestMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
-		List<TipoHospede> lista = service.findAll();
-	    return new ResponseEntity<List<TipoHospede>>(lista, HttpStatus.OK);
+		List<TipoHospedeEntity> lista = service.findAll();
+	    return new ResponseEntity<List<TipoHospedeEntity>>(lista, HttpStatus.OK);
 	}
 
 	@RequestMapping(value="{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		try {
-			TipoHospede model = service.find(id);
+			TipoHospedeEntity model = service.find(id);
 			if (model != null) {
 				return new ResponseEntity<>(model, HttpStatus.OK);
 			} else {
@@ -42,17 +42,17 @@ public class TipoHospedeController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody TipoHospede model) {
-		ItaValidator<TipoHospede> v = new ItaValidator<TipoHospede>(model);
+	public ResponseEntity<?> gravar(@RequestBody TipoHospedeEntity model) {
+		ItaValidator<TipoHospedeEntity> v = new ItaValidator<TipoHospedeEntity>(model);
 		v.validate();
 		if (!v.hasErrors() ) {
 			return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
 		}
 		
 		try {
-			TipoHospede saved = null;
+			TipoHospedeEntity saved = null;
 			saved = service.create(model);
-		    return new ResponseEntity<TipoHospede>(saved, HttpStatus.OK);
+		    return new ResponseEntity<TipoHospedeEntity>(saved, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

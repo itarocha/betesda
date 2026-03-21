@@ -30,40 +30,40 @@ public class HospedagemService {
 	private EntityManager em;
 	
 	@Autowired
-	private DestinacaoHospedagemRepository destinacaoHospedagemRepo;
+	private DestinacaoHospedagemEntityRepository destinacaoHospedagemRepo;
 	
 	@Autowired
-	private HospedagemRepository hospedagemRepo;
+	private HospedagemEntityRepository hospedagemRepo;
 	
 	@Autowired
-	private PessoaRepository pessoaRepo;
+	private PessoaEntityRepository pessoaRepo;
 	
 	@Autowired
-	private TipoHospedeRepository tipoHospedeRepo;
+	private TipoHospedeEntityRepository tipoHospedeRepo;
 	
 	@Autowired
-	private QuartoRepository quartoRepo;
+	private QuartoEntityRepository quartoRepo;
 	
 	@Autowired
-	private LeitoRepository leitoRepo;
+	private LeitoEntityRepository leitoRepo;
 	
 	@Autowired
-	private HospedeLeitoRepository hospedeLeitoRepo;
+	private HospedeLeitoEntityRepository hospedeLeitoRepo;
 	
 	@Autowired
-	private HospedeRepository hospedeRepo;
+	private HospedeEntityRepository hospedeRepo;
 	
 	@Autowired
-	private TipoServicoRepository tipoServicoRepo;
+	private TipoServicoEntityRepository tipoServicoRepo;
 	
 	@Autowired
-	private EntidadeRepository entidadeRepo;
+	private EntidadeEntityRepository entidadeRepo;
 	
 	@Autowired
-	private EncaminhadorRepository encaminhadorRepo;
+	private EncaminhadorEntityRepository encaminhadorRepo;
 	
 	@Autowired
-	private HospedagemTipoServicoRepository hospedagemTipoServicoRepo;
+	private HospedagemTipoServicoEntityRepository hospedagemTipoServicoRepo;
 	
 	@Autowired
 	private QuartoService quartoService;
@@ -71,8 +71,8 @@ public class HospedagemService {
 	DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	
 
-	public Hospedagem create(HospedagemVO model) throws ValidationException {
-		Hospedagem hospedagem = null;
+	public HospedagemEntity create(HospedagemVO model) throws ValidationException {
+		HospedagemEntity hospedagem = null;
 
 		LocalDate hoje = LocalDate.now();
 			
@@ -92,20 +92,20 @@ public class HospedagemService {
 			}
 		}
 		
-		hospedagem = new Hospedagem();
+		hospedagem = new HospedagemEntity();
 		
-		Optional<Entidade> entidade = entidadeRepo.findById(model.getEntidadeId());
+		Optional<EntidadeEntity> entidade = entidadeRepo.findById(model.getEntidadeId());
 		hospedagem.setEntidade(entidade.get());
 		model.setEntidade(entidade.get());
 		
-		Optional<Encaminhador> encaminhador = encaminhadorRepo.findById(model.getEncaminhadorId());
+		Optional<EncaminhadorEntity> encaminhador = encaminhadorRepo.findById(model.getEncaminhadorId());
 		hospedagem.setEncaminhador(encaminhador.get());
 		model.setEncaminhador(encaminhador.get());
 		
 		hospedagem.setDataEntrada(model.getDataEntrada());
 		hospedagem.setDataPrevistaSaida(model.getDataPrevistaSaida());
 		
-		Optional<DestinacaoHospedagem> dest = destinacaoHospedagemRepo.findById(model.getDestinacaoHospedagemId());
+		Optional<DestinacaoHospedagemEntity> dest = destinacaoHospedagemRepo.findById(model.getDestinacaoHospedagemId());
 		hospedagem.setDestinacaoHospedagem(dest.get());
 		model.setDestinacaoHospedagemDescricao(dest.get().getDescricao());
 		
@@ -118,17 +118,17 @@ public class HospedagemService {
 		model.setId(hospedagem.getId()); 
 		
 		for (HospedeVO hvo: model.getHospedes()) {
-			Hospede h = new Hospede();
+			HospedeEntity h = new HospedeEntity();
 			h.setHospedagem(hospedagem);
 			
-			Optional<Pessoa> p = pessoaRepo.findById(hvo.getPessoaId());
+			Optional<PessoaEntity> p = pessoaRepo.findById(hvo.getPessoaId());
 			// se p == null throw
 			h.setPessoa(p.get());
 			hvo.setPessoaId(p.get().getId());
 			hvo.setPessoaNome(p.get().getNome());
 			hvo.setPessoaDataNascimento(p.get().getDataNascimento());
 			
-			Optional<TipoHospede> th = tipoHospedeRepo.findById(hvo.getTipoHospedeId());
+			Optional<TipoHospedeEntity> th = tipoHospedeRepo.findById(hvo.getTipoHospedeId());
 			h.setTipoHospede(th.get());
 			hvo.setTipoHospedeDescricao(th.get().getDescricao());
 			h = hospedeRepo.save(h);
@@ -138,11 +138,11 @@ public class HospedagemService {
 			
 		    if ((hvo.getAcomodacao() != null) && (TipoUtilizacaoHospedagem.T.equals(hospedagem.getTipoUtilizacao())) ) {
 		    	//TODO: Tem um código igual no transferir. Refatorar criar método
-		    	Optional<Quarto> quarto = quartoRepo.findById(hvo.getAcomodacao().getQuartoId());
-		    	Optional<Leito> leito = leitoRepo.findById(hvo.getAcomodacao().getLeitoId());
+		    	Optional<QuartoEntity> quarto = quartoRepo.findById(hvo.getAcomodacao().getQuartoId());
+		    	Optional<LeitoEntity> leito = leitoRepo.findById(hvo.getAcomodacao().getLeitoId());
 
 		    	if (quarto.isPresent() && leito.isPresent()) {
-		    		HospedeLeito hl = new HospedeLeito();
+		    		HospedeLeitoEntity hl = new HospedeLeitoEntity();
 		    		hl.setHospede(h);
 		    		hl.setDataEntrada(hospedagem.getDataEntrada());
 		    		hl.setDataSaida(hospedagem.getDataPrevistaSaida());
@@ -162,9 +162,9 @@ public class HospedagemService {
 		}
 		if ((model.getServicos().length > 0) && (TipoUtilizacaoHospedagem.P.equals(hospedagem.getTipoUtilizacao())) ) {
 			for (Long tipoServicoId : model.getServicos()) {
-				Optional<TipoServico> ts = tipoServicoRepo.findById(tipoServicoId);
+				Optional<TipoServicoEntity> ts = tipoServicoRepo.findById(tipoServicoId);
 				if (ts.isPresent()) {
-					HospedagemTipoServico servico = new HospedagemTipoServico();
+					HospedagemTipoServicoEntity servico = new HospedagemTipoServicoEntity();
 					servico.setTipoServico(ts.get());
 					servico.setHospedagem(hospedagem);
 					hospedagemTipoServicoRepo.save(servico);
@@ -500,7 +500,7 @@ public class HospedagemService {
 		Quadro quadro = new Quadro(); 
 
 		// Busca quartos e leitos do banco
-		List<Quarto> listQuartos = quartoService.findAll();
+		List<QuartoEntity> listQuartos = quartoService.findAll();
 		// Cria os quartos e verifica minimo e maximo dos leitos
 		listQuartos.forEach(q -> {
 			quadro.quartos.add(new QuadroQuarto( q.getId(), q.getNumero()));
@@ -742,7 +742,7 @@ public class HospedagemService {
 		Quadro quadro = new Quadro(); 
 
 		// Busca quartos e leitos do banco
-		List<Quarto> listQuartos = quartoService.findAll();
+		List<QuartoEntity> listQuartos = quartoService.findAll();
 		// Cria os quartos e verifica minimo e maximo dos leitos
 		listQuartos.forEach(q -> {
 			quadro.quartos.add(new QuadroQuarto( q.getId(), q.getNumero()));
@@ -841,15 +841,15 @@ public class HospedagemService {
 	}
 
 	public HospedagemFullVO getHospedagemPorHospedeLeitoId(Long hospedagemId) {
-		Hospedagem h = hospedagemRepo.findHospedagemByHospedagemId(hospedagemId);
+		HospedagemEntity h = hospedagemRepo.findHospedagemByHospedagemId(hospedagemId);
 		HospedagemFullVO retorno = new HospedagemFullVO();
 		
 		if (h == null) {
 			return retorno;
 		}
 		
-		for (HospedagemTipoServico hts: h.getServicos()) {
-			TipoServico servico = hts.getTipoServico();
+		for (HospedagemTipoServicoEntity hts: h.getServicos()) {
+			TipoServicoEntity servico = hts.getTipoServico();
 			retorno.getServicos().add(servico);
 		}
 		
@@ -870,8 +870,8 @@ public class HospedagemService {
 		CellStatusHospedagem status = resolveStatusHospedagemNew(LocalDate.now(), h.getDataPrevistaSaida(), h.getDataEfetivaSaida());
 		retorno.setStatus(status);
 		
-		for (Hospede hospede: h.getHospedes()) {
-			for (HospedeLeito hl : hospede.getLeitos()) {
+		for (HospedeEntity hospede: h.getHospedes()) {
+			for (HospedeLeitoEntity hl : hospede.getLeitos()) {
 				LeitoVO leito = qLeitos.setParameter("id", hl.getId()) .getSingleResult();
 				hl.setQuartoNumero( leito.getQuartoNumero() );
 				hl.setLeitoNumero( leito.getNumero() );
@@ -885,14 +885,14 @@ public class HospedagemService {
 		* hospedagem = getHospedagem(hospedagemId)
 		* Condição: se hospedagem.status == aberta
 		* Condição: dataEncerramento >= hospedagem.dataEntrada
-		* hospedagemLeito = getUltimoHospedagemLeito(hospedagemId)
-		* Para cada hospedeLeito - hospedagemLeito.setDataSaída(dataEncerramento)
+		* hospedagemLeitoEntity = getUltimoHospedagemLeito(hospedagemId)
+		* Para cada hospedeLeitoEntity - hospedagemLeito.setDataSaída(dataEncerramento)
 		* hospedagem.setDataPrevistaSaida(dataEncerramento)
 		*/
-		Optional<Hospedagem> opt  = hospedagemRepo.findById(hospedagemId);
+		Optional<HospedagemEntity> opt  = hospedagemRepo.findById(hospedagemId);
 		if (opt.isPresent()) {
 			
-			Hospedagem h = opt.get();
+			HospedagemEntity h = opt.get();
 			if ((h.getDataEfetivaSaida() != null)) {
 				throw new ValidationException(new ResultError().addError("*", "Hospedagem deve ter status = emAberto"));
 			}
@@ -922,15 +922,15 @@ public class HospedagemService {
 						String.format("Data de Encerramento deve ser inferior a data Prevista de Saída (%s)",fmt.format(h.getDataPrevistaSaida()))));
 			}
 			
-			List<HospedeLeito> hlToSave = new ArrayList<HospedeLeito>();
+			List<HospedeLeitoEntity> hlToSave = new ArrayList<HospedeLeitoEntity>();
 			
 			if (TipoUtilizacaoHospedagem.T.equals(h.getTipoUtilizacao())) {
-				List<Hospede> hospedes = h.getHospedes();
-				for (Hospede hpd : hospedes) {
+				List<HospedeEntity> hospedes = h.getHospedes();
+				for (HospedeEntity hpd : hospedes) {
 
-					List<HospedeLeito> listaHospedeLeito = hospedeLeitoRepo.findUltimoByHospedeId(hpd.getId());
+					List<HospedeLeitoEntity> listaHospedeLeito = hospedeLeitoRepo.findUltimoByHospedeId(hpd.getId());
 					
-					for (HospedeLeito hl : listaHospedeLeito) {
+					for (HospedeLeitoEntity hl : listaHospedeLeito) {
 						if (Logico.N.equals(hpd.getBaixado())) {
 							hlToSave.add(hl);
 						}
@@ -938,7 +938,7 @@ public class HospedagemService {
 				}
 			}
 
-			for (HospedeLeito hl : hlToSave) {
+			for (HospedeLeitoEntity hl : hlToSave) {
 				hl.setDataSaida(dataEncerramento);
 				hospedeLeitoRepo.save(hl);
 			}	
@@ -949,19 +949,19 @@ public class HospedagemService {
 	} 
 	
 	public void baixarHospede(Long hospedeId, LocalDate dataBaixa) throws ValidationException{
-		Optional<Hospede> hospedeOpt = hospedeRepo.findById(hospedeId);
+		Optional<HospedeEntity> hospedeOpt = hospedeRepo.findById(hospedeId);
 		if (hospedeOpt.isPresent()) {
 			Long hospedagemId = hospedeOpt.get().getHospedagem().getId();
-			Hospede hospede = hospedeOpt.get();
+			HospedeEntity hospede = hospedeOpt.get();
 
 			if ((Logico.S.equals(hospede.getBaixado())  )) {
 				throw new ValidationException(new ResultError().addError("*", "Hóspede já está baixado"));
 			}
 
-			Optional<Hospedagem> opt = hospedagemRepo.findById(hospedagemId);
+			Optional<HospedagemEntity> opt = hospedagemRepo.findById(hospedagemId);
 			if (opt.isPresent()) {
 				
-				Hospedagem h = opt.get();
+				HospedagemEntity h = opt.get();
 				if ((h.getDataEfetivaSaida() != null)) {
 					throw new ValidationException(new ResultError().addError("*", "Hospedagem deve ter status = emAberto"));
 				}
@@ -975,8 +975,8 @@ public class HospedagemService {
 					throw new ValidationException(new ResultError().addError("*", "Data de encerramento deve ser superior a data de entrada"));
 				}
 				
-				List<HospedeLeito> listaHospedeLeito = hospedeLeitoRepo.findUltimoByHospedeId(hospedeId);
-				for (HospedeLeito hl : listaHospedeLeito) {
+				List<HospedeLeitoEntity> listaHospedeLeito = hospedeLeitoRepo.findUltimoByHospedeId(hospedeId);
+				for (HospedeLeitoEntity hl : listaHospedeLeito) {
 					if (hl.getDataEntrada().isAfter(dataBaixa)) {
 						throw new ValidationException(new ResultError().addError("*", "Existe movimentação com data ANTERIOR a data da baixa"));
 					}
@@ -992,15 +992,15 @@ public class HospedagemService {
 	} 
 
 	public void removerHospede(Long hospedagemId, Long hospedeId) throws ValidationException{
-		Optional<Hospede> hospedeOpt = hospedeRepo.findById(hospedeId);
+		Optional<HospedeEntity> hospedeOpt = hospedeRepo.findById(hospedeId);
 		if (hospedeOpt.isPresent()) {
 			
-			Hospede hospede = hospedeOpt.get();
+			HospedeEntity hospede = hospedeOpt.get();
 
-			Optional<Hospedagem> opt = hospedagemRepo.findById(hospedagemId);
+			Optional<HospedagemEntity> opt = hospedagemRepo.findById(hospedagemId);
 			if (opt.isPresent()) {
 				
-				Hospedagem h = opt.get();
+				HospedagemEntity h = opt.get();
 				if ((h.getDataEfetivaSaida() != null)) {
 					throw new ValidationException(new ResultError().addError("*", "Hospedagem deve ter status = emAberto"));
 				}
@@ -1018,15 +1018,15 @@ public class HospedagemService {
 	} 
 	
 	public void alterarTipoHospede(Long hospedeId, Long tipoHospedeId) throws ValidationException{
-		Optional<Hospede> hospedeOpt = hospedeRepo.findById(hospedeId);
+		Optional<HospedeEntity> hospedeOpt = hospedeRepo.findById(hospedeId);
 		if (hospedeOpt.isPresent()) {
-			Hospede hospede = hospedeOpt.get();
+			HospedeEntity hospede = hospedeOpt.get();
 
 			if ((Logico.S.equals(hospede.getBaixado())  )) {
 				throw new ValidationException(new ResultError().addError("*", "Hóspede já está baixado"));
 			}
 	
-			Optional<TipoHospede> th = tipoHospedeRepo.findById(tipoHospedeId);
+			Optional<TipoHospedeEntity> th = tipoHospedeRepo.findById(tipoHospedeId);
 			hospede.setTipoHospede(th.get());
 			hospedeRepo.save(hospede);
 		}
@@ -1034,22 +1034,22 @@ public class HospedagemService {
 
 	public void transferirHospede(Long hospedeId, Long leitoId, LocalDate dataTransferencia) throws ValidationException{
 		DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		Optional<Hospede> hospedeOpt = hospedeRepo.findById(hospedeId);
+		Optional<HospedeEntity> hospedeOpt = hospedeRepo.findById(hospedeId);
 		if (hospedeOpt.isPresent()) {
 			Long hospedagemId = hospedeOpt.get().getHospedagem().getId();
-			Hospede hospede = hospedeOpt.get();
+			HospedeEntity hospede = hospedeOpt.get();
 
 			if ((Logico.S.equals(hospede.getBaixado())  )) {
 				throw new ValidationException(new ResultError().addError("*", "Hóspede já está baixado"));
 			}
 
-			Optional<Hospedagem> opt = hospedagemRepo.findById(hospedagemId);
+			Optional<HospedagemEntity> opt = hospedagemRepo.findById(hospedagemId);
 			if (opt.isPresent()) {
 				
-				Hospedagem h = opt.get();
+				HospedagemEntity h = opt.get();
 				
 				if (!TipoUtilizacaoHospedagem.T.equals(h.getTipoUtilizacao())) {
-					throw new ValidationException(new ResultError().addError("*", "Tipo de Utilização da Hospedagem deve ser Total"));
+					throw new ValidationException(new ResultError().addError("*", "Tipo de Utilização da HospedagemEntity deve ser Total"));
 				} 
 				
 				if ((h.getDataEfetivaSaida() != null)) {
@@ -1080,8 +1080,8 @@ public class HospedagemService {
 							String.format("Data de Transferência deve ser igual ou superior a Data de Entrada da última movimentação (%s)",fmt.format(dataMinima))));
 				}
 				
-				List<HospedeLeito> listaHospedeLeito = hospedeLeitoRepo.findUltimoByHospedeId(hospedeId);
-				for (HospedeLeito hl : listaHospedeLeito) {
+				List<HospedeLeitoEntity> listaHospedeLeito = hospedeLeitoRepo.findUltimoByHospedeId(hospedeId);
+				for (HospedeLeitoEntity hl : listaHospedeLeito) {
 					if (hl.getDataEntrada().isAfter(dataTransferencia)) {
 						throw new ValidationException(new ResultError().addError("*", "Existe movimentação com data ANTERIOR a data da transferência"));
 					}
@@ -1090,14 +1090,14 @@ public class HospedagemService {
 					hospedeLeitoRepo.save(hl);
 				}
 				
-				// Inserir novo HospedeLeito com LeitoId, dataTransferencia até dataPrevistaSaida
-		    	//Optional<Quarto> quarto = quartoRepo.findById(hvo.getAcomodacao().getQuartoId());
-		    	Optional<Leito> leito = leitoRepo.findById(leitoId);
+				// Inserir novo HospedeLeitoEntity com LeitoId, dataTransferencia até dataPrevistaSaida
+		    	//Optional<QuartoEntity> quarto = quartoRepo.findById(hvo.getAcomodacao().getQuartoId());
+		    	Optional<LeitoEntity> leito = leitoRepo.findById(leitoId);
 
 		    	if (leito.isPresent()) {
-		    		Quarto q = leito.get().getQuarto();
+		    		QuartoEntity q = leito.get().getQuarto();
 		    		
-		    		HospedeLeito hl = new HospedeLeito();
+		    		HospedeLeitoEntity hl = new HospedeLeitoEntity();
 		    		hl.setHospede(hospede);
 		    		hl.setDataEntrada(dataTransferencia);
 		    		hl.setDataSaida(h.getDataPrevistaSaida());
@@ -1116,26 +1116,26 @@ public class HospedagemService {
 	public void adicionarHospede(Long hospedagemId, Long pessoaId, Long tipoHospedeId, Long leitoId, LocalDate dataEntrada) throws ValidationException{
 		DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		
-		Optional<Hospedagem> hospedagemOpt = hospedagemRepo.findById(hospedagemId);
-		Optional<Pessoa> pessoaOpt = pessoaRepo.findById(pessoaId);
-		Optional<Leito> leitoOpt = leitoRepo.findById(leitoId);
-		Optional<TipoHospede> tipoHospedeOpt = tipoHospedeRepo.findById(tipoHospedeId);
+		Optional<HospedagemEntity> hospedagemOpt = hospedagemRepo.findById(hospedagemId);
+		Optional<PessoaEntity> pessoaOpt = pessoaRepo.findById(pessoaId);
+		Optional<LeitoEntity> leitoOpt = leitoRepo.findById(leitoId);
+		Optional<TipoHospedeEntity> tipoHospedeOpt = tipoHospedeRepo.findById(tipoHospedeId);
 		
 		if (!hospedagemOpt.isPresent()) {
-			throw new ValidationException(new ResultError().addError("*", "Hospedagem não existe"));
+			throw new ValidationException(new ResultError().addError("*", "HospedagemEntity não existe"));
 		}
 		
 		if (!pessoaOpt.isPresent()) {
-			throw new ValidationException(new ResultError().addError("*", "Pessoa não cadastrada"));
+			throw new ValidationException(new ResultError().addError("*", "PessoaEntity não cadastrada"));
 		}
 		
 		if (!leitoOpt.isPresent()) {
-			throw new ValidationException(new ResultError().addError("*", "Leito não encontrado"));
+			throw new ValidationException(new ResultError().addError("*", "LeitoEntity não encontrado"));
 		}
 		
-		Hospedagem hospedagem = hospedagemOpt.get();
+		HospedagemEntity hospedagem = hospedagemOpt.get();
 		if (!TipoUtilizacaoHospedagem.T.equals(hospedagem.getTipoUtilizacao())) {
-			throw new ValidationException(new ResultError().addError("*", "Tipo de Utilização da Hospedagem deve ser Total"));
+			throw new ValidationException(new ResultError().addError("*", "Tipo de Utilização da HospedagemEntity deve ser Total"));
 		} 
 		
 		if ((hospedagem.getDataEfetivaSaida() != null)) {
@@ -1160,15 +1160,15 @@ public class HospedagemService {
 		
 		//TODO Hóspede não pode já estar hospedado em algum outro leito no período 
 		
-		Quarto q = leitoOpt.get().getQuarto();
+		QuartoEntity q = leitoOpt.get().getQuarto();
 
-		Hospede hospede = new Hospede();
+		HospedeEntity hospede = new HospedeEntity();
 		hospede.setHospedagem(hospedagem);
 		hospede.setPessoa(pessoaOpt.get());
 		hospede.setTipoHospede(tipoHospedeOpt.get());
 		hospede = hospedeRepo.save(hospede);
 		
-		HospedeLeito hl = new HospedeLeito();
+		HospedeLeitoEntity hl = new HospedeLeitoEntity();
 		hl.setHospede(hospede);
 		hl.setDataEntrada(dataEntrada);
 		hl.setDataSaida(hospedagem.getDataPrevistaSaida());
@@ -1187,16 +1187,16 @@ public class HospedagemService {
 		* Somente se hospedagem.status == aberta
 		* hospedagem = getHospedagem(hospedagemId)
 		* Condição: novaDataPrevistaSaida > hospedagem.dataPrevistaSaida
-		* hospedagemLeito = getUltimoHospedagemLeito(hospedagemId)
-		* Condição: Verificar se não existe hospedagemLeito em (hospedagemLeito.leito, hospedagem.dataPrevistaSaida + 1, novaDataPrevistaSaida) !!!
+		* hospedagemLeitoEntity = getUltimoHospedagemLeito(hospedagemId)
+		* Condição: Verificar se não existe hospedagemLeitoEntity em (hospedagemLeito.leito, hospedagem.dataPrevistaSaida + 1, novaDataPrevistaSaida) !!!
 		* Para cada hospedeLeito, o último, hospedagemLeito.setDataSaída(novaDataPrevistaSaida)
 		* hospedagem.setDataPrevistaSaida(novaDataPrevistaSaida)
 		 */
-		Optional<Hospedagem> opt  = hospedagemRepo.findById(hospedagemId);
+		Optional<HospedagemEntity> opt  = hospedagemRepo.findById(hospedagemId);
 		if (opt.isPresent()) {
 			DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 			
-			Hospedagem h = opt.get();
+			HospedagemEntity h = opt.get();
 			if ((h.getDataEfetivaSaida() != null)) {
 				throw new ValidationException(new ResultError().addError("*", "Hospedagem deve ter status = emAberto"));
 			}
@@ -1208,21 +1208,21 @@ public class HospedagemService {
 
 			// Para cada leito (caso seja Total), verificar se ele está sendo utilizado no período (dataPrevistaSaida ~ dataRenovacao)
 			
-			List<HospedeLeito> hlToSave = new ArrayList<HospedeLeito>();
+			List<HospedeLeitoEntity> hlToSave = new ArrayList<HospedeLeitoEntity>();
 
 			// Para cada pessoa, verificar se ele está em outra hospedagem no período entre h.getDataPrevistaSaida() e dataRenovacao 
 			if (TipoUtilizacaoHospedagem.T.equals(h.getTipoUtilizacao())) {
-				List<Hospede> hospedes = h.getHospedes();
-				for (Hospede hpd : hospedes) {
+				List<HospedeEntity> hospedes = h.getHospedes();
+				for (HospedeEntity hpd : hospedes) {
 					
 					//hpd.getPessoa().getId()
 					if (!this.pessoaLivreNoPeriodo(hpd.getPessoa().getId(), h.getDataPrevistaSaida().plusDays(1L), dataRenovacao)) {
 						throw new ValidationException(new ResultError().addError("*", String.format("[%s] está em outra hospedagem nesse novo período", hpd.getPessoa().getNome() )));
 					}
 
-					List<HospedeLeito> listaHospedeLeito = hospedeLeitoRepo.findUltimoByHospedeId(hpd.getId());
+					List<HospedeLeitoEntity> listaHospedeLeito = hospedeLeitoRepo.findUltimoByHospedeId(hpd.getId());
 					
-					for (HospedeLeito hl : listaHospedeLeito) {
+					for (HospedeLeitoEntity hl : listaHospedeLeito) {
 						if (Logico.N.equals(hpd.getBaixado())) {
 							Long leitoId = hl.getLeito().getId();
 							//System.out.println(hpd.getPessoa().getNome() + " - " + hl.getDataSaida() + " - " + hl.getQuarto().getNumero() + " - " + hl.getLeito().getNumero() +  " - Baixado? " + hpd.getBaixado());
@@ -1245,7 +1245,7 @@ public class HospedagemService {
 				}
 			}
 
-			for (HospedeLeito hl : hlToSave) {
+			for (HospedeLeitoEntity hl : hlToSave) {
 				hl.setDataSaida(dataRenovacao);
 				hospedeLeitoRepo.save(hl);
 			}	
@@ -1261,7 +1261,7 @@ public class HospedagemService {
 	}
 	
 	public void excluirHospedagem(Long id) {
-		Optional<Hospedagem> opt = hospedagemRepo.findById(id);
+		Optional<HospedagemEntity> opt = hospedagemRepo.findById(id);
 		if (opt.isPresent()) {
 			hospedagemRepo.delete(opt.get());
 		}
@@ -1275,7 +1275,7 @@ public class HospedagemService {
 	public boolean pessoaLivreNoPeriodo(Long pessoaId, LocalDate dataIni, LocalDate dataFim) {
 		StringBuilder sb = new StringBuilder();
 		
-		// Verificação em Hospedagem total (possui leito)
+		// Verificação em HospedagemEntity total (possui leito)
 		sb.append("SELECT     count(*) "); 
 		sb.append("FROM       hospede h ");
 		sb.append("INNER JOIN hospede_leito hl ");

@@ -40,15 +40,15 @@ public class QuartoController {
 	@RequestMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
-		List<Quarto> lista = service.findAll();
-		return new ResponseEntity<List<Quarto>>(lista, HttpStatus.OK);
+		List<QuartoEntity> lista = service.findAll();
+		return new ResponseEntity<List<QuartoEntity>>(lista, HttpStatus.OK);
 	}
 
 	@RequestMapping(value="{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		try {
-			Quarto model = service.find(id);
+			QuartoEntity model = service.find(id);
 			if (model != null) {
 				return new ResponseEntity<>(model, HttpStatus.OK);
 			} else {
@@ -63,7 +63,7 @@ public class QuartoController {
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> getLeitoById(@PathVariable("id") Long id) {
 		try {
-			Leito model = service.findLeito(id);
+			LeitoEntity model = service.findLeito(id);
 			if (model != null) {
 				EditLeitoVO leito = new EditLeitoVO();
 				leito.setId(model.getId());
@@ -85,22 +85,22 @@ public class QuartoController {
 	@RequestMapping("/por_destinacao_hospedagem/{id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listarByDestinacaoHospedagem(@PathVariable("id") Long id) {
-		List<Quarto> lista = service.findAllByDestinacaoHospedagem(id);
-		return new ResponseEntity<List<Quarto>>(lista, HttpStatus.OK);
+		List<QuartoEntity> lista = service.findAllByDestinacaoHospedagem(id);
+		return new ResponseEntity<List<QuartoEntity>>(lista, HttpStatus.OK);
 	}
 
 	@RequestMapping("/{id}/leitos")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listarLeitosByQuarto(@PathVariable("id") Long id) {
-		List<Leito> lista = service.findLeitosByQuarto(id);
-		return new ResponseEntity<List<Leito>>(lista, HttpStatus.OK);
+		List<LeitoEntity> lista = service.findLeitosByQuarto(id);
+		return new ResponseEntity<List<LeitoEntity>>(lista, HttpStatus.OK);
 	}
 
 	@RequestMapping("/leitos_disponiveis")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listarLeitosDisponiveis() {
-		List<Leito> lista = service.findLeitosDisponiveis();
-		return new ResponseEntity<List<Leito>>(lista, HttpStatus.OK);
+		List<LeitoEntity> lista = service.findLeitosDisponiveis();
+		return new ResponseEntity<List<LeitoEntity>>(lista, HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
@@ -117,10 +117,9 @@ public class QuartoController {
 		}
 	
 		// TODO tratar exceção
-		Quarto saved = null;
+		QuartoEntity saved = null;
 		saved = service.create(model);
-	    //return Response.status(200).entity(saved).build();
-	    return new ResponseEntity<Quarto>(saved, HttpStatus.OK);
+	    return new ResponseEntity<QuartoEntity>(saved, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value="/alterar", method = RequestMethod.POST)
@@ -139,9 +138,9 @@ public class QuartoController {
 				return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
 			}
 		
-			Quarto saved = null;
+			QuartoEntity saved = null;
 			saved = service.update(model);
-		    return new ResponseEntity<Quarto>(saved, HttpStatus.OK);
+		    return new ResponseEntity<QuartoEntity>(saved, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -168,9 +167,9 @@ public class QuartoController {
 				return new ResponseEntity<>(v.getErrors(), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		
-			Leito saved = null;
+			LeitoEntity saved = null;
 			saved = service.saveLeito(model);
-			return new ResponseEntity<Leito>(saved, HttpStatus.OK);
+			return new ResponseEntity<LeitoEntity>(saved, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

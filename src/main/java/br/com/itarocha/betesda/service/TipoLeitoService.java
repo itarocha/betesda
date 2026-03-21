@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.service;
 
 import br.com.itarocha.betesda.model.SelectValueVO;
-import br.com.itarocha.betesda.model.TipoLeito;
-import br.com.itarocha.betesda.repository.TipoLeitoRepository;
+import br.com.itarocha.betesda.model.TipoLeitoEntity;
+import br.com.itarocha.betesda.repository.TipoLeitoEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +18,9 @@ public class TipoLeitoService {
 	private EntityManager em;
 	
 	@Autowired
-	private TipoLeitoRepository repositorio;
+	private TipoLeitoEntityRepository repositorio;
 
-	public TipoLeito create(TipoLeito model) {
+	public TipoLeitoEntity create(TipoLeitoEntity model) {
 		try{
 			return repositorio.save(model);
 		}catch(Exception e){
@@ -29,22 +29,22 @@ public class TipoLeitoService {
 	}
 
 	public void remove(Long id) {
-		TipoLeito model = find(id);
+		TipoLeitoEntity model = find(id);
 		if (model != null) {
 			repositorio.delete(model);
 		}
 	}
 
-	public TipoLeito update(TipoLeito model) {
-		TipoLeito obj = find(model.getId());
+	public TipoLeitoEntity update(TipoLeitoEntity model) {
+		TipoLeitoEntity obj = find(model.getId());
 		if (obj != null) {
 			obj = repositorio.save(model);
 		}
 		return obj;
 	}
 	  
-  	public TipoLeito find(Long id) {
-		Optional<TipoLeito> retorno = repositorio.findById(id);
+  	public TipoLeitoEntity find(Long id) {
+		Optional<TipoLeitoEntity> retorno = repositorio.findById(id);
 		if (retorno.isPresent()) {
 			return retorno.get(); 
 		} else {
@@ -52,13 +52,13 @@ public class TipoLeitoService {
 		}
 	}
 
-	public List<TipoLeito> findAll() {
-		return em.createQuery("SELECT e FROM TipoLeito e ORDER BY e.descricao", TipoLeito.class).getResultList();
+	public List<TipoLeitoEntity> findAll() {
+		return em.createQuery("SELECT e FROM TipoLeitoEntity e ORDER BY e.descricao", TipoLeitoEntity.class).getResultList();
 	}
 	
 	public List<SelectValueVO> listSelect() {
 		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
-		em.createQuery("SELECT o FROM TipoLeito o ORDER BY o.descricao",TipoLeito.class)
+		em.createQuery("SELECT o FROM TipoLeitoEntity o ORDER BY o.descricao",TipoLeitoEntity.class)
 			.getResultList()
 			.forEach(x -> retorno.add(new SelectValueVO(x.getId(), x.getDescricao())));
 		return retorno;
@@ -69,9 +69,9 @@ public class TipoLeitoService {
 	private EntityManager em;
 	
 	@Autowired
-	private TipoHospedeRepository repositorio;
+	private TipoHospedeEntityRepository repositorio;
 	
-	public DestinacaoHospedagem create(DestinacaoHospedagem model) {
+	public DestinacaoHospedagemEntity create(DestinacaoHospedagemEntity model) {
 		try{
 			return repositorio.save(model);
 		}catch(Exception e){
@@ -80,24 +80,24 @@ public class TipoLeitoService {
 	}
 
 	public void remove(Long id) {
-		DestinacaoHospedagem model = find(id);
+		DestinacaoHospedagemEntity model = find(id);
 		if (model != null) {
 			repositorio.delete(model);
 		}
 	}
 	
-	public DestinacaoHospedagem find(Long id) {
-		return em.find(DestinacaoHospedagem.class, id);
+	public DestinacaoHospedagemEntity find(Long id) {
+		return em.find(DestinacaoHospedagemEntity.class, id);
 	}
 
-	public List<DestinacaoHospedagem> findAll() {
-		TypedQuery query = em.createQuery("SELECT model FROM DestinacaoHospedagem model ORDER BY model.descricao", DestinacaoHospedagem.class);
+	public List<DestinacaoHospedagemEntity> findAll() {
+		TypedQuery query = em.createQuery("SELECT model FROM DestinacaoHospedagemEntity model ORDER BY model.descricao", DestinacaoHospedagemEntity.class);
 		return query.getResultList();
 	}
 
 	public List<SelectValueVO> listSelect() {
 		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
-		em.createQuery("SELECT model FROM DestinacaoHospedagem model ORDER BY model.descricao", DestinacaoHospedagem.class)
+		em.createQuery("SELECT model FROM DestinacaoHospedagemEntity model ORDER BY model.descricao", DestinacaoHospedagemEntity.class)
 		.getResultList()
 		.forEach(x -> retorno.add(new SelectValueVO(x.getId(), x.getDescricao())));
 		return retorno;

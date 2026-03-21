@@ -11,9 +11,9 @@ import java.util.List;
 public class HospedagemFullVO {
 
 	private Long id;
-	private Entidade entidade;
-	private Encaminhador encaminhador;
-	private DestinacaoHospedagem destinacaoHospedagem;
+	private EntidadeEntity entidade;
+	private EncaminhadorEntity encaminhador;
+	private DestinacaoHospedagemEntity destinacaoHospedagem;
 	private LocalDate dataEntrada;
 	private LocalDate dataPrevistaSaida;
 	private LocalDate dataEfetivaSaida;
@@ -21,8 +21,8 @@ public class HospedagemFullVO {
 	private String observacoes;
 	private CellStatusHospedagem status;
 	
-	private List<Hospede> hospedes = new ArrayList<Hospede>();
-	private List<TipoServico> servicos = new ArrayList<TipoServico>();
+	private List<HospedeEntity> hospedes = new ArrayList<HospedeEntity>();
+	private List<TipoServicoEntity> servicos = new ArrayList<TipoServicoEntity>();
 	
 	public HospedagemFullVO() {
 		this.tipoUtilizacao = TipoUtilizacaoHospedagem.T;
@@ -36,19 +36,19 @@ public class HospedagemFullVO {
 		this.id = id;
 	}
 
-	public Entidade getEntidade() {
+	public EntidadeEntity getEntidade() {
 		return this.entidade;
 	}
 
-	public void setEntidade(Entidade entidade) {
+	public void setEntidade(EntidadeEntity entidade) {
 		this.entidade = entidade;
 	}
 
-	public Encaminhador getEncaminhador() {
+	public EncaminhadorEntity getEncaminhador() {
 		return this.encaminhador;
 	}
 
-	public void setEncaminhador(Encaminhador encaminhador) {
+	public void setEncaminhador(EncaminhadorEntity encaminhador) {
 		this.encaminhador = encaminhador;
 	}
 
@@ -84,11 +84,11 @@ public class HospedagemFullVO {
 		this.observacoes = observacoes;
 	}
 
-	public DestinacaoHospedagem getDestinacaoHospedagem() {
+	public DestinacaoHospedagemEntity getDestinacaoHospedagem() {
 		return destinacaoHospedagem;
 	}
 
-	public void setDestinacaoHospedagem(DestinacaoHospedagem destinacaoHospedagem) {
+	public void setDestinacaoHospedagem(DestinacaoHospedagemEntity destinacaoHospedagem) {
 		this.destinacaoHospedagem = destinacaoHospedagem;
 	}
 
@@ -100,19 +100,19 @@ public class HospedagemFullVO {
 		this.tipoUtilizacao = tipoUtilizacao;
 	}
 
-	public List<Hospede> getHospedes() {
+	public List<HospedeEntity> getHospedes() {
 		return this.hospedes;
 	}
 
-	public void setHospedes(List<Hospede> hospedes) {
+	public void setHospedes(List<HospedeEntity> hospedes) {
 		this.hospedes = hospedes;
 	}
 
-	public List<TipoServico> getServicos() {
+	public List<TipoServicoEntity> getServicos() {
 		return servicos;
 	}
 
-	public void setServicos(List<TipoServico> servicos) {
+	public void setServicos(List<TipoServicoEntity> servicos) {
 		this.servicos = servicos;
 	}
 

@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.service;
 
 import br.com.itarocha.betesda.model.SelectValueVO;
-import br.com.itarocha.betesda.model.TipoServico;
-import br.com.itarocha.betesda.repository.TipoServicoRepository;
+import br.com.itarocha.betesda.model.TipoServicoEntity;
+import br.com.itarocha.betesda.repository.TipoServicoEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,30 +18,30 @@ public class TipoServicoService {
 	private EntityManager em;
 	
 	@Autowired
-	private TipoServicoRepository repositorio;
+	private TipoServicoEntityRepository repositorio;
 
-	public TipoServico create(TipoServico model) {
+	public TipoServicoEntity create(TipoServicoEntity model) {
 		repositorio.save(model);
 		return model;
 	}
 
 	public void remove(Long id) {
-		TipoServico emp = find(id);
+		TipoServicoEntity emp = find(id);
 		if (emp != null) {
 			repositorio.delete(emp);
 		}
 	}
 
-	public TipoServico update(TipoServico model) {
-		TipoServico obj = find(model.getId());
+	public TipoServicoEntity update(TipoServicoEntity model) {
+		TipoServicoEntity obj = find(model.getId());
 		if (obj != null) {
 			obj = em.merge(model);
 		}
 		return obj;
 	}
 
-  	public TipoServico find(Long id) {
-		Optional<TipoServico> retorno = repositorio.findById(id);
+  	public TipoServicoEntity find(Long id) {
+		Optional<TipoServicoEntity> retorno = repositorio.findById(id);
 		if (retorno.isPresent()) {
 			return retorno.get(); 
 		} else {
@@ -49,13 +49,13 @@ public class TipoServicoService {
 		}
 	}
 
-	public List<TipoServico> findAll() {
-		return em.createQuery("SELECT e FROM TipoServico e ORDER BY e.descricao", TipoServico.class).getResultList();
+	public List<TipoServicoEntity> findAll() {
+		return em.createQuery("SELECT e FROM TipoServicoEntity e ORDER BY e.descricao", TipoServicoEntity.class).getResultList();
 	}
 	
 	public List<SelectValueVO> listSelect() {
 		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
-		em.createQuery("SELECT o FROM TipoServico o WHERE o.ativo = 'S' ORDER BY o.descricao",TipoServico.class)
+		em.createQuery("SELECT o FROM TipoServicoEntity o WHERE o.ativo = 'S' ORDER BY o.descricao",TipoServicoEntity.class)
 			.getResultList()
 			.forEach(x -> retorno.add(new SelectValueVO(x.getId(), x.getDescricao())));
 		return retorno;

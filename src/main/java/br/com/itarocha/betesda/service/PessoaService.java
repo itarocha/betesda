@@ -1,10 +1,10 @@
 package br.com.itarocha.betesda.service;
 
 import br.com.itarocha.betesda.exception.ValidationException;
-import br.com.itarocha.betesda.model.Endereco;
-import br.com.itarocha.betesda.model.Pessoa;
-import br.com.itarocha.betesda.repository.EnderecoRepository;
-import br.com.itarocha.betesda.repository.PessoaRepository;
+import br.com.itarocha.betesda.model.EnderecoEntity;
+import br.com.itarocha.betesda.model.PessoaEntity;
+import br.com.itarocha.betesda.repository.EnderecoEntityRepository;
+import br.com.itarocha.betesda.repository.PessoaEntityRepository;
 import br.com.itarocha.betesda.util.validation.ResultError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -25,15 +25,15 @@ public class PessoaService {
 	private EntityManager em;
 
 	@Autowired
-	private PessoaRepository repositorio;
+	private PessoaEntityRepository repositorio;
 
 	@Autowired
-	private EnderecoRepository enderecoRepo;
+	private EnderecoEntityRepository enderecoRepo;
 
 	public PessoaService() {
 	}
 
-	public Pessoa create(Pessoa model) throws ValidationException {
+	public PessoaEntity create(PessoaEntity model) throws ValidationException {
 		try{
 			enderecoRepo.save(model.getEndereco());
 			
@@ -61,60 +61,60 @@ public class PessoaService {
 	}
 
 	public void remove(Long id) {
-		Optional<Pessoa> model = find(id);
+		Optional<PessoaEntity> model = find(id);
 		if (model.isPresent()) {
 			repositorio.delete(model.get());
 		}
 	}
 
-	public Pessoa update(Pessoa model) {
-		Optional<Pessoa> obj = find(model.getId());
+	public PessoaEntity update(PessoaEntity model) {
+		Optional<PessoaEntity> obj = find(model.getId());
 		if (obj.isPresent()) {
 			return repositorio.save(model);
 		}
 		return model;
 	}
 
-	public Optional<Pessoa> find(Long id) {
+	public Optional<PessoaEntity> find(Long id) {
 		return repositorio.findById(id);
 	}
 
-	public List<Pessoa> findByFieldNameAndValue(String campo, String valor){
+	public List<PessoaEntity> findByFieldNameAndValue(String campo, String valor){
 		return repositorio.findAll(campoQueContenha(campo, valor));
 	}
 	
-	public List<Pessoa> findAll() {
-		return em.createQuery("SELECT model FROM Pessoa model ORDER BY model.nome", Pessoa.class).getResultList();
+	public List<PessoaEntity> findAll() {
+		return em.createQuery("SELECT model FROM PessoaEntity model ORDER BY model.nome", PessoaEntity.class).getResultList();
 	}
 
-	public List<Pessoa> consultar(String texto) {
-		return em.createQuery("SELECT model FROM Pessoa model WHERE lower(model.nome) LIKE :texto ORDER BY model.nome", Pessoa.class)
+	public List<PessoaEntity> consultar(String texto) {
+		return em.createQuery("SELECT model FROM PessoaEntity model WHERE lower(model.nome) LIKE :texto ORDER BY model.nome", PessoaEntity.class)
 				.setParameter("texto", "%"+texto.toLowerCase()+"%")
 				.getResultList();
 	}
 	
-	static Specification<Pessoa> campoIgual(String campo, String valor) {
+	static Specification<PessoaEntity> campoIgual(String campo, String valor) {
 	    return (pessoa, cq, cb) -> cb.equal(pessoa.get(campo), valor);
 	}
 	 
-	static Specification<Pessoa> endereco(String campo, String valor) {
+	static Specification<PessoaEntity> endereco(String campo, String valor) {
 	    return (pessoa, cq, cb) -> {
-	    	Path<Endereco> endereco = pessoa.<Endereco> get("endereco");
+	    	Path<EnderecoEntity> endereco = pessoa.<EnderecoEntity> get("endereco");
 	    	
 	    	return cb.equal(endereco.get(campo).as(String.class),valor);
 	    };
 	}
 
-	static Specification<Pessoa> campoContem(String campo, String valor) {
+	static Specification<PessoaEntity> campoContem(String campo, String valor) {
 	    return (pessoa, cq, cb) -> cb.like(cb.lower(pessoa.get(campo)), "%" + valor.toLowerCase() + "%");
 	}
 	
-	public static Specification<Pessoa> campoQueContenha(String campo, String conteudo) {
+	public static Specification<PessoaEntity> campoQueContenha(String campo, String conteudo) {
 		// https://leaks.wanari.com/2018/01/23/awesome-spring-specification/
 		return (root, query, cb) -> {
 			query.distinct(true);
 			query.orderBy(cb.asc(root.get("nome")));
-			//Path<Endereco> endereco = root.<Endereco> get("endereco");
+			//Path<EnderecoEntity> endereco = root.<EnderecoEntity> get("endereco");
             
             //Predicate endfilter = cb.equal(endereco.get("uf").as(String.class),"MG");
 			//return Specification.where(campoContem(campo, conteudo)).or(endereco("uf","MA")).toPredicate(root, query, cb);
@@ -124,16 +124,16 @@ public class PessoaService {
 		
 		
 		/*
-        return new Specification<Pessoa>() {
+        return new Specification<PessoaEntity>() {
 			private static final long serialVersionUID = 575273514861865441L;
 
 			@Override
-            public Predicate toPredicate(Root<Pessoa> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                //Join<Pessoa, Endereco> endereco = root.join("endereco");
+            public Predicate toPredicate(Root<PessoaEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                //Join<PessoaEntity, EnderecoEntity> endereco = root.join("endereco");
                 //
                 //criteriaQuery.equal(endereco.get("uf"),"MG");
                 
-                Path<Endereco> endereco = root.<Endereco> get("endereco");
+                Path<EnderecoEntity> endereco = root.<EnderecoEntity> get("endereco");
                 
                 Predicate endfilter = cb.equal(endereco.get("uf").as(String.class),"MG");
                 
