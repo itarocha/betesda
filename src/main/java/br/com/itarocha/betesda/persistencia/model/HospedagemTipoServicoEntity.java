@@ -1,8 +1,6 @@
 package br.com.itarocha.betesda.persistencia.model;
 
 import br.com.itarocha.betesda.persistencia.model.audit.UserDateAudit;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -12,7 +10,6 @@ import java.io.Serializable;
 
 @Entity
 @Table(name="hospedagem_tipo_servico")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

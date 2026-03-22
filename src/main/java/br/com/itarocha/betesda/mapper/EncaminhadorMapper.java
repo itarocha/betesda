@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.mapper;
 
-import br.com.itarocha.betesda.model.request.EncaminhadorRequest;
-import br.com.itarocha.betesda.model.response.EncaminhadorResponse;
+import br.com.itarocha.betesda.controller.request.EncaminhadorRequest;
+import br.com.itarocha.betesda.controller.response.EncaminhadorResponse;
 import br.com.itarocha.betesda.persistencia.model.EncaminhadorEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

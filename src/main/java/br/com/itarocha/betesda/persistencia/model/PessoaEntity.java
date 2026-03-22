@@ -4,8 +4,6 @@ import br.com.itarocha.betesda.model.EstadoCivil;
 import br.com.itarocha.betesda.model.Sexo;
 import br.com.itarocha.betesda.model.UnidadeFederacao;
 import br.com.itarocha.betesda.persistencia.model.audit.UserDateAudit;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -17,7 +15,6 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name="pessoa")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Data
 @AllArgsConstructor
 public class PessoaEntity extends UserDateAudit implements Serializable {

@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.mapper;
 
-import br.com.itarocha.betesda.model.request.QuartoEditRequest;
-import br.com.itarocha.betesda.model.request.QuartoRequest;
-import br.com.itarocha.betesda.model.response.QuartoResponse;
+import br.com.itarocha.betesda.controller.request.QuartoEditRequest;
+import br.com.itarocha.betesda.controller.request.QuartoRequest;
+import br.com.itarocha.betesda.controller.response.QuartoResponse;
 import br.com.itarocha.betesda.persistencia.model.QuartoEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

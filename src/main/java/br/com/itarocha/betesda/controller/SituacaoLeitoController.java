@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.controller;
 
 import br.com.itarocha.betesda.mapper.SituacaoLeitoMapper;
-import br.com.itarocha.betesda.model.request.SituacaoLeitoRequest;
-import br.com.itarocha.betesda.model.response.SituacaoLeitoResponse;
+import br.com.itarocha.betesda.controller.request.SituacaoLeitoRequest;
+import br.com.itarocha.betesda.controller.response.SituacaoLeitoResponse;
 import br.com.itarocha.betesda.persistencia.model.SituacaoLeitoEntity;
 import br.com.itarocha.betesda.service.SituacaoLeitoService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;

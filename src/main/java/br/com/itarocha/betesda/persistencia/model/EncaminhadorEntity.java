@@ -14,7 +14,6 @@ import java.io.Serializable;
 
 @Entity
 @Table(name="encaminhador")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Data
 @AllArgsConstructor
 public class EncaminhadorEntity extends UserDateAudit implements Serializable{

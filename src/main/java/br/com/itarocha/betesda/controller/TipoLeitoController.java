@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.controller;
 
 import br.com.itarocha.betesda.mapper.TipoLeitoMapper;
-import br.com.itarocha.betesda.model.request.TipoLeitoRequest;
-import br.com.itarocha.betesda.model.response.TipoLeitoResponse;
+import br.com.itarocha.betesda.controller.request.TipoLeitoRequest;
+import br.com.itarocha.betesda.controller.response.TipoLeitoResponse;
 import br.com.itarocha.betesda.persistencia.model.TipoLeitoEntity;
 import br.com.itarocha.betesda.service.TipoLeitoService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;

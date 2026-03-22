@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.controller;
 
 import br.com.itarocha.betesda.mapper.TipoHospedeMapper;
-import br.com.itarocha.betesda.model.request.TipoHospedeRequest;
-import br.com.itarocha.betesda.model.response.TipoHospedeResponse;
+import br.com.itarocha.betesda.controller.request.TipoHospedeRequest;
+import br.com.itarocha.betesda.controller.response.TipoHospedeResponse;
 import br.com.itarocha.betesda.persistencia.model.TipoHospedeEntity;
 import br.com.itarocha.betesda.service.TipoHospedeService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;

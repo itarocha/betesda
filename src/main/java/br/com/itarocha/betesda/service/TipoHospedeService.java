@@ -5,7 +5,6 @@ import br.com.itarocha.betesda.persistencia.model.TipoHospedeEntity;
 import br.com.itarocha.betesda.persistencia.repository.TipoHospedeEntityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import jakarta.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;

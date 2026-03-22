@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.mapper;
 
-import br.com.itarocha.betesda.model.request.TipoServicoRequest;
-import br.com.itarocha.betesda.model.response.TipoServicoResponse;
+import br.com.itarocha.betesda.controller.request.TipoServicoRequest;
+import br.com.itarocha.betesda.controller.response.TipoServicoResponse;
 import br.com.itarocha.betesda.persistencia.model.TipoServicoEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

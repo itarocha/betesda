@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.mapper;
 
-import br.com.itarocha.betesda.model.request.EnderecoRequest;
-import br.com.itarocha.betesda.model.response.EnderecoResponse;
+import br.com.itarocha.betesda.controller.request.EnderecoRequest;
+import br.com.itarocha.betesda.controller.response.EnderecoResponse;
 import br.com.itarocha.betesda.persistencia.model.EnderecoEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

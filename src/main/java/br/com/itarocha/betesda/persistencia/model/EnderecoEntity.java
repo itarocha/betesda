@@ -2,8 +2,6 @@ package br.com.itarocha.betesda.persistencia.model;
 
 import br.com.itarocha.betesda.model.UnidadeFederacao;
 import br.com.itarocha.betesda.persistencia.model.audit.UserDateAudit;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -13,7 +11,6 @@ import java.io.Serializable;
 
 @Entity
 @Table(name="endereco")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Data
 @AllArgsConstructor
 public class EnderecoEntity extends UserDateAudit implements Serializable{

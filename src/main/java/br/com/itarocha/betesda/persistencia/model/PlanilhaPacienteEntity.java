@@ -4,10 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import jakarta.persistence.*;
 import java.util.Date;
-
 
 @Entity(name="planilha_paciente")
 @Data

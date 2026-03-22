@@ -2,7 +2,6 @@ package br.com.itarocha.betesda.persistencia.model;
 
 import br.com.itarocha.betesda.model.Logico;
 import br.com.itarocha.betesda.persistencia.model.audit.UserDateAudit;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

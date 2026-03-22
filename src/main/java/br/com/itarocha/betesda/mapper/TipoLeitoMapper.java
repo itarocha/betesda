@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.mapper;
 
-import br.com.itarocha.betesda.model.request.TipoLeitoRequest;
-import br.com.itarocha.betesda.model.response.TipoLeitoResponse;
+import br.com.itarocha.betesda.controller.request.TipoLeitoRequest;
+import br.com.itarocha.betesda.controller.response.TipoLeitoResponse;
 import br.com.itarocha.betesda.persistencia.model.TipoLeitoEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

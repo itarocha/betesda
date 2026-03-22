@@ -2,7 +2,6 @@ package br.com.itarocha.betesda.persistencia.model;
 
 import br.com.itarocha.betesda.model.TipoUtilizacaoHospedagem;
 import br.com.itarocha.betesda.persistencia.model.audit.UserDateAudit;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -15,7 +14,6 @@ import java.util.List;
 
 @Entity
 @Table(name="hospedagem")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "hospedes"})
 @Data
 @AllArgsConstructor
 public class HospedagemEntity extends UserDateAudit implements Serializable {

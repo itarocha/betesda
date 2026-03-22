@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.controller;
 
 import br.com.itarocha.betesda.mapper.TipoServicoMapper;
-import br.com.itarocha.betesda.model.request.TipoServicoRequest;
-import br.com.itarocha.betesda.model.response.TipoServicoResponse;
+import br.com.itarocha.betesda.controller.request.TipoServicoRequest;
+import br.com.itarocha.betesda.controller.response.TipoServicoResponse;
 import br.com.itarocha.betesda.persistencia.model.TipoServicoEntity;
 import br.com.itarocha.betesda.service.TipoServicoService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;

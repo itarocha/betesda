@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.mapper;
 
-import br.com.itarocha.betesda.model.request.EntidadeRequest;
-import br.com.itarocha.betesda.model.response.EntidadeResponse;
+import br.com.itarocha.betesda.controller.request.EntidadeRequest;
+import br.com.itarocha.betesda.controller.response.EntidadeResponse;
 import br.com.itarocha.betesda.persistencia.model.EntidadeEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

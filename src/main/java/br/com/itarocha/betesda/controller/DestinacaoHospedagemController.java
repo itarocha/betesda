@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.controller;
 
 import br.com.itarocha.betesda.mapper.DestinacaoHospedagemMapper;
-import br.com.itarocha.betesda.model.request.DestinacaoHospedagemRequest;
-import br.com.itarocha.betesda.model.response.DestinacaoHospedagemResponse;
+import br.com.itarocha.betesda.controller.request.DestinacaoHospedagemRequest;
+import br.com.itarocha.betesda.controller.response.DestinacaoHospedagemResponse;
 import br.com.itarocha.betesda.persistencia.model.DestinacaoHospedagemEntity;
 import br.com.itarocha.betesda.service.DestinacaoHospedagemService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;

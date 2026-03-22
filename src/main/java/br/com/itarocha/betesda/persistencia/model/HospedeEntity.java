@@ -3,8 +3,6 @@ package br.com.itarocha.betesda.persistencia.model;
 import br.com.itarocha.betesda.model.Logico;
 
 import br.com.itarocha.betesda.persistencia.model.audit.UserDateAudit;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -15,7 +13,6 @@ import java.util.List;
 
 @Entity
 @Table(name="hospede")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "hospedagem"})
 @Data
 @AllArgsConstructor
 public class HospedeEntity extends UserDateAudit implements Serializable{

@@ -1,8 +1,6 @@
 package br.com.itarocha.betesda.persistencia.model;
 
 import br.com.itarocha.betesda.persistencia.model.audit.UserDateAudit;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -13,7 +11,6 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name="hospede_leito")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "quarto", "leito", "hospede"})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

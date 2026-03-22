@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.mapper;
 
-import br.com.itarocha.betesda.model.request.SituacaoLeitoRequest;
-import br.com.itarocha.betesda.model.response.SituacaoLeitoResponse;
+import br.com.itarocha.betesda.controller.request.SituacaoLeitoRequest;
+import br.com.itarocha.betesda.controller.response.SituacaoLeitoResponse;
 import br.com.itarocha.betesda.persistencia.model.SituacaoLeitoEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

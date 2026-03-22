@@ -1,18 +1,17 @@
 package br.com.itarocha.betesda.persistencia.model;
 
 import br.com.itarocha.betesda.persistencia.model.audit.UserDateAudit;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import java.io.Serial;
 import java.io.Serializable;
 
 @Entity
 @Table(name="tipo_hospede")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Data
 @AllArgsConstructor
 public class TipoHospedeEntity extends UserDateAudit implements Serializable{
@@ -22,7 +21,8 @@ public class TipoHospedeEntity extends UserDateAudit implements Serializable{
 	/*
 	PACIENTE("Paciente"),
 	ACOMPANHANTE("Acompanhante");	
-*/	
+	*/
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
