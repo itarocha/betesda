@@ -1,5 +1,8 @@
 package br.com.itarocha.betesda.controller;
 
+import br.com.itarocha.betesda.mapper.DestinacaoHospedagemMapper;
+import br.com.itarocha.betesda.model.request.DestinacaoHospedagemRequest;
+import br.com.itarocha.betesda.model.response.DestinacaoHospedagemResponse;
 import br.com.itarocha.betesda.persistencia.model.DestinacaoHospedagemEntity;
 import br.com.itarocha.betesda.service.DestinacaoHospedagemService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
@@ -17,12 +20,14 @@ import java.util.List;
 public class DestinacaoHospedagemController {
 
 	private final DestinacaoHospedagemService service;
+	private final DestinacaoHospedagemMapper mapper;
 	
 	@RequestMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
 		List<DestinacaoHospedagemEntity> lista = service.findAll();
-	    return new ResponseEntity<List<DestinacaoHospedagemEntity>>(lista, HttpStatus.OK);
+		List<DestinacaoHospedagemResponse> resposta = mapper.toResponseList(lista);
+	    return new ResponseEntity<>(resposta, HttpStatus.OK);
 	}
 
 	@RequestMapping(value="{id}")
@@ -31,7 +36,8 @@ public class DestinacaoHospedagemController {
 		try {
 			DestinacaoHospedagemEntity model = service.find(id);
 			if (model != null) {
-				return new ResponseEntity<>(model, HttpStatus.OK);
+				DestinacaoHospedagemResponse resposta = mapper.toResponse(model);
+				return new ResponseEntity<>(resposta, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<>("Destinação de Hospedagem não existe", HttpStatus.NOT_FOUND);
 			}
@@ -42,17 +48,18 @@ public class DestinacaoHospedagemController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody DestinacaoHospedagemEntity model) {
-		ItaValidator<DestinacaoHospedagemEntity> v = new ItaValidator<DestinacaoHospedagemEntity>(model);
+	public ResponseEntity<?> gravar(@RequestBody DestinacaoHospedagemRequest request) {
+		ItaValidator<DestinacaoHospedagemRequest> v = new ItaValidator<>(request);
 		v.validate();
 		if (!v.hasErrors() ) {
 			return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
 		}
 		
 		try {
-			DestinacaoHospedagemEntity saved = null;
-			saved = service.create(model);
-		    return new ResponseEntity<>(saved, HttpStatus.OK);
+			DestinacaoHospedagemEntity entity = mapper.toEntity(request);
+			DestinacaoHospedagemEntity saved = service.create(entity);
+			DestinacaoHospedagemResponse resposta = mapper.toResponse(saved);
+		    return new ResponseEntity<>(resposta, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -63,7 +70,7 @@ public class DestinacaoHospedagemController {
 	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
 		try {
 			service.remove(id);
-		    return new ResponseEntity<String>("sucesso", HttpStatus.OK);
+		    return new ResponseEntity<>("sucesso", HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

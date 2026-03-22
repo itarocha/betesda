@@ -1,5 +1,8 @@
 package br.com.itarocha.betesda.controller;
 
+import br.com.itarocha.betesda.mapper.TipoLeitoMapper;
+import br.com.itarocha.betesda.model.request.TipoLeitoRequest;
+import br.com.itarocha.betesda.model.response.TipoLeitoResponse;
 import br.com.itarocha.betesda.persistencia.model.TipoLeitoEntity;
 import br.com.itarocha.betesda.service.TipoLeitoService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
@@ -17,12 +20,14 @@ import java.util.List;
 public class TipoLeitoController {
 
 	private final TipoLeitoService service;
+	private final TipoLeitoMapper mapper;
 	
 	@RequestMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
 		List<TipoLeitoEntity> lista = service.findAll();
-	    return new ResponseEntity<>(lista, HttpStatus.OK);
+		List<TipoLeitoResponse> resposta = mapper.toResponseList(lista);
+	    return new ResponseEntity<>(resposta, HttpStatus.OK);
 	}
 
 	@RequestMapping(value="{id}")
@@ -31,7 +36,8 @@ public class TipoLeitoController {
 		try {
 			TipoLeitoEntity model = service.find(id);
 			if (model != null) {
-				return new ResponseEntity<>(model, HttpStatus.OK);
+				TipoLeitoResponse resposta = mapper.toResponse(model);
+				return new ResponseEntity<>(resposta, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<>("Tipo de Leito não existe", HttpStatus.NOT_FOUND);
 			}
@@ -42,17 +48,18 @@ public class TipoLeitoController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody TipoLeitoEntity model) {
-		ItaValidator<TipoLeitoEntity> v = new ItaValidator<TipoLeitoEntity>(model);
+	public ResponseEntity<?> gravar(@RequestBody TipoLeitoRequest request) {
+		ItaValidator<TipoLeitoRequest> v = new ItaValidator<TipoLeitoRequest>(request);
 		v.validate();
 		if (!v.hasErrors() ) {
 			return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
 		}
 		
 		try {
-			TipoLeitoEntity saved = null;
-			saved = service.create(model);
-		    return new ResponseEntity<>(saved, HttpStatus.OK);
+			TipoLeitoEntity entity = mapper.toEntity(request);
+			TipoLeitoEntity saved = service.create(entity);
+			TipoLeitoResponse resposta = mapper.toResponse(saved);
+		    return new ResponseEntity<>(resposta, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

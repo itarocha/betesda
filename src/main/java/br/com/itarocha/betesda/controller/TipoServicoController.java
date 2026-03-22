@@ -1,5 +1,8 @@
 package br.com.itarocha.betesda.controller;
 
+import br.com.itarocha.betesda.mapper.TipoServicoMapper;
+import br.com.itarocha.betesda.model.request.TipoServicoRequest;
+import br.com.itarocha.betesda.model.response.TipoServicoResponse;
 import br.com.itarocha.betesda.persistencia.model.TipoServicoEntity;
 import br.com.itarocha.betesda.service.TipoServicoService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
@@ -17,12 +20,14 @@ import java.util.List;
 public class TipoServicoController {
 
 	private final TipoServicoService service;
+	private final TipoServicoMapper mapper;
 	
 	@RequestMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
 		List<TipoServicoEntity> lista = service.findAll();
-	    return new ResponseEntity<List<TipoServicoEntity>>(lista, HttpStatus.OK);
+		List<TipoServicoResponse> resposta = mapper.toResponseList(lista);
+	    return new ResponseEntity<>(resposta, HttpStatus.OK);
 	}
 
 	@RequestMapping(value="{id}")
@@ -31,9 +36,10 @@ public class TipoServicoController {
 		try {
 			TipoServicoEntity model = service.find(id);
 			if (model != null) {
-				return new ResponseEntity<>(model, HttpStatus.OK);
+				TipoServicoResponse resposta = mapper.toResponse(model);
+				return new ResponseEntity<>(resposta, HttpStatus.OK);
 			} else {
-				return new ResponseEntity<>("Tipo de SErviço não existe", HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Tipo de Serviço não existe", HttpStatus.NOT_FOUND);
 			}
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -42,17 +48,18 @@ public class TipoServicoController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody TipoServicoEntity model) {
-		ItaValidator<TipoServicoEntity> v = new ItaValidator<>(model);
+	public ResponseEntity<?> gravar(@RequestBody TipoServicoRequest request) {
+		ItaValidator<TipoServicoRequest> v = new ItaValidator<>(request);
 		v.validate();
 		if (!v.hasErrors() ) {
 			return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
 		}
 		
 		try {
-			TipoServicoEntity saved = null;
-			saved = service.create(model);
-		    return new ResponseEntity<>(saved, HttpStatus.OK);
+			TipoServicoEntity entity = mapper.toEntity(request);
+			TipoServicoEntity saved = service.create(entity);
+			TipoServicoResponse resposta = mapper.toResponse(saved);
+		    return new ResponseEntity<>(resposta, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

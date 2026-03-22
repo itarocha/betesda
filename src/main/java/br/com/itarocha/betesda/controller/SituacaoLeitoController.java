@@ -1,5 +1,8 @@
 package br.com.itarocha.betesda.controller;
 
+import br.com.itarocha.betesda.mapper.SituacaoLeitoMapper;
+import br.com.itarocha.betesda.model.request.SituacaoLeitoRequest;
+import br.com.itarocha.betesda.model.response.SituacaoLeitoResponse;
 import br.com.itarocha.betesda.persistencia.model.SituacaoLeitoEntity;
 import br.com.itarocha.betesda.service.SituacaoLeitoService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
@@ -17,12 +20,14 @@ import java.util.List;
 public class SituacaoLeitoController {
 
 	private final SituacaoLeitoService service;
+	private final SituacaoLeitoMapper mapper;
 	
 	@RequestMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
 		List<SituacaoLeitoEntity> lista = service.findAll();
-	    return new ResponseEntity<List<SituacaoLeitoEntity>>(lista, HttpStatus.OK);
+		List<SituacaoLeitoResponse> resposta = mapper.toResponseList(lista);
+	    return new ResponseEntity<>(resposta, HttpStatus.OK);
 	}
 
 	@RequestMapping(value="{id}")
@@ -31,7 +36,8 @@ public class SituacaoLeitoController {
 		try {
 			SituacaoLeitoEntity model = service.find(id);
 			if (model != null) {
-				return new ResponseEntity<>(model, HttpStatus.OK);
+				SituacaoLeitoResponse resposta = mapper.toResponse(model);
+				return new ResponseEntity<>(resposta, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<>("Situação de Leito não existe", HttpStatus.NOT_FOUND);
 			}
@@ -42,17 +48,18 @@ public class SituacaoLeitoController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody SituacaoLeitoEntity model) {
-		ItaValidator<SituacaoLeitoEntity> v = new ItaValidator<SituacaoLeitoEntity>(model);
+	public ResponseEntity<?> gravar(@RequestBody SituacaoLeitoRequest request) {
+		ItaValidator<SituacaoLeitoRequest> v = new ItaValidator<SituacaoLeitoRequest>(request);
 		v.validate();
 		if (!v.hasErrors() ) {
 			return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
 		}
 		
 		try {
-			SituacaoLeitoEntity saved = null;
-			saved = service.create(model);
-		    return new ResponseEntity<>(saved, HttpStatus.OK);
+			SituacaoLeitoEntity entity = mapper.toEntity(request);
+			SituacaoLeitoEntity saved = service.create(entity);
+			SituacaoLeitoResponse resposta = mapper.toResponse(saved);
+		    return new ResponseEntity<>(resposta, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

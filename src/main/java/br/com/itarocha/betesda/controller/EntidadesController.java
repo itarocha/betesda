@@ -1,6 +1,10 @@
 package br.com.itarocha.betesda.controller;
 
 import br.com.itarocha.betesda.exception.ValidationException;
+import br.com.itarocha.betesda.mapper.EntidadeMapper;
+import br.com.itarocha.betesda.mapper.EnderecoMapper;
+import br.com.itarocha.betesda.model.request.EntidadeRequest;
+import br.com.itarocha.betesda.model.response.EntidadeResponse;
 import br.com.itarocha.betesda.persistencia.model.EntidadeEntity;
 import br.com.itarocha.betesda.service.EntidadeService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
@@ -20,13 +24,16 @@ import java.util.Optional;
 public class EntidadesController {
 
 	private final EntidadeService service;
+	private final EntidadeMapper mapper;
+	private final EnderecoMapper enderecoMapper;
 	
 	@RequestMapping(value="{id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		Optional<EntidadeEntity> model = service.find(id);
 		if (model.isPresent()) {
-			return new ResponseEntity<>(model.get(), HttpStatus.OK);
+			EntidadeResponse resposta = mapper.toResponse(model.get());
+			return new ResponseEntity<>(resposta, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>("não encontrado", HttpStatus.NOT_FOUND);
 		}
@@ -36,32 +43,34 @@ public class EntidadesController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
 		List<EntidadeEntity> lista = service.findAll();
-		return new ResponseEntity<>(lista, HttpStatus.OK);
+		List<EntidadeResponse> resposta = mapper.toResponseList(lista);
+		return new ResponseEntity<>(resposta, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/consultar/{texto}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> consultar(@PathVariable("texto") String texto) {
 		List<EntidadeEntity> lista = service.consultar(texto);
-		return new ResponseEntity<>(lista, HttpStatus.OK);
+		List<EntidadeResponse> resposta = mapper.toResponseList(lista);
+		return new ResponseEntity<>(resposta, HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody EntidadeEntity model) {
+	public ResponseEntity<?> gravar(@RequestBody EntidadeRequest request) {
 		
-		if (model.getCnpj() != null) {
-			model.setCnpj(model.getCnpj().replaceAll("\\.", "").replaceAll("\\-", "").replaceAll("\\/", ""));
+		if (request.getCnpj() != null) {
+			request.setCnpj(request.getCnpj().replaceAll("\\.", "").replaceAll("\\-", "").replaceAll("\\/", ""));
 		}
-		if (model.getEndereco() != null && model.getEndereco().getCep() != null) {
-			model.getEndereco().setCep((model.getEndereco().getCep().replaceAll("\\-", "")));
+		if (request.getEndereco() != null && request.getEndereco().getCep() != null) {
+			request.getEndereco().setCep(request.getEndereco().getCep().replaceAll("\\-", ""));
 		}
 		
-		ItaValidator<EntidadeEntity> v = new ItaValidator<EntidadeEntity>(model);
+		ItaValidator<EntidadeRequest> v = new ItaValidator<EntidadeRequest>(request);
 		v.validate();
 		
-		if (model.getCnpj() != null && model.getCnpj() != "") {
-			if (!Validadores.isValidCNPJ(model.getCnpj())) {
+		if (request.getCnpj() != null && request.getCnpj() != "") {
+			if (!Validadores.isValidCNPJ(request.getCnpj())) {
 				v.addError("cnpj", "CNPJ inválido");
 			}
 		}
@@ -71,9 +80,10 @@ public class EntidadesController {
 		}
 		
 		try {
-			EntidadeEntity saved = null;
-			saved = service.create(model);
-		    return new ResponseEntity<>(saved, HttpStatus.OK);
+			EntidadeEntity entity = mapper.toEntity(request);
+			EntidadeEntity saved = service.create(entity);
+			EntidadeResponse resposta = mapper.toResponse(saved);
+		    return new ResponseEntity<>(resposta, HttpStatus.OK);
 		} catch (ValidationException e) {
 			ResponseEntity<?> re = new ResponseEntity<>(e.getRe(), HttpStatus.BAD_REQUEST); 
 			return re;

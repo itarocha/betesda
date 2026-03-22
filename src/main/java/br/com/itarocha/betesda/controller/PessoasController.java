@@ -1,8 +1,11 @@
 package br.com.itarocha.betesda.controller;
 
 import br.com.itarocha.betesda.exception.ValidationException;
-import br.com.itarocha.betesda.persistencia.model.PessoaEntity;
+import br.com.itarocha.betesda.mapper.PessoaMapper;
 import br.com.itarocha.betesda.model.SearchRequest;
+import br.com.itarocha.betesda.model.request.PessoaRequest;
+import br.com.itarocha.betesda.model.response.PessoaResponse;
+import br.com.itarocha.betesda.persistencia.model.PessoaEntity;
 import br.com.itarocha.betesda.service.PessoaService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
 import br.com.itarocha.betesda.utils.Validadores;
@@ -22,13 +25,15 @@ import java.util.Optional;
 public class PessoasController {
 
 	private final PessoaService service;
+	private final PessoaMapper mapper;
 	
 	@RequestMapping(value="{id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		Optional<PessoaEntity> model = service.find(id);
 		if (model.isPresent()) {
-			return new ResponseEntity<>(model.get(), HttpStatus.OK);
+			PessoaResponse resposta = mapper.toResponse(model.get());
+			return new ResponseEntity<>(resposta, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>("não encontrado", HttpStatus.NOT_FOUND);
 		}
@@ -42,7 +47,8 @@ public class PessoasController {
 		if (search.getValue().length() >= 3) {
 			lista = service.findByFieldNameAndValue(search.getFieldName(), "%"+search.getValue()+"%");
 		}
-		return new ResponseEntity<>(lista, HttpStatus.OK);
+		List<PessoaResponse> resposta = mapper.toResponseList(lista);
+		return new ResponseEntity<>(resposta, HttpStatus.OK);
 	}
 	
 	@Deprecated
@@ -50,34 +56,36 @@ public class PessoasController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
 		List<PessoaEntity> lista = service.findByFieldNameAndValue("nome", "%MAR%");
-		return new ResponseEntity<>(lista, HttpStatus.OK);
+		List<PessoaResponse> resposta = mapper.toResponseList(lista);
+		return new ResponseEntity<>(resposta, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/consultar/{texto}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> consultar(@PathVariable("texto") String texto) {
 		List<PessoaEntity> lista = service.consultar(texto);
-		return new ResponseEntity<>(lista, HttpStatus.OK);
+		List<PessoaResponse> resposta = mapper.toResponseList(lista);
+		return new ResponseEntity<>(resposta, HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody PessoaEntity model) {
-		if (model.getCartaoSus() != null) {
-			model.setCartaoSus(model.getCartaoSus().replaceAll("\\.", ""));
+	public ResponseEntity<?> gravar(@RequestBody PessoaRequest request) {
+		if (request.getCartaoSus() != null) {
+			request.setCartaoSus(request.getCartaoSus().replaceAll("\\.", ""));
 		}
-		if (model.getCpf() != null) {
-			model.setCpf(model.getCpf().replaceAll("\\.", "").replaceAll("\\-", ""));
+		if (request.getCpf() != null) {
+			request.setCpf(request.getCpf().replaceAll("\\.", "").replaceAll("\\-", ""));
 		}
-		if (model.getEndereco() != null && model.getEndereco().getCep() != null) {
-			model.getEndereco().setCep((model.getEndereco().getCep().replaceAll("\\-", "")));
+		if (request.getEndereco() != null && request.getEndereco().getCep() != null) {
+			request.getEndereco().setCep((request.getEndereco().getCep().replaceAll("\\-", "")));
 		}
 		
-		ItaValidator<PessoaEntity> v = new ItaValidator<>(model);
+		ItaValidator<PessoaRequest> v = new ItaValidator<>(request);
 		v.validate();
 		
-		if (model.getCpf() != null && model.getCpf() != "") {
-			if (!Validadores.isValidCPF(model.getCpf())) {
+		if (request.getCpf() != null && request.getCpf() != "") {
+			if (!Validadores.isValidCPF(request.getCpf())) {
 				v.addError("cpf", "CPF inválido");
 			}
 		}
@@ -87,9 +95,10 @@ public class PessoasController {
 		}
 		
 		try {
-			PessoaEntity saved = null;
-			saved = service.create(model);
-		    return new ResponseEntity<PessoaEntity>(saved, HttpStatus.OK);
+			PessoaEntity entity = mapper.toEntity(request);
+			PessoaEntity saved = service.create(entity);
+			PessoaResponse resposta = mapper.toResponse(saved);
+		    return new ResponseEntity<PessoaResponse>(resposta, HttpStatus.OK);
 		} catch (ValidationException e) {
 			ResponseEntity<?> re = new ResponseEntity<>(e.getRe(), HttpStatus.BAD_REQUEST); 
 			return re;

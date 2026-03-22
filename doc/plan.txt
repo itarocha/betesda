@@ -1,0 +1,6 @@
+Inclua o lombok no projeto.
+Com isso, atualize todas as classes da package br.com.itarocha.betesda.model e sub packages para as anotações que julgar necessárias, quer seja @Getter, @Setter, @NoArgsConstructor, @AllArgsConstructor, @Data, @Builder, @ToString, etc. Respeite as implementações de toString se já existirem. Da mesma forma algum tipo de construtor específico. E, obviamente remova os métidos getter e setter desnecessários com essa mudança.
+Remova as anotações @Autowired e substitua por @RequiredArgsConstructor nas classes de service e controllers.
+
+
+Atualize todas as classes de entidade (anotadas com @Entity) para as anotações que julgar necessárias para o padrão lombok, quer seja @Getter, @Setter, @NoArgsConstructor, @AllArgsConstructor, @Data, @Builder, @ToString, etc. Respeite as implementações de toString se já existirem. Da mesma forma algum tipo de construtor específico. E, obviamente remova os métidos getter e setter desnecessários com essa mudança.

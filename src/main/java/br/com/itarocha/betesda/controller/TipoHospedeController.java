@@ -1,5 +1,8 @@
 package br.com.itarocha.betesda.controller;
 
+import br.com.itarocha.betesda.mapper.TipoHospedeMapper;
+import br.com.itarocha.betesda.model.request.TipoHospedeRequest;
+import br.com.itarocha.betesda.model.response.TipoHospedeResponse;
 import br.com.itarocha.betesda.persistencia.model.TipoHospedeEntity;
 import br.com.itarocha.betesda.service.TipoHospedeService;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
@@ -17,12 +20,14 @@ import java.util.List;
 public class TipoHospedeController {
 
 	private final TipoHospedeService service;
+	private final TipoHospedeMapper mapper;
 	
 	@RequestMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
 		List<TipoHospedeEntity> lista = service.findAll();
-	    return new ResponseEntity<>(lista, HttpStatus.OK);
+		List<TipoHospedeResponse> resposta = mapper.toResponseList(lista);
+	    return new ResponseEntity<>(resposta, HttpStatus.OK);
 	}
 
 	@RequestMapping(value="{id}")
@@ -31,7 +36,8 @@ public class TipoHospedeController {
 		try {
 			TipoHospedeEntity model = service.find(id);
 			if (model != null) {
-				return new ResponseEntity<>(model, HttpStatus.OK);
+				TipoHospedeResponse resposta = mapper.toResponse(model);
+				return new ResponseEntity<>(resposta, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<>("Tipo de Hóspede não existe", HttpStatus.NOT_FOUND);
 			}
@@ -42,17 +48,18 @@ public class TipoHospedeController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody TipoHospedeEntity model) {
-		ItaValidator<TipoHospedeEntity> v = new ItaValidator<TipoHospedeEntity>(model);
+	public ResponseEntity<?> gravar(@RequestBody TipoHospedeRequest request) {
+		ItaValidator<TipoHospedeRequest> v = new ItaValidator<TipoHospedeRequest>(request);
 		v.validate();
 		if (!v.hasErrors() ) {
 			return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
 		}
 		
 		try {
-			TipoHospedeEntity saved = null;
-			saved = service.create(model);
-		    return new ResponseEntity<>(saved, HttpStatus.OK);
+			TipoHospedeEntity entity = mapper.toEntity(request);
+			TipoHospedeEntity saved = service.create(entity);
+			TipoHospedeResponse resposta = mapper.toResponse(saved);
+		    return new ResponseEntity<>(resposta, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
