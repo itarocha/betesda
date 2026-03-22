@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface HospedagemEntityRepository extends JpaRepository<HospedagemEntity, Long> {
+public interface HospedagemJPARepository extends JpaRepository<HospedagemEntity, Long> {
 	
 	@Query("SELECT  DISTINCT hospedagem " + 
 			"FROM   HospedagemEntity hospedagem " +

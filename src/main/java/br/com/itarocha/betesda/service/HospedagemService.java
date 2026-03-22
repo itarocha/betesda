@@ -41,29 +41,29 @@ public class HospedagemService {
 	
 	private final EntityManager em;
 	
-	private final DestinacaoHospedagemEntityRepository destinacaoHospedagemRepo;
+	private final DestinacaoHospedagemJPARepository destinacaoHospedagemRepo;
 	
-	private final HospedagemEntityRepository hospedagemRepo;
+	private final HospedagemJPARepository hospedagemRepo;
 	
-	private final PessoaEntityRepository pessoaRepo;
+	private final PessoaJPARepository pessoaRepo;
 	
-	private final TipoHospedeEntityRepository tipoHospedeRepo;
+	private final TipoHospedeJPARepository tipoHospedeRepo;
 	
-	private final QuartoEntityRepository quartoRepo;
+	private final QuartoJPARepository quartoRepo;
 	
-	private final LeitoEntityRepository leitoRepo;
+	private final LeitoJPARepository leitoRepo;
 	
-	private final HospedeLeitoEntityRepository hospedeLeitoRepo;
+	private final HospedeLeitoJPARepository hospedeLeitoRepo;
 	
-	private final HospedeEntityRepository hospedeRepo;
+	private final HospedeJPARepository hospedeRepo;
 	
-	private final TipoServicoEntityRepository tipoServicoRepo;
+	private final TipoServicoJPARepository tipoServicoRepo;
 	
-	private final EntidadeEntityRepository entidadeRepo;
+	private final EntidadeJPARepository entidadeRepo;
 	
-	private final EncaminhadorEntityRepository encaminhadorRepo;
+	private final EncaminhadorJPARepository encaminhadorRepo;
 	
-	private final HospedagemTipoServicoEntityRepository hospedagemTipoServicoRepo;
+	private final HospedagemTipoServicoJPARepository hospedagemTipoServicoRepo;
 	
 	private final QuartoService quartoService;
 
@@ -1270,7 +1270,8 @@ public class HospedagemService {
 	public void removeNaoAtendimento(Long hospedagemId, Long naoAtendimentoId) {
 		
 	}
-	
+
+	//TODO: Mover query para repositório
 	public boolean pessoaLivreNoPeriodo(Long pessoaId, LocalDate dataIni, LocalDate dataFim) {
 		StringBuilder sb = new StringBuilder();
 		
@@ -1309,8 +1310,8 @@ public class HospedagemService {
 		
 		return ((qtd <= 0) && (qtdP <= 0)); 
 	}
-	
-	
+
+	//TODO: Mover query para repositório
 	public boolean leitoLivreNoPeriodo(Long leitoId, LocalDate dataIni, LocalDate dataFim) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT count(*) "); 
@@ -1328,6 +1329,7 @@ public class HospedagemService {
 		return qtd <= 0; 
 	}
 
+	//TODO: Mover query para repositório
 	public List<BigInteger> hospedagensNoPeriodo(Long leitoId, LocalDate dataIni, LocalDate dataFim) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT h.hospedagem_id ");

@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface LeitoEntityRepository extends JpaRepository<LeitoEntity, Long> {
+public interface LeitoJPARepository extends JpaRepository<LeitoEntity, Long> {
 	
 	List<LeitoEntity> findByQuartoId(Long id);
 

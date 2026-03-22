@@ -2,7 +2,7 @@ package br.com.itarocha.betesda.security;
 
 import br.com.itarocha.betesda.exception.ResourceNotFoundException;
 import br.com.itarocha.betesda.persistencia.model.UserEntity;
-import br.com.itarocha.betesda.persistencia.repository.UserEntityRepository;
+import br.com.itarocha.betesda.persistencia.repository.UserJPARepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,7 +15,7 @@ import jakarta.transaction.Transactional;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserEntityRepository userRepository;
+    private final UserJPARepository userRepository;
 
     @Override
     @Transactional

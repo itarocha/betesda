@@ -5,7 +5,7 @@ import java.math.BigInteger;
 public class PessoaEncaminhamento {
 	
     private BigInteger hospedagemId;
-    
+
     private PessoaAtendida pessoa;
 	
 	private String tipoUtilizacao;

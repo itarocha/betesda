@@ -2,7 +2,7 @@ package br.com.itarocha.betesda.service;
 
 import br.com.itarocha.betesda.persistencia.model.EncaminhadorEntity;
 import br.com.itarocha.betesda.model.SelectValueVO;
-import br.com.itarocha.betesda.persistencia.repository.EncaminhadorEntityRepository;
+import br.com.itarocha.betesda.persistencia.repository.EncaminhadorJPARepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ public class EncaminhadorService {
 
 	private final EntityManager em;
 
-	private final EncaminhadorEntityRepository repositorio;
+	private final EncaminhadorJPARepository repositorio;
 
 	public EncaminhadorEntity create(EncaminhadorEntity model) {
 		try{
@@ -47,6 +47,7 @@ public class EncaminhadorService {
 		return repositorio.findById(id);
 	}
 
+	//TODO: Mover query para repositório
 	public List<EncaminhadorEntity> findAll(Long entidadeId) {
 		return em.createQuery("SELECT model FROM EncaminhadorEntity model WHERE model.entidade.id = :entidadeId ORDER BY model.nome", EncaminhadorEntity.class)
 				.setParameter("entidadeId", entidadeId)

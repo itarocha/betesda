@@ -2,10 +2,9 @@ package br.com.itarocha.betesda.service;
 
 import br.com.itarocha.betesda.persistencia.model.DestinacaoHospedagemEntity;
 import br.com.itarocha.betesda.model.SelectValueVO;
-import br.com.itarocha.betesda.persistencia.repository.DestinacaoHospedagemEntityRepository;
+import br.com.itarocha.betesda.persistencia.repository.DestinacaoHospedagemJPARepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ public class DestinacaoHospedagemService {
 
 	private final EntityManager em;
 	
-	private final DestinacaoHospedagemEntityRepository repositorio;
+	private final DestinacaoHospedagemJPARepository repositorio;
 
 	public DestinacaoHospedagemEntity create(DestinacaoHospedagemEntity model) {
 		try{
@@ -44,11 +43,13 @@ public class DestinacaoHospedagemService {
 		}
 	}
 
+	//TODO: Mover query para repositório
 	public List<DestinacaoHospedagemEntity> findAll() {
 		TypedQuery query = em.createQuery("SELECT model FROM DestinacaoHospedagemEntity model ORDER BY model.descricao", DestinacaoHospedagemEntity.class);
 		return query.getResultList();
 	}
 
+	//TODO: Mover query para repositório
 	public List<SelectValueVO> listSelect() {
 		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
 		em.createQuery("SELECT model FROM DestinacaoHospedagemEntity model ORDER BY model.descricao", DestinacaoHospedagemEntity.class)

@@ -1,4 +1,4 @@
-package br.com.itarocha.betesda.service;
+package br.com.itarocha.betesda.service.mail;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

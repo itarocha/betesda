@@ -23,15 +23,15 @@ import java.util.Optional;
 //https://docs.spring.io/spring-data/jpa/docs/current/reference/html/
 public class QuartoService {
 
-	private final QuartoEntityRepository quartoRepo; 
+	private final QuartoJPARepository quartoRepo;
 	
-	private final LeitoEntityRepository leitoRepo;
+	private final LeitoJPARepository leitoRepo;
 	
-	private final TipoLeitoEntityRepository tipoLeitoRepo;
+	private final TipoLeitoJPARepository tipoLeitoRepo;
 	
-	private final SituacaoLeitoEntityRepository situacaoLeitoRepo;
+	private final SituacaoLeitoJPARepository situacaoLeitoRepo;
 	
-	private final DestinacaoHospedagemEntityRepository destinacaoHospedagemRepo;
+	private final DestinacaoHospedagemJPARepository destinacaoHospedagemRepo;
 
 	public QuartoEntity create(QuartoEntity model) {
 		try{

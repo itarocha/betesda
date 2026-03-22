@@ -2,7 +2,7 @@ package br.com.itarocha.betesda.service;
 
 import br.com.itarocha.betesda.model.SelectValueVO;
 import br.com.itarocha.betesda.persistencia.model.TipoServicoEntity;
-import br.com.itarocha.betesda.persistencia.repository.TipoServicoEntityRepository;
+import br.com.itarocha.betesda.persistencia.repository.TipoServicoJPARepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ public class TipoServicoService {
 
 	private final EntityManager em;
 	
-	private final TipoServicoEntityRepository repositorio;
+	private final TipoServicoJPARepository repositorio;
 
 	public TipoServicoEntity create(TipoServicoEntity model) {
 		repositorio.save(model);
@@ -48,10 +48,12 @@ public class TipoServicoService {
 		}
 	}
 
+	//TODO: Mover query para repositório
 	public List<TipoServicoEntity> findAll() {
 		return em.createQuery("SELECT e FROM TipoServicoEntity e ORDER BY e.descricao", TipoServicoEntity.class).getResultList();
 	}
-	
+
+	//TODO: Mover query para repositório
 	public List<SelectValueVO> listSelect() {
 		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
 		em.createQuery("SELECT o FROM TipoServicoEntity o WHERE o.ativo = 'S' ORDER BY o.descricao",TipoServicoEntity.class)

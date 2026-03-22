@@ -1,4 +1,4 @@
-package br.com.itarocha.betesda.service;
+package br.com.itarocha.betesda.service.mail;
 
 import br.com.itarocha.betesda.model.Email;
 import lombok.RequiredArgsConstructor;

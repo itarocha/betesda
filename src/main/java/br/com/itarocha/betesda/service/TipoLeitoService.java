@@ -2,7 +2,7 @@ package br.com.itarocha.betesda.service;
 
 import br.com.itarocha.betesda.model.SelectValueVO;
 import br.com.itarocha.betesda.persistencia.model.TipoLeitoEntity;
-import br.com.itarocha.betesda.persistencia.repository.TipoLeitoEntityRepository;
+import br.com.itarocha.betesda.persistencia.repository.TipoLeitoJPARepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ public class TipoLeitoService {
 
 	private final EntityManager em;
 	
-	private final TipoLeitoEntityRepository repositorio;
+	private final TipoLeitoJPARepository repositorio;
 
 	public TipoLeitoEntity create(TipoLeitoEntity model) {
 		try{
@@ -51,10 +51,12 @@ public class TipoLeitoService {
 		}
 	}
 
+	//TODO: Mover query para repositório
 	public List<TipoLeitoEntity> findAll() {
 		return em.createQuery("SELECT e FROM TipoLeitoEntity e ORDER BY e.descricao", TipoLeitoEntity.class).getResultList();
 	}
-	
+
+	//TODO: Mover query para repositório
 	public List<SelectValueVO> listSelect() {
 		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
 		em.createQuery("SELECT o FROM TipoLeitoEntity o ORDER BY o.descricao",TipoLeitoEntity.class)
@@ -62,46 +64,5 @@ public class TipoLeitoService {
 			.forEach(x -> retorno.add(new SelectValueVO(x.getId(), x.getDescricao())));
 		return retorno;
 	}
-	
-	/*	
-	@Autowired
-	private EntityManager em;
-	
-	@Autowired
-	private TipoHospedeEntityRepository repositorio;
-	
-	public DestinacaoHospedagemEntity create(DestinacaoHospedagemEntity model) {
-		try{
-			return repositorio.save(model);
-		}catch(Exception e){
-			throw new IllegalArgumentException(e.getMessage());
-		}
-	}
 
-	public void remove(Long id) {
-		DestinacaoHospedagemEntity model = find(id);
-		if (model != null) {
-			repositorio.delete(model);
-		}
-	}
-	
-	public DestinacaoHospedagemEntity find(Long id) {
-		return em.find(DestinacaoHospedagemEntity.class, id);
-	}
-
-	public List<DestinacaoHospedagemEntity> findAll() {
-		TypedQuery query = em.createQuery("SELECT model FROM DestinacaoHospedagemEntity model ORDER BY model.descricao", DestinacaoHospedagemEntity.class);
-		return query.getResultList();
-	}
-
-	public List<SelectValueVO> listSelect() {
-		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
-		em.createQuery("SELECT model FROM DestinacaoHospedagemEntity model ORDER BY model.descricao", DestinacaoHospedagemEntity.class)
-		.getResultList()
-		.forEach(x -> retorno.add(new SelectValueVO(x.getId(), x.getDescricao())));
-		return retorno;
-	}
-
-*/	
-	
 }

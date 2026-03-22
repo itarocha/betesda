@@ -9,7 +9,7 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface HospedeLeitoEntityRepository extends JpaRepository<HospedeLeitoEntity, Long> {
+public interface HospedeLeitoJPARepository extends JpaRepository<HospedeLeitoEntity, Long> {
 
 	@Query(value = "SELECT   hl.* " + 
 			"FROM     hospede_leito hl " + 

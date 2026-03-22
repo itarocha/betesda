@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface TipoLeitoEntityRepository extends JpaRepository<TipoLeitoEntity, Long> {
+public interface TipoLeitoJPARepository extends JpaRepository<TipoLeitoEntity, Long> {
 
 	
 	@Query("SELECT o FROM TipoLeitoEntity o ORDER BY o.descricao")

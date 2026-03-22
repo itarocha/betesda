@@ -3,8 +3,8 @@ package br.com.itarocha.betesda.service;
 import br.com.itarocha.betesda.exception.ValidationException;
 import br.com.itarocha.betesda.persistencia.model.EnderecoEntity;
 import br.com.itarocha.betesda.persistencia.model.PessoaEntity;
-import br.com.itarocha.betesda.persistencia.repository.EnderecoEntityRepository;
-import br.com.itarocha.betesda.persistencia.repository.PessoaEntityRepository;
+import br.com.itarocha.betesda.persistencia.repository.EnderecoJPARepository;
+import br.com.itarocha.betesda.persistencia.repository.PessoaJPARepository;
 import br.com.itarocha.betesda.util.validation.ResultError;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -24,9 +24,9 @@ public class PessoaService {
 
 	private final EntityManager em;
 
-	private final PessoaEntityRepository repositorio;
+	private final PessoaJPARepository repositorio;
 
-	private final EnderecoEntityRepository enderecoRepo;
+	private final EnderecoJPARepository enderecoRepo;
 
 	public PessoaEntity create(PessoaEntity model) throws ValidationException {
 		try{
@@ -77,11 +77,13 @@ public class PessoaService {
 	public List<PessoaEntity> findByFieldNameAndValue(String campo, String valor){
 		return repositorio.findAll(campoQueContenha(campo, valor));
 	}
-	
+
+	//TODO: Mover query para repositório
 	public List<PessoaEntity> findAll() {
 		return em.createQuery("SELECT model FROM PessoaEntity model ORDER BY model.nome", PessoaEntity.class).getResultList();
 	}
 
+	//TODO: Mover query para repositório
 	public List<PessoaEntity> consultar(String texto) {
 		return em.createQuery("SELECT model FROM PessoaEntity model WHERE lower(model.nome) LIKE :texto ORDER BY model.nome", PessoaEntity.class)
 				.setParameter("texto", "%"+texto.toLowerCase()+"%")
@@ -141,7 +143,8 @@ public class PessoaService {
         };
         */
     }
-	
+
+	//TODO: Mover query para repositório
 	public boolean pessoaCadastradaPorCampo(Long pessoaId, String campo, String valor) {
 		
 		if ("".equals(valor) || valor == null) {

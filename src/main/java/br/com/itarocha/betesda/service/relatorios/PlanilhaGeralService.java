@@ -1,4 +1,4 @@
-package br.com.itarocha.betesda.service;
+package br.com.itarocha.betesda.service.relatorios;
 
 import br.com.itarocha.betesda.report.ChaveValor;
 import br.com.itarocha.betesda.report.RelatorioAtendimentos;

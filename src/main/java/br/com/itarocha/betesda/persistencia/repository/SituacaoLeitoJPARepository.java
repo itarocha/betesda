@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface SituacaoLeitoEntityRepository extends JpaRepository<SituacaoLeitoEntity, Long> {
+public interface SituacaoLeitoJPARepository extends JpaRepository<SituacaoLeitoEntity, Long> {
 
 	@Query("SELECT e FROM SituacaoLeitoEntity e ORDER BY e.descricao")
 	List<SituacaoLeitoEntity> findAllOrderByDescricao();

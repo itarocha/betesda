@@ -2,7 +2,7 @@ package br.com.itarocha.betesda.service;
 
 import br.com.itarocha.betesda.model.SelectValueVO;
 import br.com.itarocha.betesda.persistencia.model.SituacaoLeitoEntity;
-import br.com.itarocha.betesda.persistencia.repository.SituacaoLeitoEntityRepository;
+import br.com.itarocha.betesda.persistencia.repository.SituacaoLeitoJPARepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +14,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SituacaoLeitoService {
 
-	private final SituacaoLeitoEntityRepository repositorio;
+	private final SituacaoLeitoJPARepository repositorio;
 
 	public SituacaoLeitoEntity create(SituacaoLeitoEntity model) {
 		try{

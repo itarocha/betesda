@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.Collection;
 import java.util.List;
 
-public interface QuartoEntityRepository extends JpaRepository<QuartoEntity, Long> {
+public interface QuartoJPARepository extends JpaRepository<QuartoEntity, Long> {
 	
 	 @Query("SELECT o FROM LeitoEntity o WHERE (o.quarto.id = :quartoId) AND (o.id <> :id) AND (o.numero = :numero)")
 	 Collection<LeitoEntity> existeOutroLeitoComEsseNumero(@Param("id") Long leito_id, @Param("quartoId") Long quartoId, @Param("numero") Integer numero);

@@ -3,8 +3,8 @@ package br.com.itarocha.betesda.service;
 import br.com.itarocha.betesda.exception.ValidationException;
 import br.com.itarocha.betesda.persistencia.model.EntidadeEntity;
 import br.com.itarocha.betesda.model.SelectValueVO;
-import br.com.itarocha.betesda.persistencia.repository.EnderecoEntityRepository;
-import br.com.itarocha.betesda.persistencia.repository.EntidadeEntityRepository;
+import br.com.itarocha.betesda.persistencia.repository.EnderecoJPARepository;
+import br.com.itarocha.betesda.persistencia.repository.EntidadeJPARepository;
 import br.com.itarocha.betesda.util.validation.ResultError;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,9 +21,9 @@ public class EntidadeService {
 
 	private final EntityManager em;
 
-	private final EntidadeEntityRepository repositorio;
+	private final EntidadeJPARepository repositorio;
 
-	private final EnderecoEntityRepository enderecoRepo;
+	private final EnderecoJPARepository enderecoRepo;
 
 	public EntidadeEntity create(EntidadeEntity model) throws ValidationException {
 		try{
@@ -63,10 +63,12 @@ public class EntidadeService {
 		return repositorio.findById(id);
 	}
 
+	//TODO: Mover query para repositório
 	public List<EntidadeEntity> findAll() {
 		return em.createQuery("SELECT model FROM EntidadeEntity model ORDER BY model.nome", EntidadeEntity.class).getResultList();
 	}
 
+	//TODO: Mover query para repositório
 	public List<EntidadeEntity> consultar(String texto) {
 		return em.createQuery("SELECT model FROM EntidadeEntity model WHERE lower(model.nome) LIKE :texto ORDER BY model.nome", EntidadeEntity.class)
 				.setParameter("texto", "%"+texto.toLowerCase()+"%")

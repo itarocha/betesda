@@ -8,10 +8,10 @@ import br.com.itarocha.betesda.payload.ApiResponse;
 import br.com.itarocha.betesda.payload.JwtAuthenticationResponse;
 import br.com.itarocha.betesda.payload.LoginRequest;
 import br.com.itarocha.betesda.payload.SignUpRequest;
-import br.com.itarocha.betesda.persistencia.repository.RoleEntityRepository;
-import br.com.itarocha.betesda.persistencia.repository.UserEntityRepository;
+import br.com.itarocha.betesda.persistencia.repository.RoleJPARepository;
+import br.com.itarocha.betesda.persistencia.repository.UserJPARepository;
 import br.com.itarocha.betesda.security.JwtTokenProvider;
-import br.com.itarocha.betesda.service.EmailService;
+import br.com.itarocha.betesda.service.mail.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +37,8 @@ import java.util.Collections;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final UserEntityRepository userRepository;
-    private final RoleEntityRepository roleRepository;
+    private final UserJPARepository userRepository;
+    private final RoleJPARepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider tokenProvider;
     private final EmailService emailService;
