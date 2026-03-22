@@ -52,7 +52,7 @@ public class SituacaoLeitoController {
 		try {
 			SituacaoLeitoEntity saved = null;
 			saved = service.create(model);
-		    return new ResponseEntity<SituacaoLeitoEntity>(saved, HttpStatus.OK);
+		    return new ResponseEntity<>(saved, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -63,7 +63,7 @@ public class SituacaoLeitoController {
 	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
 		try {
 			service.remove(id);
-		    return new ResponseEntity<String>("sucesso", HttpStatus.OK);
+		    return new ResponseEntity<>("sucesso", HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

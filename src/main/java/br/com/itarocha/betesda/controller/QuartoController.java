@@ -1,10 +1,8 @@
 package br.com.itarocha.betesda.controller;
 
 import br.com.itarocha.betesda.model.*;
-import br.com.itarocha.betesda.persistencia.model.HospedeEntity;
 import br.com.itarocha.betesda.persistencia.model.LeitoEntity;
 import br.com.itarocha.betesda.persistencia.model.QuartoEntity;
-import br.com.itarocha.betesda.persistencia.model.TipoLeitoEntity;
 import br.com.itarocha.betesda.service.*;
 import br.com.itarocha.betesda.util.validation.ItaValidator;
 import lombok.RequiredArgsConstructor;
@@ -78,21 +76,21 @@ public class QuartoController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listarByDestinacaoHospedagem(@PathVariable("id") Long id) {
 		List<QuartoEntity> lista = service.findAllByDestinacaoHospedagem(id);
-		return new ResponseEntity<List<QuartoEntity>>(lista, HttpStatus.OK);
+		return new ResponseEntity<>(lista, HttpStatus.OK);
 	}
 
 	@RequestMapping("/{id}/leitos")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listarLeitosByQuarto(@PathVariable("id") Long id) {
 		List<LeitoEntity> lista = service.findLeitosByQuarto(id);
-		return new ResponseEntity<List<LeitoEntity>>(lista, HttpStatus.OK);
+		return new ResponseEntity<>(lista, HttpStatus.OK);
 	}
 
 	@RequestMapping("/leitos_disponiveis")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listarLeitosDisponiveis() {
 		List<LeitoEntity> lista = service.findLeitosDisponiveis();
-		return new ResponseEntity<List<LeitoEntity>>(lista, HttpStatus.OK);
+		return new ResponseEntity<>(lista, HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
@@ -111,7 +109,7 @@ public class QuartoController {
 		// TODO tratar exceção
 		QuartoEntity saved = null;
 		saved = service.create(model);
-	    return new ResponseEntity<QuartoEntity>(saved, HttpStatus.OK);
+	    return new ResponseEntity<>(saved, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value="/alterar", method = RequestMethod.POST)
@@ -132,7 +130,7 @@ public class QuartoController {
 		
 			QuartoEntity saved = null;
 			saved = service.update(model);
-		    return new ResponseEntity<QuartoEntity>(saved, HttpStatus.OK);
+		    return new ResponseEntity<>(saved, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -161,7 +159,7 @@ public class QuartoController {
 		
 			LeitoEntity saved = null;
 			saved = service.saveLeito(model);
-			return new ResponseEntity<LeitoEntity>(saved, HttpStatus.OK);
+			return new ResponseEntity<>(saved, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -172,7 +170,7 @@ public class QuartoController {
 	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
 		try {
 			service.remove(id);
-			return new ResponseEntity<String>("sucesso", HttpStatus.OK);
+			return new ResponseEntity<>("sucesso", HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
 		}
@@ -183,7 +181,7 @@ public class QuartoController {
 	public ResponseEntity<?> excluirLeito(@PathVariable("id") Long id) {
 		try {
 			service.removeLeito(id);
-			return new ResponseEntity<String>("sucesso", HttpStatus.OK);
+			return new ResponseEntity<>("sucesso", HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

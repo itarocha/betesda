@@ -74,9 +74,9 @@ public class HospedagemController {
 		
 		try {
 			service.create(model);
-		    return new ResponseEntity<HospedagemVO>(model, HttpStatus.OK);
+		    return new ResponseEntity<>(model, HttpStatus.OK);
 		} catch (ValidationException e) {
-			return new ResponseEntity<ResultError>(e.getRe(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(e.getRe(), HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -140,12 +140,10 @@ public class HospedagemController {
 			return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
 		}
 
-		//relatorioService.teste(model.dataIni,  model.dataFim);
-		
 		try {
 			//RelatorioAtendimentos retorno = relatorioService.buildPlanilhaGeral(model.dataIni, model.dataFim);
 			RelatorioAtendimentos retorno = relatorioService.buildNovaPlanilha(model.dataIni, model.dataFim);
-			return new ResponseEntity<RelatorioAtendimentos>(retorno, HttpStatus.OK);
+			return new ResponseEntity<>(retorno, HttpStatus.OK);
 		} catch(Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -173,19 +171,13 @@ public class HospedagemController {
 		
 		RelatorioAtendimentos retorno = null;
 		try {
-			//System.out.println(String.format("Iniciando geração do relatório - %s", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)));
-			//retorno = relatorioService.buildPlanilhaGeral(model.dataIni, model.dataFim);
 			retorno = relatorioService.buildNovaPlanilha(model.dataIni, model.dataFim);
-			//System.out.println(String.format("Finalizando geração do relatório - %s", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)));
-			// Gerar planilha
 		} catch(Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		//System.out.println(String.format("Gerando planilha - %s", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)));
 		ByteArrayInputStream in = PlanilhaGeralService.toExcel(retorno);
-		//System.out.println(String.format("Planilha gerada - %s", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)));
-		
+
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Disposition", "attachment; filename=planilha.xlsx");
 		headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -206,9 +198,7 @@ public class HospedagemController {
 	{
 		try {
 			List<OcupacaoLeito> retorno = service.getLeitosOcupadosNoPeriodo(model.hospedagemId, model.dataIni, model.dataFim);
-			
-			//List<Long> retorno = service.getLeitosOcupadosNoPeriodo(model.hospedagemId, model.dataIni, model.dataFim);
-			return new ResponseEntity<List<OcupacaoLeito>>(retorno, HttpStatus.OK);
+			return new ResponseEntity<>(retorno, HttpStatus.OK);
 		} catch(Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -220,9 +210,9 @@ public class HospedagemController {
 	{
 		try {
 			service.alterarTipoHospede(model.hospedeId, model.tipoHospedeId);
-			return new ResponseEntity<String>("ok", HttpStatus.OK);
+			return new ResponseEntity<>("ok", HttpStatus.OK);
 		} catch(ValidationException e) {
-			return new ResponseEntity<ResultError>(e.getRe(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(e.getRe(), HttpStatus.BAD_REQUEST);
 		}
 	}
 	
@@ -232,9 +222,9 @@ public class HospedagemController {
 	{
 		try {
 			service.encerrarHospedagem(model.hospedagemId, model.data);
-			return new ResponseEntity<String>("ok", HttpStatus.OK);
+			return new ResponseEntity<>("ok", HttpStatus.OK);
 		} catch(ValidationException e) {
-			return new ResponseEntity<ResultError>(e.getRe(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(e.getRe(), HttpStatus.BAD_REQUEST);
 		}
 	}
 	
@@ -244,9 +234,9 @@ public class HospedagemController {
 	{
 		try {
 			service.renovarHospedagem(model.hospedagemId, model.data);
-			return new ResponseEntity<String>("ok", HttpStatus.OK);
+			return new ResponseEntity<>("ok", HttpStatus.OK);
 		} catch(ValidationException e) {
-			return new ResponseEntity<ResultError>(e.getRe(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(e.getRe(), HttpStatus.BAD_REQUEST);
 		}
 	}
 	
@@ -256,9 +246,9 @@ public class HospedagemController {
 	{
 		try {
 			service.removerHospede(model.hospedagemId, model.hospedeId);
-			return new ResponseEntity<String>("ok", HttpStatus.OK); 
+			return new ResponseEntity<>("ok", HttpStatus.OK);
 		} catch(ValidationException e) {
-			return new ResponseEntity<ResultError>(e.getRe(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(e.getRe(), HttpStatus.BAD_REQUEST);
 		}
 	}
 	
@@ -268,9 +258,9 @@ public class HospedagemController {
 	{
 		try {
 			service.baixarHospede(model.hospedeId, model.data);
-			return new ResponseEntity<String>("ok", HttpStatus.OK); 
+			return new ResponseEntity<>("ok", HttpStatus.OK);
 		} catch(ValidationException e) {
-			return new ResponseEntity<ResultError>(e.getRe(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(e.getRe(), HttpStatus.BAD_REQUEST);
 		}
 	}
 	
@@ -282,7 +272,7 @@ public class HospedagemController {
 			service.transferirHospede(model.hospedeId, model.leitoId, model.data);
 			return new ResponseEntity<String>("ok", HttpStatus.OK); 
 		} catch(ValidationException e) {
-			return new ResponseEntity<ResultError>(e.getRe(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(e.getRe(), HttpStatus.BAD_REQUEST);
 		}
 	}
 	
@@ -292,9 +282,9 @@ public class HospedagemController {
 	{
 		try {
 			service.adicionarHospede(model.hospedagemId, model.pessoaId, model.tipoHospedeId, model.leitoId, model.data);
-			return new ResponseEntity<String>("ok", HttpStatus.OK); 
+			return new ResponseEntity<>("ok", HttpStatus.OK);
 		} catch(ValidationException e) {
-			return new ResponseEntity<ResultError>(e.getRe(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(e.getRe(), HttpStatus.BAD_REQUEST);
 		}
 	}
 	
@@ -311,7 +301,7 @@ public class HospedagemController {
 	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
 		try {
 			service.excluirHospedagem(id);
-		    return new ResponseEntity<String>("sucesso", HttpStatus.OK);
+		    return new ResponseEntity<>("sucesso", HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

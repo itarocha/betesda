@@ -22,7 +22,7 @@ public class TipoLeitoController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
 		List<TipoLeitoEntity> lista = service.findAll();
-	    return new ResponseEntity<List<TipoLeitoEntity>>(lista, HttpStatus.OK);
+	    return new ResponseEntity<>(lista, HttpStatus.OK);
 	}
 
 	@RequestMapping(value="{id}")
@@ -52,7 +52,7 @@ public class TipoLeitoController {
 		try {
 			TipoLeitoEntity saved = null;
 			saved = service.create(model);
-		    return new ResponseEntity<TipoLeitoEntity>(saved, HttpStatus.OK);
+		    return new ResponseEntity<>(saved, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -63,7 +63,7 @@ public class TipoLeitoController {
 	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
 		try {
 			service.remove(id);
-		    return new ResponseEntity<String>("sucesso", HttpStatus.OK);
+		    return new ResponseEntity<>("sucesso", HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

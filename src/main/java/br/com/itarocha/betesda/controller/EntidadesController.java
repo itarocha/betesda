@@ -24,15 +24,11 @@ public class EntidadesController {
 	@RequestMapping(value="{id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
-		try {
-			Optional<EntidadeEntity> model = service.find(id);
-			if (model.isPresent()) {
-				return new ResponseEntity<EntidadeEntity>(model.get(), HttpStatus.OK);
-			} else {
-				return new ResponseEntity<String>("não encontrado", HttpStatus.NOT_FOUND);
-			}
-		} finally {
-			//em.close();
+		Optional<EntidadeEntity> model = service.find(id);
+		if (model.isPresent()) {
+			return new ResponseEntity<>(model.get(), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>("não encontrado", HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -40,14 +36,14 @@ public class EntidadesController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
 		List<EntidadeEntity> lista = service.findAll();
-		return new ResponseEntity<List<EntidadeEntity>>(lista, HttpStatus.OK);
+		return new ResponseEntity<>(lista, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/consultar/{texto}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> consultar(@PathVariable("texto") String texto) {
 		List<EntidadeEntity> lista = service.consultar(texto);
-		return new ResponseEntity<List<EntidadeEntity>>(lista, HttpStatus.OK);
+		return new ResponseEntity<>(lista, HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
@@ -77,7 +73,7 @@ public class EntidadesController {
 		try {
 			EntidadeEntity saved = null;
 			saved = service.create(model);
-		    return new ResponseEntity<EntidadeEntity>(saved, HttpStatus.OK);
+		    return new ResponseEntity<>(saved, HttpStatus.OK);
 		} catch (ValidationException e) {
 			ResponseEntity<?> re = new ResponseEntity<>(e.getRe(), HttpStatus.BAD_REQUEST); 
 			return re;
@@ -91,7 +87,7 @@ public class EntidadesController {
 	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
 		try {
 			service.remove(id);
-			return new ResponseEntity<String>("sucesso", HttpStatus.OK);
+			return new ResponseEntity<>("sucesso", HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

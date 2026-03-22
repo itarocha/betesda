@@ -23,15 +23,11 @@ public class EncaminhadoresController {
 	@RequestMapping(value="{id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
-		try {
-			Optional<EncaminhadorEntity> model = service.find(id);
-			if (model.isPresent()) {
-				return new ResponseEntity<EncaminhadorEntity>(model.get(), HttpStatus.OK);
-			} else {
-				return new ResponseEntity<String>("não encontrado", HttpStatus.NOT_FOUND);
-			}
-		} finally {
-			//em.close();
+		Optional<EncaminhadorEntity> model = service.find(id);
+		if (model.isPresent()) {
+			return new ResponseEntity<>(model.get(), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>("não encontrado", HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -39,7 +35,7 @@ public class EncaminhadoresController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar(@PathVariable("id") Long entidadeId) {
 		List<EncaminhadorEntity> lista = service.findAll(entidadeId);
-		return new ResponseEntity<List<EncaminhadorEntity>>(lista, HttpStatus.OK);
+		return new ResponseEntity<>(lista, HttpStatus.OK);
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
@@ -65,7 +61,7 @@ public class EncaminhadoresController {
 	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
 		try {
 			service.remove(id);
-			return new ResponseEntity<String>("sucesso", HttpStatus.OK);
+			return new ResponseEntity<>("sucesso", HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -75,7 +71,7 @@ public class EncaminhadoresController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> getListaEncaminhadores(@PathVariable("id") Long entidadeId) {
 		List<SelectValueVO> lista = service.listSelect(entidadeId);
-		return new ResponseEntity<List<SelectValueVO>>(lista, HttpStatus.OK);
+		return new ResponseEntity<>(lista, HttpStatus.OK);
 	}
 	
 }

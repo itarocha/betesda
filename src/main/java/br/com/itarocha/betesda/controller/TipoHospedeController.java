@@ -22,7 +22,7 @@ public class TipoHospedeController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
 		List<TipoHospedeEntity> lista = service.findAll();
-	    return new ResponseEntity<List<TipoHospedeEntity>>(lista, HttpStatus.OK);
+	    return new ResponseEntity<>(lista, HttpStatus.OK);
 	}
 
 	@RequestMapping(value="{id}")
@@ -52,7 +52,7 @@ public class TipoHospedeController {
 		try {
 			TipoHospedeEntity saved = null;
 			saved = service.create(model);
-		    return new ResponseEntity<TipoHospedeEntity>(saved, HttpStatus.OK);
+		    return new ResponseEntity<>(saved, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -63,7 +63,7 @@ public class TipoHospedeController {
 	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
 		try {
 			service.remove(id);
-		    return new ResponseEntity<String>("sucesso", HttpStatus.OK);
+		    return new ResponseEntity<>("sucesso", HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

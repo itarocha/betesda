@@ -26,15 +26,11 @@ public class PessoasController {
 	@RequestMapping(value="{id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
-		try {
-			Optional<PessoaEntity> model = service.find(id);
-			if (model.isPresent()) {
-				return new ResponseEntity<PessoaEntity>(model.get(), HttpStatus.OK);
-			} else {
-				return new ResponseEntity<String>("não encontrado", HttpStatus.NOT_FOUND);
-			}
-		} finally {
-			//em.close();
+		Optional<PessoaEntity> model = service.find(id);
+		if (model.isPresent()) {
+			return new ResponseEntity<>(model.get(), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>("não encontrado", HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -46,27 +42,22 @@ public class PessoasController {
 		if (search.getValue().length() >= 3) {
 			lista = service.findByFieldNameAndValue(search.getFieldName(), "%"+search.getValue()+"%");
 		}
-		
-		//List<PessoaEntity> lista = service.findByFieldNameAndValue("cpf", "%282%");
-		return new ResponseEntity<List<PessoaEntity>>(lista, HttpStatus.OK);
+		return new ResponseEntity<>(lista, HttpStatus.OK);
 	}
 	
 	@Deprecated
 	@RequestMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
-		//List<PessoaEntity> lista = service.findAll();
-		
 		List<PessoaEntity> lista = service.findByFieldNameAndValue("nome", "%MAR%");
-		//List<PessoaEntity> lista = service.findByFieldNameAndValue("cpf", "%282%");
-		return new ResponseEntity<List<PessoaEntity>>(lista, HttpStatus.OK);
+		return new ResponseEntity<>(lista, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/consultar/{texto}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> consultar(@PathVariable("texto") String texto) {
 		List<PessoaEntity> lista = service.consultar(texto);
-		return new ResponseEntity<List<PessoaEntity>>(lista, HttpStatus.OK);
+		return new ResponseEntity<>(lista, HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
@@ -82,7 +73,7 @@ public class PessoasController {
 			model.getEndereco().setCep((model.getEndereco().getCep().replaceAll("\\-", "")));
 		}
 		
-		ItaValidator<PessoaEntity> v = new ItaValidator<PessoaEntity>(model);
+		ItaValidator<PessoaEntity> v = new ItaValidator<>(model);
 		v.validate();
 		
 		if (model.getCpf() != null && model.getCpf() != "") {
@@ -112,7 +103,7 @@ public class PessoasController {
 	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
 		try {
 			service.remove(id);
-			return new ResponseEntity<String>("sucesso", HttpStatus.OK);
+			return new ResponseEntity<>("sucesso", HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

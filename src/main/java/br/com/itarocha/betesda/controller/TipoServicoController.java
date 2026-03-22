@@ -43,7 +43,7 @@ public class TipoServicoController {
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> gravar(@RequestBody TipoServicoEntity model) {
-		ItaValidator<TipoServicoEntity> v = new ItaValidator<TipoServicoEntity>(model);
+		ItaValidator<TipoServicoEntity> v = new ItaValidator<>(model);
 		v.validate();
 		if (!v.hasErrors() ) {
 			return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
@@ -52,7 +52,7 @@ public class TipoServicoController {
 		try {
 			TipoServicoEntity saved = null;
 			saved = service.create(model);
-		    return new ResponseEntity<TipoServicoEntity>(saved, HttpStatus.OK);
+		    return new ResponseEntity<>(saved, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -63,7 +63,7 @@ public class TipoServicoController {
 	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
 		try {
 			service.remove(id);
-		    return new ResponseEntity<String>("sucesso", HttpStatus.OK);
+		    return new ResponseEntity<>("sucesso", HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

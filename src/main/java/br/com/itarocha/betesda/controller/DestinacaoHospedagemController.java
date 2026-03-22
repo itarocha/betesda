@@ -52,7 +52,7 @@ public class DestinacaoHospedagemController {
 		try {
 			DestinacaoHospedagemEntity saved = null;
 			saved = service.create(model);
-		    return new ResponseEntity<DestinacaoHospedagemEntity>(saved, HttpStatus.OK);
+		    return new ResponseEntity<>(saved, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
