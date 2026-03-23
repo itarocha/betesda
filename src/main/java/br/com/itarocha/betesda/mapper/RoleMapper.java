@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.mapper;
 
-import br.com.itarocha.betesda.controller.request.RoleRequest;
-import br.com.itarocha.betesda.controller.response.RoleResponse;
-import br.com.itarocha.betesda.persistencia.model.RoleEntity;
+import br.com.itarocha.betesda.adapters.in.rest.request.RoleRequest;
+import br.com.itarocha.betesda.adapters.in.rest.response.RoleResponse;
+import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.RoleEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mapping;

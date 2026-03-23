@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.mapper;
 
-import br.com.itarocha.betesda.controller.request.DestinacaoHospedagemRequest;
-import br.com.itarocha.betesda.controller.response.DestinacaoHospedagemResponse;
-import br.com.itarocha.betesda.persistencia.model.DestinacaoHospedagemEntity;
+import br.com.itarocha.betesda.adapters.in.rest.request.DestinacaoHospedagemRequest;
+import br.com.itarocha.betesda.adapters.in.rest.response.DestinacaoHospedagemResponse;
+import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.DestinacaoHospedagemEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mapping;

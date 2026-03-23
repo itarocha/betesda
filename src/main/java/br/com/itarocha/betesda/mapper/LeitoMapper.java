@@ -1,9 +1,9 @@
 package br.com.itarocha.betesda.mapper;
 
-import br.com.itarocha.betesda.controller.request.LeitoEditRequest;
-import br.com.itarocha.betesda.controller.request.LeitoRequest;
-import br.com.itarocha.betesda.controller.response.LeitoResponse;
-import br.com.itarocha.betesda.persistencia.model.LeitoEntity;
+import br.com.itarocha.betesda.adapters.in.rest.request.LeitoEditRequest;
+import br.com.itarocha.betesda.adapters.in.rest.request.LeitoRequest;
+import br.com.itarocha.betesda.adapters.in.rest.response.LeitoResponse;
+import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.LeitoEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mapping;

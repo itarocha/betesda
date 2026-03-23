@@ -1,8 +1,8 @@
 package br.com.itarocha.betesda.mapper;
 
-import br.com.itarocha.betesda.controller.request.PessoaRequest;
-import br.com.itarocha.betesda.controller.response.PessoaResponse;
-import br.com.itarocha.betesda.persistencia.model.PessoaEntity;
+import br.com.itarocha.betesda.adapters.in.rest.request.PessoaRequest;
+import br.com.itarocha.betesda.adapters.in.rest.response.PessoaResponse;
+import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.PessoaEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mapping;

@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.exception;
 
-import br.com.itarocha.betesda.util.validation.ResultError;
+import br.com.itarocha.betesda.core.validation.ResultError;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
