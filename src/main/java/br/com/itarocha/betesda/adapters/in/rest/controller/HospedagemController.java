@@ -1,14 +1,14 @@
 package br.com.itarocha.betesda.adapters.in.rest.controller;
 
 import br.com.itarocha.betesda.core.domain.model.hospedagem.*;
+import br.com.itarocha.betesda.core.ports.out.HospedagemPort;
+import br.com.itarocha.betesda.core.ports.out.relatorios.RelatorioGeralPort;
 import br.com.itarocha.betesda.exception.ValidationException;
 import br.com.itarocha.betesda.core.domain.model.HospedagemFullVO;
 import br.com.itarocha.betesda.core.domain.model.HospedagemVO;
 import br.com.itarocha.betesda.core.domain.model.HospedeVO;
 import br.com.itarocha.betesda.core.domain.model.report.RelatorioAtendimentos;
-import br.com.itarocha.betesda.core.services.HospedagemService;
 import br.com.itarocha.betesda.core.services.relatorios.PlanilhaGeralService;
-import br.com.itarocha.betesda.core.services.relatorios.RelatorioGeralService;
 import br.com.itarocha.betesda.core.validation.ItaValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
@@ -29,8 +29,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class HospedagemController {
 
-	private final HospedagemService service;
-	private final RelatorioGeralService relatorioService;
+	private final HospedagemPort service;
+	private final RelatorioGeralPort relatorioService;
 	
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")

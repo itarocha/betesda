@@ -3,6 +3,7 @@ package br.com.itarocha.betesda.core.services;
 import br.com.itarocha.betesda.core.domain.model.SelectValueVO;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.TipoHospedeEntity;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.repository.TipoHospedeJPARepository;
+import br.com.itarocha.betesda.core.ports.out.TipoHospedePort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityManager;
@@ -12,7 +13,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class TipoHospedeService {
+public class TipoHospedeService implements TipoHospedePort {
 
 	private final EntityManager em;
 	

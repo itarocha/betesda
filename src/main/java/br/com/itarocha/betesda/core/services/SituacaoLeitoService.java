@@ -3,6 +3,7 @@ package br.com.itarocha.betesda.core.services;
 import br.com.itarocha.betesda.core.domain.model.SelectValueVO;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.SituacaoLeitoEntity;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.repository.SituacaoLeitoJPARepository;
+import br.com.itarocha.betesda.core.ports.out.SituacaoLeitoPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class SituacaoLeitoService {
+public class SituacaoLeitoService implements SituacaoLeitoPort {
 
 	private final SituacaoLeitoJPARepository repositorio;
 

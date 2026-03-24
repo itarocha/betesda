@@ -3,6 +3,7 @@ package br.com.itarocha.betesda.core.services;
 import br.com.itarocha.betesda.core.domain.model.SelectValueVO;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.TipoLeitoEntity;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.repository.TipoLeitoJPARepository;
+import br.com.itarocha.betesda.core.ports.out.TipoLeitoPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class TipoLeitoService {
+public class TipoLeitoService implements TipoLeitoPort {
 
 	private final EntityManager em;
 	

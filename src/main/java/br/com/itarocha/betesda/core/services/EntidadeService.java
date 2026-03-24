@@ -1,5 +1,6 @@
 package br.com.itarocha.betesda.core.services;
 
+import br.com.itarocha.betesda.core.ports.out.EntidadePort;
 import br.com.itarocha.betesda.exception.ValidationException;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.EntidadeEntity;
 import br.com.itarocha.betesda.core.domain.model.SelectValueVO;
@@ -11,13 +12,12 @@ import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class EntidadeService {
+public class EntidadeService implements EntidadePort {
 
 	private final EntityManager em;
 
@@ -25,9 +25,9 @@ public class EntidadeService {
 
 	private final EnderecoJPARepository enderecoRepo;
 
-	public EntidadeEntity create(EntidadeEntity model) throws ValidationException {
-		try{
-			
+	public EntidadeEntity create(EntidadeEntity model) {
+
+		try {
 			Long id = model.getId() == null ? 0L : model.getId();
 			
 			if (this.entidadeCadastradaPorCampo(id, "cnpj", model.getCnpj())) {
@@ -63,9 +63,8 @@ public class EntidadeService {
 		return repositorio.findById(id);
 	}
 
-	//TODO: Mover query para repositório
 	public List<EntidadeEntity> findAll() {
-		return em.createQuery("SELECT model FROM EntidadeEntity model ORDER BY model.nome", EntidadeEntity.class).getResultList();
+		return repositorio.findAll();
 	}
 
 	//TODO: Mover query para repositório
@@ -76,11 +75,9 @@ public class EntidadeService {
 	}
 
 	public List<SelectValueVO> listSelect() {
-		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
-		em.createQuery("SELECT e FROM EntidadeEntity e ORDER BY e.nome",EntidadeEntity.class)
-			.getResultList()
-			.forEach(x -> retorno.add(new SelectValueVO(x.getId(), x.getNome())));
-		return retorno;
+		return repositorio.findAll()
+				.stream().map(tb -> new SelectValueVO(tb.getId(), tb.getNome()))
+				.toList();
 	}
 	
 	public boolean entidadeCadastradaPorCampo(Long entidadeId, String campo, String valor) {

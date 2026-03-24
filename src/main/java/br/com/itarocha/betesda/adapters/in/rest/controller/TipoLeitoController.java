@@ -1,10 +1,10 @@
 package br.com.itarocha.betesda.adapters.in.rest.controller;
 
+import br.com.itarocha.betesda.core.ports.out.TipoLeitoPort;
 import br.com.itarocha.betesda.mapper.TipoLeitoMapper;
 import br.com.itarocha.betesda.adapters.in.rest.request.TipoLeitoRequest;
 import br.com.itarocha.betesda.adapters.in.rest.response.TipoLeitoResponse;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.TipoLeitoEntity;
-import br.com.itarocha.betesda.core.services.TipoLeitoService;
 import br.com.itarocha.betesda.core.validation.ItaValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TipoLeitoController {
 
-	private final TipoLeitoService service;
+	private final TipoLeitoPort service;
 	private final TipoLeitoMapper mapper;
 	
 	@RequestMapping

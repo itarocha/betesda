@@ -9,6 +9,7 @@ import br.com.itarocha.betesda.core.domain.model.HospedagemVO;
 import br.com.itarocha.betesda.core.domain.model.HospedeVO;
 import br.com.itarocha.betesda.core.domain.model.LeitoVO;
 import br.com.itarocha.betesda.core.domain.model.hospedagem.*;
+import br.com.itarocha.betesda.core.ports.out.HospedagemPort;
 import br.com.itarocha.betesda.exception.ValidationException;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.DestinacaoHospedagemEntity;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.EncaminhadorEntity;
@@ -41,7 +42,7 @@ import java.util.*;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class HospedagemService {
+public class HospedagemService implements HospedagemPort {
 
 	private static final int QTD_DIAS = 7;
 	

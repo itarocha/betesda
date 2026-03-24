@@ -1,10 +1,10 @@
 package br.com.itarocha.betesda.adapters.in.rest.controller;
 
+import br.com.itarocha.betesda.core.ports.out.DestinacaoHospedagemPort;
 import br.com.itarocha.betesda.mapper.DestinacaoHospedagemMapper;
 import br.com.itarocha.betesda.adapters.in.rest.request.DestinacaoHospedagemRequest;
 import br.com.itarocha.betesda.adapters.in.rest.response.DestinacaoHospedagemResponse;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.DestinacaoHospedagemEntity;
-import br.com.itarocha.betesda.core.services.DestinacaoHospedagemService;
 import br.com.itarocha.betesda.core.validation.ItaValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DestinacaoHospedagemController {
 
-	private final DestinacaoHospedagemService service;
+	private final DestinacaoHospedagemPort service;
 	private final DestinacaoHospedagemMapper mapper;
 	
 	@RequestMapping

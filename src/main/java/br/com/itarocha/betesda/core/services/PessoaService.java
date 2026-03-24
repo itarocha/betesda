@@ -1,5 +1,6 @@
 package br.com.itarocha.betesda.core.services;
 
+import br.com.itarocha.betesda.core.ports.out.PessoaPort;
 import br.com.itarocha.betesda.exception.ValidationException;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.EnderecoEntity;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.PessoaEntity;
@@ -16,11 +17,9 @@ import jakarta.persistence.criteria.Path;
 import java.util.List;
 import java.util.Optional;
 
-//import static org.springframework.data.jpa.domain.Specifications.where;
-
 @Service
 @RequiredArgsConstructor
-public class PessoaService {
+public class PessoaService implements PessoaPort {
 
 	private final EntityManager em;
 

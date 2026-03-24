@@ -1,11 +1,11 @@
 package br.com.itarocha.betesda.adapters.in.rest.controller;
 
+import br.com.itarocha.betesda.core.ports.out.EncaminhadorPort;
 import br.com.itarocha.betesda.mapper.EncaminhadorMapper;
 import br.com.itarocha.betesda.core.domain.model.SelectValueVO;
 import br.com.itarocha.betesda.adapters.in.rest.request.EncaminhadorRequest;
 import br.com.itarocha.betesda.adapters.in.rest.response.EncaminhadorResponse;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.EncaminhadorEntity;
-import br.com.itarocha.betesda.core.services.EncaminhadorService;
 import br.com.itarocha.betesda.core.validation.ItaValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EncaminhadoresController {
 
-	private final EncaminhadorService service;
+	private final EncaminhadorPort service;
 	private final EncaminhadorMapper mapper;
 	
 	@RequestMapping(value="{id}")

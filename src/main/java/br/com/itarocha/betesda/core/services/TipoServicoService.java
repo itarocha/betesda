@@ -3,6 +3,7 @@ package br.com.itarocha.betesda.core.services;
 import br.com.itarocha.betesda.core.domain.model.SelectValueVO;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.TipoServicoEntity;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.repository.TipoServicoJPARepository;
+import br.com.itarocha.betesda.core.ports.out.TipoServicoPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class TipoServicoService {
+public class TipoServicoService implements TipoServicoPort {
 
 	private final EntityManager em;
 	

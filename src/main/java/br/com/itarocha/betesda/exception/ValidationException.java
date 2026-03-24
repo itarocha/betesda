@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class ValidationException extends Exception{
+public class ValidationException extends RuntimeException {
 
 	private static final long serialVersionUID = -1173120804319840769L;
 

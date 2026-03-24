@@ -41,7 +41,6 @@ public class AuthController {
     private final RoleJPARepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider tokenProvider;
-    private final EmailService emailService;
 
     @RequestMapping(value="/login", method = RequestMethod.POST)
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -57,9 +56,6 @@ public class AuthController {
 
         String jwt = tokenProvider.generateToken(authentication);
 
-        // Deve sair
-        //emailService.redefinirSenha("somebody@gmail.com", "Some Name", jwt);
-        
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }
 

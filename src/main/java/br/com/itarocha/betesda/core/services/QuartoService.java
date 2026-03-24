@@ -11,6 +11,7 @@ import br.com.itarocha.betesda.core.domain.model.EditLeitoVO;
 import br.com.itarocha.betesda.core.domain.model.EditQuartoVO;
 import br.com.itarocha.betesda.core.domain.model.NovoQuartoVO;
 import br.com.itarocha.betesda.core.domain.model.SelectValueVO;
+import br.com.itarocha.betesda.core.ports.out.QuartoPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 //https://www.devmedia.com.br/conheca-o-spring-transactional-annotations/32472
 //https://docs.spring.io/spring-data/jpa/docs/current/reference/html/
-public class QuartoService {
+public class QuartoService implements QuartoPort {
 
 	private final QuartoJPARepository quartoRepo;
 	
@@ -45,7 +46,7 @@ public class QuartoService {
 		}
 	}
 
-	public QuartoEntity create(NovoQuartoVO model) throws Exception{
+	public QuartoEntity create(NovoQuartoVO model) {
 		QuartoEntity q = new QuartoEntity();
 		try {
 			TipoLeitoEntity tipoLeitoEntity = tipoLeitoRepo.getOne(model.getTipoLeito());
@@ -100,7 +101,7 @@ public class QuartoService {
 		}
 	}
 
-  	public LeitoEntity saveLeito(EditLeitoVO model) throws Exception{
+  	public LeitoEntity saveLeito(EditLeitoVO model) {
 		LeitoEntity leito;
 		boolean isNovo = model.getId() == null; 
 		if (isNovo) {
@@ -111,7 +112,7 @@ public class QuartoService {
 			if (optLeitoEntity.isPresent()) {
 				leito = optLeitoEntity.get();
 			} else {
-				throw new Exception("Leito inexistente: "+model.getId());
+				throw new RuntimeException("Leito inexistente: "+model.getId());
 			}
 		}
 		

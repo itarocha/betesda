@@ -1,12 +1,12 @@
 package br.com.itarocha.betesda.adapters.in.rest.controller;
 
+import br.com.itarocha.betesda.core.ports.out.PessoaPort;
 import br.com.itarocha.betesda.exception.ValidationException;
 import br.com.itarocha.betesda.mapper.PessoaMapper;
 import br.com.itarocha.betesda.core.domain.model.SearchRequest;
 import br.com.itarocha.betesda.adapters.in.rest.request.PessoaRequest;
 import br.com.itarocha.betesda.adapters.in.rest.response.PessoaResponse;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.PessoaEntity;
-import br.com.itarocha.betesda.core.services.PessoaService;
 import br.com.itarocha.betesda.core.validation.ItaValidator;
 import br.com.itarocha.betesda.core.utils.Validadores;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PessoasController {
 
-	private final PessoaService service;
+	private final PessoaPort service;
 	private final PessoaMapper mapper;
 	
 	@RequestMapping(value="{id}")

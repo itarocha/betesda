@@ -1,12 +1,11 @@
 package br.com.itarocha.betesda.adapters.in.rest.controller;
 
+import br.com.itarocha.betesda.core.ports.out.EntidadePort;
 import br.com.itarocha.betesda.exception.ValidationException;
 import br.com.itarocha.betesda.mapper.EntidadeMapper;
-import br.com.itarocha.betesda.mapper.EnderecoMapper;
 import br.com.itarocha.betesda.adapters.in.rest.request.EntidadeRequest;
 import br.com.itarocha.betesda.adapters.in.rest.response.EntidadeResponse;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.EntidadeEntity;
-import br.com.itarocha.betesda.core.services.EntidadeService;
 import br.com.itarocha.betesda.core.validation.ItaValidator;
 import br.com.itarocha.betesda.core.utils.Validadores;
 import lombok.RequiredArgsConstructor;
@@ -23,10 +22,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EntidadesController {
 
-	private final EntidadeService service;
+	private final EntidadePort service;
 	private final EntidadeMapper mapper;
-	private final EnderecoMapper enderecoMapper;
-	
+
 	@RequestMapping(value="{id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {

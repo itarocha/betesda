@@ -1,5 +1,6 @@
 package br.com.itarocha.betesda.adapters.in.rest.controller;
 
+import br.com.itarocha.betesda.core.ports.out.TipoHospedePort;
 import br.com.itarocha.betesda.mapper.TipoHospedeMapper;
 import br.com.itarocha.betesda.adapters.in.rest.request.TipoHospedeRequest;
 import br.com.itarocha.betesda.adapters.in.rest.response.TipoHospedeResponse;
@@ -19,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TipoHospedeController {
 
-	private final TipoHospedeService service;
+	private final TipoHospedePort service;
 	private final TipoHospedeMapper mapper;
 	
 	@RequestMapping

@@ -6,6 +6,7 @@ import br.com.itarocha.betesda.core.domain.model.NovoQuartoVO;
 import br.com.itarocha.betesda.core.domain.model.SelectValueVO;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.LeitoEntity;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.QuartoEntity;
+import br.com.itarocha.betesda.core.ports.out.*;
 import br.com.itarocha.betesda.core.services.*;
 import br.com.itarocha.betesda.core.validation.ItaValidator;
 import lombok.RequiredArgsConstructor;
@@ -22,13 +23,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class QuartoController {
 
-	private final QuartoService service;
-	private final TipoLeitoService tls;
-	private final DestinacaoHospedagemService dhs;
-	private final SituacaoLeitoService sls;
-	private final TipoHospedeService ths;
-	private final TipoServicoService tss;
-	private final EntidadeService etds;
+	private final QuartoPort service;
+	private final TipoLeitoPort tls;
+	private final DestinacaoHospedagemPort dhs;
+	private final SituacaoLeitoPort sls;
+	private final TipoHospedePort ths;
+	private final TipoServicoPort tss;
+	private final EntidadePort etds;
 	
 	@RequestMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")

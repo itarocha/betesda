@@ -3,6 +3,7 @@ package br.com.itarocha.betesda.core.services;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.EncaminhadorEntity;
 import br.com.itarocha.betesda.core.domain.model.SelectValueVO;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.repository.EncaminhadorJPARepository;
+import br.com.itarocha.betesda.core.ports.out.EncaminhadorPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class EncaminhadorService {
+public class EncaminhadorService implements EncaminhadorPort {
 
 	private final EncaminhadorJPARepository repositorio;
 

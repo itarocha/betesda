@@ -1,6 +1,7 @@
 package br.com.itarocha.betesda.core.services.mail;
 
 import br.com.itarocha.betesda.core.domain.model.Email;
+import br.com.itarocha.betesda.core.ports.out.mail.EmailPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -17,7 +18,7 @@ import java.util.Map;
 @Service
 @PropertySource("classpath:env/mail.properties")
 @RequiredArgsConstructor
-public class EmailService {
+public class EmailService implements EmailPort {
 
 	private final JavaMailSender mailSender;
 	

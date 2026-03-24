@@ -1,6 +1,7 @@
 package br.com.itarocha.betesda.core.services.relatorios;
 
 import br.com.itarocha.betesda.core.domain.model.report.*;
+import br.com.itarocha.betesda.core.ports.out.relatorios.RelatorioGeralPort;
 import br.com.itarocha.betesda.core.utils.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,9 +18,8 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class RelatorioGeralService {
+public class RelatorioGeralService implements RelatorioGeralPort {
 
-	
 	private final EntityManager em;
 	
 	private List<ResumoHospedagem> listResumoHospedagem = new ArrayList<>();
