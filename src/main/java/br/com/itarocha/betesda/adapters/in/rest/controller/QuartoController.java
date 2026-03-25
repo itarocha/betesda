@@ -8,7 +8,9 @@ import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.LeitoEntity;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.QuartoEntity;
 import br.com.itarocha.betesda.core.ports.out.*;
 import br.com.itarocha.betesda.core.services.*;
-import br.com.itarocha.betesda.core.validation.ItaValidator;
+import br.com.itarocha.betesda.core.validation.ResultError;
+import br.com.itarocha.betesda.exception.ValidationException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -99,18 +101,17 @@ public class QuartoController {
 
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody NovoQuartoVO model) throws Exception {
-		ItaValidator<NovoQuartoVO> v = new ItaValidator<NovoQuartoVO>(model);
-		v.validate();
+	public ResponseEntity<?> gravar(@Valid @RequestBody NovoQuartoVO model) throws Exception {
+		ResultError errors = new ResultError();
+		
 		if (service.existeOutroQuartoComEsseNumero(model.getNumero())) {
-			v.addError("numero", "Existe outro Quarto com esse número");
+			errors.addError("numero", "Existe outro Quarto com esse número");
 		}
 		
-		if (!v.hasErrors() ) {
-			return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
+		if (!errors.getErrors().isEmpty()) {
+			throw new ValidationException(errors);
 		}
 	
-		// TODO tratar exceção
 		QuartoEntity saved = null;
 		saved = service.create(model);
 	    return new ResponseEntity<>(saved, HttpStatus.OK);
@@ -118,23 +119,25 @@ public class QuartoController {
 	
 	@RequestMapping(value="/alterar", method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravarAlteracao(@RequestBody EditQuartoVO model) {
-		ItaValidator<EditQuartoVO> v = new ItaValidator<EditQuartoVO>(model);
-		v.validate();
+	public ResponseEntity<?> gravarAlteracao(@Valid @RequestBody EditQuartoVO model) {
+		ResultError errors = new ResultError();
+		
 		try {
 			if (model.getId() != null) {
 				if (service.existeOutroQuartoComEsseNumero(model.getId(), model.getNumero())) {
-					v.addError("numero", "Existe outro Quarto com esse número");
+					errors.addError("numero", "Existe outro Quarto com esse número");
 				}
 			}
 			
-			if (!v.hasErrors() ) {
-				return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
+			if (!errors.getErrors().isEmpty()) {
+				throw new ValidationException(errors);
 			}
 		
 			QuartoEntity saved = null;
 			saved = service.update(model);
 		    return new ResponseEntity<>(saved, HttpStatus.OK);
+		} catch (ValidationException e) {
+			return new ResponseEntity<>(e.getRe(), HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -142,28 +145,29 @@ public class QuartoController {
 
 	@RequestMapping(value="/leito", method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravarLeito(@RequestBody EditLeitoVO model) {
-		ItaValidator<EditLeitoVO> v = new ItaValidator<EditLeitoVO>(model);
-		v.validate();
+	public ResponseEntity<?> gravarLeito(@Valid @RequestBody EditLeitoVO model) {
+		ResultError errors = new ResultError();
 		
 		try {
 			if (model.getId() == null) {
 				if (service.existeOutroLeitoComEsseNumero(model.getQuartoId(), model.getNumero())) {
-					v.addError("numero", "Existe outro Leito com esse número");
+					errors.addError("numero", "Existe outro Leito com esse número");
 				}
 			} else {
 				if (service.existeOutroLeitoComEsseNumero(model.getId(), model.getQuartoId(), model.getNumero())) {
-					v.addError("numero", "Existe outro Leito com esse número");
+					errors.addError("numero", "Existe outro Leito com esse número");
 				}
 			}
 			
-			if (!v.hasErrors() ) {
-				return new ResponseEntity<>(v.getErrors(), HttpStatus.INTERNAL_SERVER_ERROR);
+			if (!errors.getErrors().isEmpty()) {
+				throw new ValidationException(errors);
 			}
 		
 			LeitoEntity saved = null;
 			saved = service.saveLeito(model);
 			return new ResponseEntity<>(saved, HttpStatus.OK);
+		} catch (ValidationException e) {
+			return new ResponseEntity<>(e.getRe(), HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

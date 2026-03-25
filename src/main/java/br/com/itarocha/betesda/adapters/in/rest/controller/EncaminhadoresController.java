@@ -6,7 +6,7 @@ import br.com.itarocha.betesda.core.domain.model.SelectValueVO;
 import br.com.itarocha.betesda.adapters.in.rest.request.EncaminhadorRequest;
 import br.com.itarocha.betesda.adapters.in.rest.response.EncaminhadorResponse;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.EncaminhadorEntity;
-import br.com.itarocha.betesda.core.validation.ItaValidator;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,13 +46,7 @@ public class EncaminhadoresController {
 
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody EncaminhadorRequest request) {
-		ItaValidator<EncaminhadorRequest> v = new ItaValidator<>(request);
-		v.validate();
-		if (!v.hasErrors() ) {
-			return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
-		}
-		
+	public ResponseEntity<?> gravar(@Valid @RequestBody EncaminhadorRequest request) {
 		try {
 			EncaminhadorEntity entity = mapper.toEntity(request);
 			EncaminhadorEntity saved = service.create(entity);
@@ -64,7 +58,7 @@ public class EncaminhadoresController {
 	}
 	
 	@RequestMapping(value = "{id}", method=RequestMethod.DELETE)
-	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
+	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
 		try {
 			service.remove(id);

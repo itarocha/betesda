@@ -6,8 +6,9 @@ import br.com.itarocha.betesda.mapper.EntidadeMapper;
 import br.com.itarocha.betesda.adapters.in.rest.request.EntidadeRequest;
 import br.com.itarocha.betesda.adapters.in.rest.response.EntidadeResponse;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.EntidadeEntity;
-import br.com.itarocha.betesda.core.validation.ItaValidator;
 import br.com.itarocha.betesda.core.utils.Validadores;
+import br.com.itarocha.betesda.core.validation.ResultError;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,7 +56,7 @@ public class EntidadesController {
 
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody EntidadeRequest request) {
+	public ResponseEntity<?> gravar(@Valid @RequestBody EntidadeRequest request) {
 		
 		if (request.getCnpj() != null) {
 			request.setCnpj(request.getCnpj().replaceAll("\\.", "").replaceAll("\\-", "").replaceAll("\\/", ""));
@@ -64,17 +65,16 @@ public class EntidadesController {
 			request.getEndereco().setCep(request.getEndereco().getCep().replaceAll("\\-", ""));
 		}
 		
-		ItaValidator<EntidadeRequest> v = new ItaValidator<EntidadeRequest>(request);
-		v.validate();
+		ResultError errors = new ResultError();
 		
 		if (request.getCnpj() != null && request.getCnpj() != "") {
 			if (!Validadores.isValidCNPJ(request.getCnpj())) {
-				v.addError("cnpj", "CNPJ inválido");
+				errors.addError("cnpj", "CNPJ inválido");
 			}
 		}
 		
-		if (!v.hasErrors() ) {
-			return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
+		if (!errors.getErrors().isEmpty()) {
+			throw new ValidationException(errors);
 		}
 		
 		try {
@@ -83,8 +83,7 @@ public class EntidadesController {
 			EntidadeResponse resposta = mapper.toResponse(saved);
 		    return new ResponseEntity<>(resposta, HttpStatus.OK);
 		} catch (ValidationException e) {
-			ResponseEntity<?> re = new ResponseEntity<>(e.getRe(), HttpStatus.BAD_REQUEST); 
-			return re;
+			return new ResponseEntity<>(e.getRe(), HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

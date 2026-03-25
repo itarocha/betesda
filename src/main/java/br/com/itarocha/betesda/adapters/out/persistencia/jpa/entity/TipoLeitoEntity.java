@@ -8,12 +8,15 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
 @Entity
 @Table(name="tipo_leito")
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class TipoLeitoEntity extends UserDateAudit implements Serializable{
 
 	private static final long serialVersionUID = -732012434360084121L;

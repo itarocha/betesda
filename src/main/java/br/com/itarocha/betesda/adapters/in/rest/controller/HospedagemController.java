@@ -9,7 +9,8 @@ import br.com.itarocha.betesda.core.domain.model.HospedagemVO;
 import br.com.itarocha.betesda.core.domain.model.HospedeVO;
 import br.com.itarocha.betesda.core.domain.model.report.RelatorioAtendimentos;
 import br.com.itarocha.betesda.core.services.relatorios.PlanilhaGeralService;
-import br.com.itarocha.betesda.core.validation.ItaValidator;
+import br.com.itarocha.betesda.core.validation.ResultError;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -34,22 +35,16 @@ public class HospedagemController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody HospedagemVO model) {
-		ItaValidator<HospedagemVO> v = new ItaValidator<HospedagemVO>(model);
-		v.validate();
+	public ResponseEntity<?> gravar(@Valid @RequestBody HospedagemVO model) {
+		ResultError errors = new ResultError();
 		
 		if (model.getHospedes().size() == 0) {
-			v.addError("id", "É necessário pelo menos um hóspede");
+			errors.addError("id", "É necessário pelo menos um hóspede");
 		} else {
 			for (HospedeVO h : model.getHospedes()) {
 				if ("T".equals(model.getTipoUtilizacao()) && (h.getAcomodacao() == null)) {
-					v.addError("id", String.format("É necessário informar o Leito para o Hóspede [%s]", h.getPessoaNome()));
+					errors.addError("id", String.format("É necessário informar o Leito para o Hóspede [%s]", h.getPessoaNome()));
 				}
-				/*
-				if (!service.pessoaLivre(h.getPessoaId())) {
-					v.addError("id", String.format("[%s] está utilizando uma Hospedagem ainda pendente", h.getPessoaNome()));
-				}
-				*/
 				if ("T".equals(model.getTipoUtilizacao()) && (h.getAcomodacao() != null) && 
 					(h.getAcomodacao().getLeitoId() != null) && 
 					(model.getDataEntrada() != null) && (model.getDataPrevistaSaida() != null) )
@@ -61,14 +56,14 @@ public class HospedagemController {
 					Integer quartoNumero = h.getAcomodacao().getQuartoNumero();
 					
 					if (!service.leitoLivreNoPeriodo(leitoId, dataIni, dataFim)) {
-						v.addError("id", String.format("Quarto %s Leito %s está ocupado no perído", quartoNumero, leitoNumero ));
+						errors.addError("id", String.format("Quarto %s Leito %s está ocupado no perído", quartoNumero, leitoNumero ));
 					}
 				}
 			}
 		}
 		
-		if (!v.hasErrors() ) {
-			return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
+		if (!errors.getErrors().isEmpty()) {
+			throw new ValidationException(errors);
 		}
 		
 		try {
@@ -123,49 +118,46 @@ public class HospedagemController {
 
 	@RequestMapping(value="/planilha_geral", method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<?> planilhaGeral(@RequestBody PeriodoRequest model)
+	public ResponseEntity<?> planilhaGeral(@Valid @RequestBody PeriodoRequest model)
 	{
-		ItaValidator<PeriodoRequest> v = new ItaValidator<PeriodoRequest>(model);
-		v.validate();
+		ResultError errors = new ResultError();
 		
 		if (model.dataIni == null) {
-			v.addError("dataIni", "Data Inicial deve ser preenchida");
+			errors.addError("dataIni", "Data Inicial deve ser preenchida");
 		}
 		if (model.dataIni == null) {
-			v.addError("dataFim", "Data Final deve ser preenchida");
+			errors.addError("dataFim", "Data Final deve ser preenchida");
 		}
 		
-		if (!v.hasErrors() ) {
-			return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
+		if (!errors.getErrors().isEmpty()) {
+			throw new ValidationException(errors);
 		}
 
 		try {
-			//RelatorioAtendimentos retorno = relatorioService.buildPlanilhaGeral(model.dataIni, model.dataFim);
 			RelatorioAtendimentos retorno = relatorioService.buildNovaPlanilha(model.dataIni, model.dataFim);
 			return new ResponseEntity<>(retorno, HttpStatus.OK);
+		} catch(ValidationException e) {
+			return new ResponseEntity<>(e.getRe(), HttpStatus.BAD_REQUEST);
 		} catch(Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 	}
 	
-	//https://grokonez.com/spring-framework/spring-boot/excel-file-download-from-springboot-restapi-apache-poi-mysql
-	//@GetMapping(value = "/planilha_geral_arquivo")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	@RequestMapping(path = "/planilha_geral_arquivo", method = RequestMethod.POST)
-	public ResponseEntity<?>planilhaGeralExcel(@RequestBody PeriodoRequest model) throws IOException {
-		ItaValidator<PeriodoRequest> v = new ItaValidator<PeriodoRequest>(model);
-		v.validate();
+	public ResponseEntity<?>planilhaGeralExcel(@Valid @RequestBody PeriodoRequest model) throws IOException {
+		ResultError errors = new ResultError();
 		
 		if (model.dataIni == null) {
-			v.addError("dataIni", "Data Inicial deve ser preenchida");
+			errors.addError("dataIni", "Data Inicial deve ser preenchida");
 		}
 		if (model.dataIni == null) {
-			v.addError("dataFim", "Data Final deve ser preenchida");
+			errors.addError("dataFim", "Data Final deve ser preenchida");
 		}
 		
-		if (!v.hasErrors() ) {
-			return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
+		if (!errors.getErrors().isEmpty()) {
+			throw new ValidationException(errors);
 		}
 		
 		RelatorioAtendimentos retorno = null;
@@ -186,7 +178,6 @@ public class HospedagemController {
 		return ResponseEntity
 				.ok()
 				.contentType(MediaType.APPLICATION_OCTET_STREAM)
-				//.contentLength(file.length())
 				.headers(headers)
 				.body(new InputStreamResource(in));
 	}

@@ -5,7 +5,7 @@ import br.com.itarocha.betesda.mapper.TipoLeitoMapper;
 import br.com.itarocha.betesda.adapters.in.rest.request.TipoLeitoRequest;
 import br.com.itarocha.betesda.adapters.in.rest.response.TipoLeitoResponse;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.TipoLeitoEntity;
-import br.com.itarocha.betesda.core.validation.ItaValidator;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,13 +48,7 @@ public class TipoLeitoController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody TipoLeitoRequest request) {
-		ItaValidator<TipoLeitoRequest> v = new ItaValidator<TipoLeitoRequest>(request);
-		v.validate();
-		if (!v.hasErrors() ) {
-			return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
-		}
-		
+	public ResponseEntity<?> gravar(@Valid @RequestBody TipoLeitoRequest request) {
 		try {
 			TipoLeitoEntity entity = mapper.toEntity(request);
 			TipoLeitoEntity saved = service.create(entity);

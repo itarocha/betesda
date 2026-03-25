@@ -6,7 +6,7 @@ import br.com.itarocha.betesda.adapters.in.rest.request.TipoServicoRequest;
 import br.com.itarocha.betesda.adapters.in.rest.response.TipoServicoResponse;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.TipoServicoEntity;
 import br.com.itarocha.betesda.core.services.TipoServicoService;
-import br.com.itarocha.betesda.core.validation.ItaValidator;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,13 +49,7 @@ public class TipoServicoController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@RequestBody TipoServicoRequest request) {
-		ItaValidator<TipoServicoRequest> v = new ItaValidator<>(request);
-		v.validate();
-		if (!v.hasErrors() ) {
-			return new ResponseEntity<>(v.getErrors(), HttpStatus.BAD_REQUEST);
-		}
-		
+	public ResponseEntity<?> gravar(@Valid @RequestBody TipoServicoRequest request) {
 		try {
 			TipoServicoEntity entity = mapper.toEntity(request);
 			TipoServicoEntity saved = service.create(entity);
