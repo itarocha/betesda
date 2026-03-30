@@ -11,15 +11,10 @@ import lombok.Data;
 public class Email {
 	
 	private String from;
-
 	private List<String> to;
-
 	private List<String> cc;
-
 	private String subject;
-
 	private String message;
-	
 	private boolean isHtml;
 
 	public Email() {

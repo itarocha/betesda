@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.core.ports.out;
 
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.TipoHospedeEntity;
-import br.com.itarocha.betesda.core.domain.model.SelectValueVO;
+import br.com.itarocha.betesda.core.domain.model.ValorTexto;
 
 import java.util.List;
 
@@ -12,6 +12,6 @@ public interface TipoHospedePort {
 	TipoHospedeEntity update(TipoHospedeEntity model);
 	TipoHospedeEntity find(Long id);
 	List<TipoHospedeEntity> findAll();
-	List<SelectValueVO> listSelect();
+	List<ValorTexto> listSelect();
 	
 }

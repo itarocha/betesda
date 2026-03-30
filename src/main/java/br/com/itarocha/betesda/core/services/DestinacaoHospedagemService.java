@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.core.services;
 
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.DestinacaoHospedagemEntity;
-import br.com.itarocha.betesda.core.domain.model.SelectValueVO;
+import br.com.itarocha.betesda.core.domain.model.ValorTexto;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.repository.DestinacaoHospedagemJPARepository;
 import br.com.itarocha.betesda.core.ports.out.DestinacaoHospedagemPort;
 import lombok.RequiredArgsConstructor;
@@ -43,9 +43,9 @@ public class DestinacaoHospedagemService implements DestinacaoHospedagemPort {
 		return repositorio.findAll();
 	}
 
-	public List<SelectValueVO> listSelect() {
+	public List<ValorTexto> listSelect() {
 		return repositorio.findAll()
-				.stream().map(tb -> new SelectValueVO(tb.getId(), tb.getDescricao()))
+				.stream().map(tb -> new ValorTexto(tb.getId(), tb.getDescricao()))
 				.toList();
 	}
 	

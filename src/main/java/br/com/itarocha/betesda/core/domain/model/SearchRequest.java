@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 public class SearchRequest {
 	
 	private String fieldName;
-	
 	private String value;
-	
 	private String operator;
 }

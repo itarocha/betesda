@@ -7,10 +7,10 @@ import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.QuartoEntity
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.SituacaoLeitoEntity;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.TipoLeitoEntity;
 import br.com.itarocha.betesda.core.domain.enums.Logico;
-import br.com.itarocha.betesda.core.domain.model.EditLeitoVO;
-import br.com.itarocha.betesda.core.domain.model.EditQuartoVO;
-import br.com.itarocha.betesda.core.domain.model.NovoQuartoVO;
-import br.com.itarocha.betesda.core.domain.model.SelectValueVO;
+import br.com.itarocha.betesda.core.domain.model.LeitoEdicao;
+import br.com.itarocha.betesda.core.domain.model.QuartoEdicao;
+import br.com.itarocha.betesda.core.domain.model.QuartoNovo;
+import br.com.itarocha.betesda.core.domain.model.ValorTexto;
 import br.com.itarocha.betesda.core.ports.out.QuartoPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -46,7 +46,7 @@ public class QuartoService implements QuartoPort {
 		}
 	}
 
-	public QuartoEntity create(NovoQuartoVO model) {
+	public QuartoEntity create(QuartoNovo model) {
 		QuartoEntity q = new QuartoEntity();
 		try {
 			TipoLeitoEntity tipoLeitoEntity = tipoLeitoRepo.getOne(model.getTipoLeito());
@@ -101,7 +101,7 @@ public class QuartoService implements QuartoPort {
 		}
 	}
 
-  	public LeitoEntity saveLeito(EditLeitoVO model) {
+  	public LeitoEntity saveLeito(LeitoEdicao model) {
 		LeitoEntity leito;
 		boolean isNovo = model.getId() == null; 
 		if (isNovo) {
@@ -147,7 +147,7 @@ public class QuartoService implements QuartoPort {
 		leitoRepo.deleteById(id);
 	}
 
-	public QuartoEntity update(EditQuartoVO model) {
+	public QuartoEntity update(QuartoEdicao model) {
 		Optional<QuartoEntity> oq = quartoRepo.findById(model.getId());
 		QuartoEntity obj = null;
 		if (oq.isPresent()) {
@@ -191,12 +191,12 @@ public class QuartoService implements QuartoPort {
 		return leitoRepo.findAllWhereDisponivel(Logico.S);
 	}
 
-	public List<SelectValueVO> listTipoLeito() {
-		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
+	public List<ValorTexto> listTipoLeito() {
+		List<ValorTexto> retorno = new ArrayList<ValorTexto>();
 		
 		List<TipoLeitoEntity> lst = tipoLeitoRepo.findAllOrderByDescricao();
 		
-		lst.forEach(x -> retorno.add(new SelectValueVO(x.getId(), x.getDescricao())));
+		lst.forEach(x -> retorno.add(new ValorTexto(x.getId(), x.getDescricao())));
 		
 		return retorno;
 	}

@@ -9,11 +9,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SelectValueVO implements Serializable{
+public class ValorTexto implements Serializable{
 
 	private static final long serialVersionUID = -432146171536143461L;
-
 	private Long value;
-	
 	private String text;
+
 }

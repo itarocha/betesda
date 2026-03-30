@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.core.services;
 
-import br.com.itarocha.betesda.core.domain.model.SelectValueVO;
+import br.com.itarocha.betesda.core.domain.model.ValorTexto;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.TipoHospedeEntity;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.repository.TipoHospedeJPARepository;
 import br.com.itarocha.betesda.core.ports.out.TipoHospedePort;
@@ -57,11 +57,11 @@ public class TipoHospedeService implements TipoHospedePort {
 	}
 
 	//TODO: Mover query para repositório
-	public List<SelectValueVO> listSelect() {
-		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
+	public List<ValorTexto> listSelect() {
+		List<ValorTexto> retorno = new ArrayList<ValorTexto>();
 		em.createQuery("SELECT o FROM TipoHospedeEntity o ORDER BY o.descricao",TipoHospedeEntity.class)
 			.getResultList()
-			.forEach(x -> retorno.add(new SelectValueVO(x.getId(), x.getDescricao())));
+			.forEach(x -> retorno.add(new ValorTexto(x.getId(), x.getDescricao())));
 		return retorno;
 	}
 	

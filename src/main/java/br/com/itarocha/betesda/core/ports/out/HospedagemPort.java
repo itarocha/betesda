@@ -1,8 +1,7 @@
 package br.com.itarocha.betesda.core.ports.out;
 
-import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.*;
-import br.com.itarocha.betesda.core.domain.model.HospedagemFullVO;
-import br.com.itarocha.betesda.core.domain.model.HospedagemVO;
+import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.HospedagemInfoEntity;
+import br.com.itarocha.betesda.core.domain.model.Hospedagem;
 import br.com.itarocha.betesda.core.domain.model.hospedagem.*;
 
 import java.math.BigInteger;
@@ -11,7 +10,7 @@ import java.util.*;
 
 public interface HospedagemPort {
 
-	HospedagemEntity create(HospedagemVO model);
+	br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.HospedagemEntity create(Hospedagem model);
 	@Deprecated
 	MapaRetorno buildMapaRetorno(LocalDate dataBase);
 	MapaLinhas buildMapaLinhas(LocalDate dataBase);
@@ -19,7 +18,7 @@ public interface HospedagemPort {
 	MapaCidades buildMapaCidades(LocalDate dataBase);
 	MapaQuadro buildMapaQuadro(LocalDate dataBase);
 	List<OcupacaoLeito> getLeitosOcupadosNoPeriodo(Long hospedagemId, LocalDate dataIni, LocalDate dataFim);
-	HospedagemFullVO getHospedagemPorHospedeLeitoId(Long hospedagemId);
+	HospedagemInfoEntity getHospedagemPorHospedeLeitoId(Long hospedagemId);
 	void encerrarHospedagem(Long hospedagemId, LocalDate dataEncerramento);
 	void baixarHospede(Long hospedeId, LocalDate dataBaixa);
 	void removerHospede(Long hospedagemId, Long hospedeId);

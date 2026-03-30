@@ -4,9 +4,9 @@ import br.com.itarocha.betesda.core.domain.model.hospedagem.*;
 import br.com.itarocha.betesda.core.ports.out.HospedagemPort;
 import br.com.itarocha.betesda.core.ports.out.relatorios.RelatorioGeralPort;
 import br.com.itarocha.betesda.exception.ValidationException;
-import br.com.itarocha.betesda.core.domain.model.HospedagemFullVO;
-import br.com.itarocha.betesda.core.domain.model.HospedagemVO;
-import br.com.itarocha.betesda.core.domain.model.HospedeVO;
+import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.HospedagemInfoEntity;
+import br.com.itarocha.betesda.core.domain.model.Hospedagem;
+import br.com.itarocha.betesda.core.domain.model.Hospede;
 import br.com.itarocha.betesda.core.domain.model.report.RelatorioAtendimentos;
 import br.com.itarocha.betesda.core.services.relatorios.PlanilhaGeralService;
 import br.com.itarocha.betesda.core.validation.ResultError;
@@ -35,13 +35,13 @@ public class HospedagemController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@Valid @RequestBody HospedagemVO model) {
+	public ResponseEntity<?> gravar(@Valid @RequestBody Hospedagem model) {
 		ResultError errors = new ResultError();
 		
 		if (model.getHospedes().size() == 0) {
 			errors.addError("id", "É necessário pelo menos um hóspede");
 		} else {
-			for (HospedeVO h : model.getHospedes()) {
+			for (Hospede h : model.getHospedes()) {
 				if ("T".equals(model.getTipoUtilizacao()) && (h.getAcomodacao() == null)) {
 					errors.addError("id", String.format("É necessário informar o Leito para o Hóspede [%s]", h.getPessoaNome()));
 				}
@@ -280,9 +280,9 @@ public class HospedagemController {
 	
 	@RequestMapping(value="/mapa/hospedagem_info", method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-	public HospedagemFullVO getHospedagemInfo(@RequestBody HospdeagemInfoRequest model)
+	public HospedagemInfoEntity getHospedagemInfo(@RequestBody HospdeagemInfoRequest model)
 	{
-		HospedagemFullVO h = service.getHospedagemPorHospedeLeitoId(model.hospedagemId);
+		HospedagemInfoEntity h = service.getHospedagemPorHospedeLeitoId(model.hospedagemId);
 		return h;
 	}
 

@@ -4,17 +4,16 @@ import br.com.itarocha.betesda.adapters.out.persistencia.jpa.repository.*;
 import br.com.itarocha.betesda.core.domain.enums.CellStatusHospedagem;
 import br.com.itarocha.betesda.core.domain.enums.Logico;
 import br.com.itarocha.betesda.core.domain.enums.TipoUtilizacaoHospedagem;
-import br.com.itarocha.betesda.core.domain.model.HospedagemFullVO;
-import br.com.itarocha.betesda.core.domain.model.HospedagemVO;
-import br.com.itarocha.betesda.core.domain.model.HospedeVO;
-import br.com.itarocha.betesda.core.domain.model.LeitoVO;
+import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.HospedagemInfoEntity;
+import br.com.itarocha.betesda.core.domain.model.Hospedagem;
+import br.com.itarocha.betesda.core.domain.model.Hospede;
+import br.com.itarocha.betesda.core.domain.model.Leito;
 import br.com.itarocha.betesda.core.domain.model.hospedagem.*;
 import br.com.itarocha.betesda.core.ports.out.HospedagemPort;
 import br.com.itarocha.betesda.exception.ValidationException;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.DestinacaoHospedagemEntity;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.EncaminhadorEntity;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.EntidadeEntity;
-import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.HospedagemEntity;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.HospedeEntity;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.HospedeLeitoEntity;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.HospedagemTipoServicoEntity;
@@ -26,6 +25,8 @@ import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.TipoServicoE
 import br.com.itarocha.betesda.core.validation.ResultError;
 import br.com.itarocha.betesda.core.utils.LocalDateUtils;
 import br.com.itarocha.betesda.core.utils.StrUtil;
+import br.com.itarocha.betesda.mapper.EncaminhadorMapper;
+import br.com.itarocha.betesda.mapper.EntidadeMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,11 +75,15 @@ public class HospedagemService implements HospedagemPort {
 	
 	private final QuartoService quartoService;
 
+	private final EntidadeMapper entidadeMapper;
+
+	private final EncaminhadorMapper encaminhadorMapper;
+
 	DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	
 
-	public HospedagemEntity create(HospedagemVO model) throws ValidationException {
-		HospedagemEntity hospedagem = null;
+	public br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.HospedagemEntity create(Hospedagem model) throws ValidationException {
+		br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.HospedagemEntity hospedagem = null;
 
 		LocalDate hoje = LocalDate.now();
 			
@@ -92,21 +97,21 @@ public class HospedagemService implements HospedagemPort {
 					String.format("Data Prevista de Saída não pode ser inferior a Data de Entrada (%s)",fmt.format(model.getDataEntrada()))));
 		}
 		
-		for (HospedeVO h : model.getHospedes()) {
+		for (Hospede h : model.getHospedes()) {
 			if (!this.pessoaLivreNoPeriodo(h.getPessoaId(), model.getDataEntrada(), model.getDataPrevistaSaida())) {
 				throw new ValidationException(new ResultError().addError("*", String.format("[%s] está em outra hospedagem nesse período", h.getPessoaNome() )));
 			}
 		}
 		
-		hospedagem = new HospedagemEntity();
+		hospedagem = new br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.HospedagemEntity();
 		
 		Optional<EntidadeEntity> entidade = entidadeRepo.findById(model.getEntidadeId());
 		hospedagem.setEntidade(entidade.get());
-		model.setEntidade(entidade.get());
+		model.setEntidade(entidadeMapper.toEntidade(entidade.get()));
 		
 		Optional<EncaminhadorEntity> encaminhador = encaminhadorRepo.findById(model.getEncaminhadorId());
 		hospedagem.setEncaminhador(encaminhador.get());
-		model.setEncaminhador(encaminhador.get());
+		model.setEncaminhador(encaminhadorMapper.toEncaminhador(encaminhador.get()));
 		
 		hospedagem.setDataEntrada(model.getDataEntrada());
 		hospedagem.setDataPrevistaSaida(model.getDataPrevistaSaida());
@@ -123,7 +128,7 @@ public class HospedagemService implements HospedagemPort {
 		
 		model.setId(hospedagem.getId()); 
 		
-		for (HospedeVO hvo: model.getHospedes()) {
+		for (Hospede hvo: model.getHospedes()) {
 			HospedeEntity h = new HospedeEntity();
 			h.setHospedagem(hospedagem);
 			
@@ -846,9 +851,9 @@ public class HospedagemService implements HospedagemPort {
 		return status;
 	}
 
-	public HospedagemFullVO getHospedagemPorHospedeLeitoId(Long hospedagemId) {
-		HospedagemEntity h = hospedagemRepo.findHospedagemByHospedagemId(hospedagemId);
-		HospedagemFullVO retorno = new HospedagemFullVO();
+	public HospedagemInfoEntity getHospedagemPorHospedeLeitoId(Long hospedagemId) {
+		br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.HospedagemEntity h = hospedagemRepo.findHospedagemByHospedagemId(hospedagemId);
+		HospedagemInfoEntity retorno = new HospedagemInfoEntity();
 		
 		if (h == null) {
 			return retorno;
@@ -871,14 +876,14 @@ public class HospedagemService implements HospedagemPort {
 		retorno.setHospedes(h.getHospedes());
 		
 		StringBuilder sbLeito = StrUtil.loadFile("/sql/leito_by_hospede_leito_id.sql");
-		TypedQuery<LeitoVO> qLeitos = em.createQuery(sbLeito.toString(), LeitoVO.class);
+		TypedQuery<Leito> qLeitos = em.createQuery(sbLeito.toString(), Leito.class);
 		
 		CellStatusHospedagem status = resolveStatusHospedagemNew(LocalDate.now(), h.getDataPrevistaSaida(), h.getDataEfetivaSaida());
 		retorno.setStatus(status);
 		
 		for (HospedeEntity hospede: h.getHospedes()) {
 			for (HospedeLeitoEntity hl : hospede.getLeitos()) {
-				LeitoVO leito = qLeitos.setParameter("id", hl.getId()) .getSingleResult();
+				Leito leito = qLeitos.setParameter("id", hl.getId()) .getSingleResult();
 				hl.setQuartoNumero( leito.getQuartoNumero() );
 				hl.setLeitoNumero( leito.getNumero() );
 			}
@@ -895,10 +900,10 @@ public class HospedagemService implements HospedagemPort {
 		* Para cada hospedeLeitoEntity - hospedagemLeito.setDataSaída(dataEncerramento)
 		* hospedagem.setDataPrevistaSaida(dataEncerramento)
 		*/
-		Optional<HospedagemEntity> opt  = hospedagemRepo.findById(hospedagemId);
+		Optional<br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.HospedagemEntity> opt  = hospedagemRepo.findById(hospedagemId);
 		if (opt.isPresent()) {
 			
-			HospedagemEntity h = opt.get();
+			br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.HospedagemEntity h = opt.get();
 			if ((h.getDataEfetivaSaida() != null)) {
 				throw new ValidationException(new ResultError().addError("*", "Hospedagem deve ter status = emAberto"));
 			}
@@ -964,10 +969,10 @@ public class HospedagemService implements HospedagemPort {
 				throw new ValidationException(new ResultError().addError("*", "Hóspede já está baixado"));
 			}
 
-			Optional<HospedagemEntity> opt = hospedagemRepo.findById(hospedagemId);
+			Optional<br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.HospedagemEntity> opt = hospedagemRepo.findById(hospedagemId);
 			if (opt.isPresent()) {
 				
-				HospedagemEntity h = opt.get();
+				br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.HospedagemEntity h = opt.get();
 				if ((h.getDataEfetivaSaida() != null)) {
 					throw new ValidationException(new ResultError().addError("*", "Hospedagem deve ter status = emAberto"));
 				}
@@ -1003,10 +1008,10 @@ public class HospedagemService implements HospedagemPort {
 			
 			HospedeEntity hospede = hospedeOpt.get();
 
-			Optional<HospedagemEntity> opt = hospedagemRepo.findById(hospedagemId);
+			Optional<br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.HospedagemEntity> opt = hospedagemRepo.findById(hospedagemId);
 			if (opt.isPresent()) {
 				
-				HospedagemEntity h = opt.get();
+				br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.HospedagemEntity h = opt.get();
 				if ((h.getDataEfetivaSaida() != null)) {
 					throw new ValidationException(new ResultError().addError("*", "Hospedagem deve ter status = emAberto"));
 				}
@@ -1049,10 +1054,10 @@ public class HospedagemService implements HospedagemPort {
 				throw new ValidationException(new ResultError().addError("*", "Hóspede já está baixado"));
 			}
 
-			Optional<HospedagemEntity> opt = hospedagemRepo.findById(hospedagemId);
+			Optional<br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.HospedagemEntity> opt = hospedagemRepo.findById(hospedagemId);
 			if (opt.isPresent()) {
 				
-				HospedagemEntity h = opt.get();
+				br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.HospedagemEntity h = opt.get();
 				
 				if (!TipoUtilizacaoHospedagem.T.equals(h.getTipoUtilizacao())) {
 					throw new ValidationException(new ResultError().addError("*", "Tipo de Utilização da HospedagemEntity deve ser Total"));
@@ -1122,7 +1127,7 @@ public class HospedagemService implements HospedagemPort {
 	public void adicionarHospede(Long hospedagemId, Long pessoaId, Long tipoHospedeId, Long leitoId, LocalDate dataEntrada) throws ValidationException{
 		DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		
-		Optional<HospedagemEntity> hospedagemOpt = hospedagemRepo.findById(hospedagemId);
+		Optional<br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.HospedagemEntity> hospedagemOpt = hospedagemRepo.findById(hospedagemId);
 		Optional<PessoaEntity> pessoaOpt = pessoaRepo.findById(pessoaId);
 		Optional<LeitoEntity> leitoOpt = leitoRepo.findById(leitoId);
 		Optional<TipoHospedeEntity> tipoHospedeOpt = tipoHospedeRepo.findById(tipoHospedeId);
@@ -1139,7 +1144,7 @@ public class HospedagemService implements HospedagemPort {
 			throw new ValidationException(new ResultError().addError("*", "LeitoEntity não encontrado"));
 		}
 		
-		HospedagemEntity hospedagem = hospedagemOpt.get();
+		br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.HospedagemEntity hospedagem = hospedagemOpt.get();
 		if (!TipoUtilizacaoHospedagem.T.equals(hospedagem.getTipoUtilizacao())) {
 			throw new ValidationException(new ResultError().addError("*", "Tipo de Utilização da HospedagemEntity deve ser Total"));
 		} 
@@ -1198,11 +1203,11 @@ public class HospedagemService implements HospedagemPort {
 		* Para cada hospedeLeito, o último, hospedagemLeito.setDataSaída(novaDataPrevistaSaida)
 		* hospedagem.setDataPrevistaSaida(novaDataPrevistaSaida)
 		 */
-		Optional<HospedagemEntity> opt  = hospedagemRepo.findById(hospedagemId);
+		Optional<br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.HospedagemEntity> opt  = hospedagemRepo.findById(hospedagemId);
 		if (opt.isPresent()) {
 			DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 			
-			HospedagemEntity h = opt.get();
+			br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.HospedagemEntity h = opt.get();
 			if ((h.getDataEfetivaSaida() != null)) {
 				throw new ValidationException(new ResultError().addError("*", "Hospedagem deve ter status = emAberto"));
 			}
@@ -1267,7 +1272,7 @@ public class HospedagemService implements HospedagemPort {
 	}
 	
 	public void excluirHospedagem(Long id) {
-		Optional<HospedagemEntity> opt = hospedagemRepo.findById(id);
+		Optional<br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.HospedagemEntity> opt = hospedagemRepo.findById(id);
 		if (opt.isPresent()) {
 			hospedagemRepo.delete(opt.get());
 		}

@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.core.services;
 
-import br.com.itarocha.betesda.core.domain.model.SelectValueVO;
+import br.com.itarocha.betesda.core.domain.model.ValorTexto;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.TipoServicoEntity;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.repository.TipoServicoJPARepository;
 import br.com.itarocha.betesda.core.ports.out.TipoServicoPort;
@@ -55,11 +55,11 @@ public class TipoServicoService implements TipoServicoPort {
 	}
 
 	//TODO: Mover query para repositório
-	public List<SelectValueVO> listSelect() {
-		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
+	public List<ValorTexto> listSelect() {
+		List<ValorTexto> retorno = new ArrayList<ValorTexto>();
 		em.createQuery("SELECT o FROM TipoServicoEntity o WHERE o.ativo = 'S' ORDER BY o.descricao",TipoServicoEntity.class)
 			.getResultList()
-			.forEach(x -> retorno.add(new SelectValueVO(x.getId(), x.getDescricao())));
+			.forEach(x -> retorno.add(new ValorTexto(x.getId(), x.getDescricao())));
 		return retorno;
 	}
 }

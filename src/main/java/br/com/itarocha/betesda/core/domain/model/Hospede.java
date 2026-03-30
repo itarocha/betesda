@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class HospedeVO {
+public class Hospede {
 
 	private Long id;
 	private Long pessoaId;
@@ -15,5 +15,5 @@ public class HospedeVO {
 	private LocalDate pessoaDataNascimento;
 	private Long tipoHospedeId;
 	private String tipoHospedeDescricao;
-	private AcomodacaoVO acomodacao;
+	private Acomodacao acomodacao;
 }

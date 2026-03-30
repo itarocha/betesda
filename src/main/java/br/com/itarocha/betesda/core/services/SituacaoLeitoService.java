@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.core.services;
 
-import br.com.itarocha.betesda.core.domain.model.SelectValueVO;
+import br.com.itarocha.betesda.core.domain.model.ValorTexto;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.SituacaoLeitoEntity;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.repository.SituacaoLeitoJPARepository;
 import br.com.itarocha.betesda.core.ports.out.SituacaoLeitoPort;
@@ -45,10 +45,10 @@ public class SituacaoLeitoService implements SituacaoLeitoPort {
 		return repositorio.findAllOrderByDescricao();
 	}
 	
-	public List<SelectValueVO> listSelect() {
-		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
+	public List<ValorTexto> listSelect() {
+		List<ValorTexto> retorno = new ArrayList<ValorTexto>();
 		List<SituacaoLeitoEntity> lst = repositorio.findAllOrderByDescricao();
-		lst.forEach(x -> retorno.add(new SelectValueVO(x.getId(), x.getDescricao())));
+		lst.forEach(x -> retorno.add(new ValorTexto(x.getId(), x.getDescricao())));
 		return retorno;
 	}
 

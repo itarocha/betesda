@@ -7,15 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AcomodacaoVO {
-
-    private Long id;
-
-    private Long quartoId;
-
-    private Integer quartoNumero;
-
-    private Long leitoId;
-
-    private Integer leitoNumero;
+public class Leito {
+	private Long id;
+	private Integer numero;
+	private Long quartoId;
+	private Integer quartoNumero;
+	private TipoLeito tipoLeito;
 }

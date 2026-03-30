@@ -3,6 +3,7 @@ package br.com.itarocha.betesda.mapper;
 import br.com.itarocha.betesda.adapters.in.rest.request.EncaminhadorRequest;
 import br.com.itarocha.betesda.adapters.in.rest.response.EncaminhadorResponse;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.EncaminhadorEntity;
+import br.com.itarocha.betesda.core.domain.model.Encaminhador;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mapping;
@@ -16,8 +17,14 @@ public interface EncaminhadorMapper {
     @Mapping(target = "entidade", ignore = true)
     EncaminhadorEntity toEntity(EncaminhadorRequest request);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "entidade", ignore = true)
+    EncaminhadorEntity toEntity(Encaminhador request);
+
     @Mapping(target = "entidadeId", source = "entidade.id")
     EncaminhadorResponse toResponse(EncaminhadorEntity entity);
+
+    Encaminhador toEncaminhador(EncaminhadorEntity entity);
 
     @Mapping(target = "entidadeId", source = "entidade.id")
     List<EncaminhadorResponse> toResponseList(List<EncaminhadorEntity> entities);

@@ -1,7 +1,7 @@
 package br.com.itarocha.betesda.core.services;
 
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.EncaminhadorEntity;
-import br.com.itarocha.betesda.core.domain.model.SelectValueVO;
+import br.com.itarocha.betesda.core.domain.model.ValorTexto;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.repository.EncaminhadorJPARepository;
 import br.com.itarocha.betesda.core.ports.out.EncaminhadorPort;
 import lombok.RequiredArgsConstructor;
@@ -47,9 +47,9 @@ public class EncaminhadorService implements EncaminhadorPort {
 		return repositorio.findAllByEntidadeId(entidadeId);
 	}
 
-	public List<SelectValueVO> listSelect(Long entidadeId) {
+	public List<ValorTexto> listSelect(Long entidadeId) {
 		return repositorio.findAllByEntidadeId(entidadeId)
-				.stream().map(tb -> new SelectValueVO(tb.getId(), tb.getNome()))
+				.stream().map(tb -> new ValorTexto(tb.getId(), tb.getNome()))
 				.toList();
 	}
 	

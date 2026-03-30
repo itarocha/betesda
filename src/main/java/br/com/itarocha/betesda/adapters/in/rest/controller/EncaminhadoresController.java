@@ -2,7 +2,7 @@ package br.com.itarocha.betesda.adapters.in.rest.controller;
 
 import br.com.itarocha.betesda.core.ports.out.EncaminhadorPort;
 import br.com.itarocha.betesda.mapper.EncaminhadorMapper;
-import br.com.itarocha.betesda.core.domain.model.SelectValueVO;
+import br.com.itarocha.betesda.core.domain.model.ValorTexto;
 import br.com.itarocha.betesda.adapters.in.rest.request.EncaminhadorRequest;
 import br.com.itarocha.betesda.adapters.in.rest.response.EncaminhadorResponse;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.EncaminhadorEntity;
@@ -71,7 +71,7 @@ public class EncaminhadoresController {
 	@RequestMapping("/lista/{id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> getListaEncaminhadores(@PathVariable("id") Long entidadeId) {
-		List<SelectValueVO> lista = service.listSelect(entidadeId);
+		List<ValorTexto> lista = service.listSelect(entidadeId);
 		return new ResponseEntity<>(lista, HttpStatus.OK);
 	}
 	

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class NovoQuartoVO {
+public class QuartoNovo {
 
 	@NotNull(message="Número precisa ser informado")
 	@Min(value=1, message="Número do Quarto deve ser maior que zero")

@@ -3,7 +3,7 @@ package br.com.itarocha.betesda.core.services;
 import br.com.itarocha.betesda.core.ports.out.EntidadePort;
 import br.com.itarocha.betesda.exception.ValidationException;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.EntidadeEntity;
-import br.com.itarocha.betesda.core.domain.model.SelectValueVO;
+import br.com.itarocha.betesda.core.domain.model.ValorTexto;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.repository.EnderecoJPARepository;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.repository.EntidadeJPARepository;
 import br.com.itarocha.betesda.core.validation.ResultError;
@@ -74,9 +74,9 @@ public class EntidadeService implements EntidadePort {
 				.getResultList();
 	}
 
-	public List<SelectValueVO> listSelect() {
+	public List<ValorTexto> listSelect() {
 		return repositorio.findAll()
-				.stream().map(tb -> new SelectValueVO(tb.getId(), tb.getNome()))
+				.stream().map(tb -> new ValorTexto(tb.getId(), tb.getNome()))
 				.toList();
 	}
 	

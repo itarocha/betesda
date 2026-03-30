@@ -1,7 +1,5 @@
 package br.com.itarocha.betesda.core.domain.model;
 
-import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.EncaminhadorEntity;
-import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.EntidadeEntity;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,19 +10,19 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class HospedagemVO {
+public class Hospedagem {
 	
 	private Long id;
 
 	@NotNull(message="Entidade precisa ser informada")
 	private Long entidadeId;
 	
-	private EntidadeEntity entidade;
+	private Entidade entidade;
 
 	@NotNull(message="Encaminhador precisa ser informado")
 	private Long encaminhadorId;
 	
-	private EncaminhadorEntity encaminhador;
+	private Encaminhador encaminhador;
 	
 	@NotNull(message="Data de Entrada precisa ser informada")
 	private LocalDate dataEntrada;
@@ -44,5 +42,5 @@ public class HospedagemVO {
 	
 	private Long[] servicos;
 	
-	private List<HospedeVO> hospedes = new ArrayList<HospedeVO>();
+	private List<Hospede> hospedes = new ArrayList<>();
 }

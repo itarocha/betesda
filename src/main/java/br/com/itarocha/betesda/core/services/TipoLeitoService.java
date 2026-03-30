@@ -1,6 +1,6 @@
 package br.com.itarocha.betesda.core.services;
 
-import br.com.itarocha.betesda.core.domain.model.SelectValueVO;
+import br.com.itarocha.betesda.core.domain.model.ValorTexto;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.TipoLeitoEntity;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.repository.TipoLeitoJPARepository;
 import br.com.itarocha.betesda.core.ports.out.TipoLeitoPort;
@@ -58,11 +58,11 @@ public class TipoLeitoService implements TipoLeitoPort {
 	}
 
 	//TODO: Mover query para repositório
-	public List<SelectValueVO> listSelect() {
-		List<SelectValueVO> retorno = new ArrayList<SelectValueVO>();
+	public List<ValorTexto> listSelect() {
+		List<ValorTexto> retorno = new ArrayList<ValorTexto>();
 		em.createQuery("SELECT o FROM TipoLeitoEntity o ORDER BY o.descricao",TipoLeitoEntity.class)
 			.getResultList()
-			.forEach(x -> retorno.add(new SelectValueVO(x.getId(), x.getDescricao())));
+			.forEach(x -> retorno.add(new ValorTexto(x.getId(), x.getDescricao())));
 		return retorno;
 	}
 

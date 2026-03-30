@@ -1,13 +1,12 @@
 package br.com.itarocha.betesda.adapters.in.rest.controller;
 
-import br.com.itarocha.betesda.core.domain.model.EditLeitoVO;
-import br.com.itarocha.betesda.core.domain.model.EditQuartoVO;
-import br.com.itarocha.betesda.core.domain.model.NovoQuartoVO;
-import br.com.itarocha.betesda.core.domain.model.SelectValueVO;
+import br.com.itarocha.betesda.core.domain.model.LeitoEdicao;
+import br.com.itarocha.betesda.core.domain.model.QuartoEdicao;
+import br.com.itarocha.betesda.core.domain.model.QuartoNovo;
+import br.com.itarocha.betesda.core.domain.model.ValorTexto;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.LeitoEntity;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.QuartoEntity;
 import br.com.itarocha.betesda.core.ports.out.*;
-import br.com.itarocha.betesda.core.services.*;
 import br.com.itarocha.betesda.core.validation.ResultError;
 import br.com.itarocha.betesda.exception.ValidationException;
 import jakarta.validation.Valid;
@@ -37,7 +36,7 @@ public class QuartoController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
 		List<QuartoEntity> lista = service.findAll();
-		return new ResponseEntity<List<QuartoEntity>>(lista, HttpStatus.OK);
+		return new ResponseEntity<>(lista, HttpStatus.OK);
 	}
 
 	@RequestMapping(value="{id}")
@@ -61,7 +60,7 @@ public class QuartoController {
 		try {
 			LeitoEntity model = service.findLeito(id);
 			if (model != null) {
-				EditLeitoVO leito = new EditLeitoVO();
+				LeitoEdicao leito = new LeitoEdicao();
 				leito.setId(model.getId());
 				leito.setNumero(model.getNumero());
 				leito.setQuartoId(model.getQuarto().getId());
@@ -101,7 +100,7 @@ public class QuartoController {
 
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravar(@Valid @RequestBody NovoQuartoVO model) throws Exception {
+	public ResponseEntity<?> gravar(@Valid @RequestBody QuartoNovo model) throws Exception {
 		ResultError errors = new ResultError();
 		
 		if (service.existeOutroQuartoComEsseNumero(model.getNumero())) {
@@ -119,7 +118,7 @@ public class QuartoController {
 	
 	@RequestMapping(value="/alterar", method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravarAlteracao(@Valid @RequestBody EditQuartoVO model) {
+	public ResponseEntity<?> gravarAlteracao(@Valid @RequestBody QuartoEdicao model) {
 		ResultError errors = new ResultError();
 		
 		try {
@@ -145,7 +144,7 @@ public class QuartoController {
 
 	@RequestMapping(value="/leito", method = RequestMethod.POST)
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
-	public ResponseEntity<?> gravarLeito(@Valid @RequestBody EditLeitoVO model) {
+	public ResponseEntity<?> gravarLeito(@Valid @RequestBody LeitoEdicao model) {
 		ResultError errors = new ResultError();
 		
 		try {
@@ -200,27 +199,21 @@ public class QuartoController {
 	public ResponseEntity<?> listas() {
 		AutoWired retorno = new AutoWired();
 		retorno.listaTipoLeito = tls.listSelect();
-		
 		retorno.listaDestinacaoHospedagem = dhs.listSelect();
-		
 		retorno.listaSituacaoLeito = sls.listSelect();
-		
 		retorno.listaTipoHospede = ths.listSelect();
-		
 		retorno.listaTipoServico = tss.listSelect();
-
 		retorno.listaEntidade = etds.listSelect();
-		
-		return new ResponseEntity<AutoWired>(retorno, HttpStatus.OK);
+		return new ResponseEntity<>(retorno, HttpStatus.OK);
 	}
 	
 	static class AutoWired {
-		public List<SelectValueVO> listaTipoLeito = new ArrayList<SelectValueVO>();
-		public List<SelectValueVO> listaDestinacaoHospedagem = new ArrayList<SelectValueVO>();
-		public List<SelectValueVO> listaSituacaoLeito = new ArrayList<SelectValueVO>();
-		public List<SelectValueVO> listaTipoHospede = new ArrayList<SelectValueVO>();
-		public List<SelectValueVO> listaTipoServico = new ArrayList<SelectValueVO>();
-		public List<SelectValueVO> listaEntidade = new ArrayList<SelectValueVO>();
+		public List<ValorTexto> listaTipoLeito = new ArrayList<>();
+		public List<ValorTexto> listaDestinacaoHospedagem = new ArrayList<>();
+		public List<ValorTexto> listaSituacaoLeito = new ArrayList<>();
+		public List<ValorTexto> listaTipoHospede = new ArrayList<>();
+		public List<ValorTexto> listaTipoServico = new ArrayList<>();
+		public List<ValorTexto> listaEntidade = new ArrayList<>();
 	} 
 	
 }

@@ -98,7 +98,7 @@ public class PessoasController {
 			PessoaEntity entity = mapper.toEntity(request);
 			PessoaEntity saved = service.create(entity);
 			PessoaResponse resposta = mapper.toResponse(saved);
-		    return new ResponseEntity<PessoaResponse>(resposta, HttpStatus.OK);
+		    return new ResponseEntity<>(resposta, HttpStatus.OK);
 		} catch (ValidationException e) {
 			return new ResponseEntity<>(e.getRe(), HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {

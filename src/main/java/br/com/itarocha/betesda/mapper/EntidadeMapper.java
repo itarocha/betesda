@@ -3,6 +3,7 @@ package br.com.itarocha.betesda.mapper;
 import br.com.itarocha.betesda.adapters.in.rest.request.EntidadeRequest;
 import br.com.itarocha.betesda.adapters.in.rest.response.EntidadeResponse;
 import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.EntidadeEntity;
+import br.com.itarocha.betesda.core.domain.model.Entidade;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mapping;
@@ -19,6 +20,9 @@ public interface EntidadeMapper {
 
     @Mapping(target = "enderecoId", source = "endereco.id")
     EntidadeResponse toResponse(EntidadeEntity entity);
+
+    //@Mapping(target = "enderecoId", source = "endereco.id")
+    Entidade toEntidade(EntidadeEntity entity);
 
     @Mapping(target = "enderecoId", source = "endereco.id")
     List<EntidadeResponse> toResponseList(List<EntidadeEntity> entities);
