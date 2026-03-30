@@ -1,10 +1,10 @@
 package br.com.itarocha.betesda.adapters.in.rest.controller;
 
-import br.com.itarocha.betesda.core.ports.out.DestinacaoHospedagemPort;
-import br.com.itarocha.betesda.mapper.DestinacaoHospedagemMapper;
 import br.com.itarocha.betesda.adapters.in.rest.request.DestinacaoHospedagemRequest;
 import br.com.itarocha.betesda.adapters.in.rest.response.DestinacaoHospedagemResponse;
-import br.com.itarocha.betesda.adapters.out.persistencia.jpa.entity.DestinacaoHospedagemEntity;
+import br.com.itarocha.betesda.core.domain.model.DestinacaoHospedagem;
+import br.com.itarocha.betesda.core.ports.out.DestinacaoHospedagemPort;
+import br.com.itarocha.betesda.mapper.DestinacaoHospedagemMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,8 +25,8 @@ public class DestinacaoHospedagemController {
 	@RequestMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
 	public ResponseEntity<?> listar() {
-		List<DestinacaoHospedagemEntity> lista = service.findAll();
-		List<DestinacaoHospedagemResponse> resposta = mapper.toResponseList(lista);
+		List<DestinacaoHospedagem> lista = service.findAll();
+		List<DestinacaoHospedagemResponse> resposta = mapper.listModeltoListaResponse(lista);
 	    return new ResponseEntity<>(resposta, HttpStatus.OK);
 	}
 
@@ -34,7 +34,7 @@ public class DestinacaoHospedagemController {
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		try {
-			DestinacaoHospedagemEntity model = service.find(id);
+			DestinacaoHospedagem model = service.find(id);
 			if (model != null) {
 				DestinacaoHospedagemResponse resposta = mapper.toResponse(model);
 				return new ResponseEntity<>(resposta, HttpStatus.OK);
@@ -50,8 +50,8 @@ public class DestinacaoHospedagemController {
 	@PreAuthorize("hasAnyRole('ADMIN','ROOT')")
 	public ResponseEntity<?> gravar(@Valid @RequestBody DestinacaoHospedagemRequest request) {
 		try {
-			DestinacaoHospedagemEntity entity = mapper.toEntity(request);
-			DestinacaoHospedagemEntity saved = service.create(entity);
+			DestinacaoHospedagem model = mapper.requestToModel(request);
+			DestinacaoHospedagem saved = service.create(model);
 			DestinacaoHospedagemResponse resposta = mapper.toResponse(saved);
 		    return new ResponseEntity<>(resposta, HttpStatus.OK);
 		} catch (Exception e) {
